@@ -13,6 +13,11 @@
 
 </div>
 
+## Requires:
+- [FabricLoader 0.15.10+](https://fabricmc.net/use/installer/)
+- [FabricApi 1.20.4](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/5383731)
+- [Java 17+](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+
 ## Installation:
 
 ### Client:
@@ -26,12 +31,6 @@ For example: `C:\Users\user\AppData\Roaming\.tlauncher\legacy\Minecraft\game\ver
 ## Credits:
 - [ThunderHack Recode](https://github.com/Pan4ur/ThunderHack-Recode)
 - [Meteor Client](https://github.com/MeteorDevelopment/meteor-client)
-
-
-## Requires:
-- [FabricLoader 0.15.10+](https://fabricmc.net/use/installer/)
-- [FabricApi 1.20.4](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/5383731)
-- [Java 17+](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
 ## Licensing
 This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html). 
