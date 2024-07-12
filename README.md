@@ -5,7 +5,7 @@
 </p>
 
 <h1 align="center">Minced 1.20.4 [Fabric]</h1>
-<p align="center">A Minecraft Fabric Utility Mod for sword pvp servers.</p>
+<p align="center">A Minecraft Fabric Utility Mod</p>
 
 <div align="center">
     
@@ -25,7 +25,7 @@ Move `minced.jar` to the `mods` folder in your launcher directory.
 
 ### Native:
 Move `native.dll` to the `natives` folder in your launcher directory.
-For example: `C:\Users\user\AppData\Roaming\.tlauncher\legacy\Minecraft\game\versions\Fabric 1.20.4\natives`
+For example: `C:\Users\etc1337\AppData\Roaming\.tlauncher\legacy\Minecraft\game\versions\Fabric 1.20.4\natives`
 *Note: The exact path may vary depending on your system configuration. Just make sure to place the `native.dll` file in the `natives` folder where all other native libraries are located.*
 
 ## Credits:
