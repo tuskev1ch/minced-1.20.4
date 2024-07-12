@@ -12,7 +12,8 @@
 [![Discord Mine](https://img.shields.io/discord/1012747861819150456?label=discord&logo=discord&logoColor=white)](https://discord.gg/QxdMmgafV3)
 
 </div>
-№№ Installation:
+
+## Installation:
 - Client
 Move minced.jar to the mods folder in your launcher directory.
 
