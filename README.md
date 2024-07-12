@@ -19,7 +19,7 @@
 
 
 ## Requires:
-- [FabricLoader 0.15.10+]
+- [FabricLoader 0.15.10+](https://fabricmc.net/use/installer/)
 - [FabricApi 1.20.4](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/5383731)
 - [Java 17+](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
