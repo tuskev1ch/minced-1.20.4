@@ -1,0 +1,43 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "free.minced.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"client": [
+		"MixinCamera",
+		"MixinBlockCollisionSpliterator",
+		"MixinKeyboard",
+		"MixinKeyboardInput",
+		"MixinEntityRenderer",
+		"MixinLightmapTextureManager",
+		"MixinMouse",
+		"MixinMinecraftClient",
+		"MixinInGameHud",
+		"MixinTitleScreen",
+		"MixinInGameOverlayRenderer",
+		"MixinRenderTickCounter",
+		"MixinClientPlayerInteractionManager",
+		"MixinClientConnection",
+		"MixinShaderProgram",
+		"MixinGameRenderer",
+		"MixinClientPlayNetworkHandler",
+		"MixinClientPlayerEntity",
+		"MixinWorldRenderer",
+		"accesors.ShaderProgramAccessor",
+		"accesors.IInteractionManager",
+		"accesors.IClientWorldMixin",
+		"accesors.IClientPlayerEntity",
+		"accesors.ILivingEntity",
+		"accesors.INativeImage"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"mixins": [
+		"MixinPlayerEntity",
+		"MixinFlowableFluid",
+		"MixinEntity",
+		"accesors.IExplosionS2CPacket"
+	]
+}
+  

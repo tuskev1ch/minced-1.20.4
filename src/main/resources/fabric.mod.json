@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "minced",
+	"version": "1.0",
+	"icon": "icon.png",
+	"name": "Minced",
+	"description": "get good. get minced",
+	"authors": [
+	  {
+		"name": "etc1337",
+		"contact": {
+		  "discord": "etc1337"
+		}
+	  },
+		{
+			"name": "tuskevich",
+			"contact": {
+				"discord": "tusky1337"
+			}
+		}
+	],
+	"license": "GNU General Public License v3.0",
+	"accessWidener": "minced.accesswidener",
+	"environment": "client",
+	"entrypoints": {
+	  "main": [
+		"free.minced.Minced"
+	  ]
+	},
+	"mixins": [
+	  "minced.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.10",
+		"fabric-api": "*",
+		"minecraft": ">=1.20.3",
+		"java": ">=17"
+	},
+	"suggests": {
+	  "sodium": "*",
+	  "lithium": "*",
+	  "starlight": "*",
+	  "ias": "*",
+	  "viafabricplus": "*"
+	}
+  }
+  
