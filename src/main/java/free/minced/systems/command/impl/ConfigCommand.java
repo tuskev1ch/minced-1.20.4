@@ -96,6 +96,7 @@ public final class ConfigCommand extends Command {
     }
 
     private void loadConfig(String name) {
+        ChatHandler.display("путь - " + Minced.getInstance().getConfigHandler().DIRECTORY.getAbsolutePath());
         if (Minced.getInstance().getConfigHandler().find(name) != null) {
             Minced.getInstance().getConfigHandler().load(name);
 

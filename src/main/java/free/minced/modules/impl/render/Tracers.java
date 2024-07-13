@@ -34,18 +34,7 @@ public class Tracers extends Module {
 
     @Override
     public void onEvent(Event event) {
-        if (event instanceof Render2DEvent e) {
-            if (mc.player == null || mc.world == null) return;
 
-            Vec3d playerPos = getPlayerViewPosition(mc.player, ((Render2DEvent) event).getPartialTicks());
-
-            for (Entity entity : mc.world.getEntities()) {
-                if (entity instanceof LivingEntity livingEntity && shouldRender(livingEntity)) {
-                    Vec3d entityPos = MathHandler.getInterpolatedPosition(livingEntity, ((Render2DEvent) event).getPartialTicks());
-                    drawLine(playerPos, entityPos);
-                }
-            }
-        }
     }
 
     private Vec3d getPlayerViewPosition(Entity player, float tickDelta) {

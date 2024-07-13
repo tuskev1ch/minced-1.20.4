@@ -30,13 +30,8 @@ public class ConfigHandler extends IConfigHandler<Configuration> implements IHol
     private static final ArrayList<Configuration> loadedConfigs = new ArrayList<>();
 
     public ConfigHandler() {
-        ArrayList<Configuration> newConfigs = loadConfigs();
-        if (contents != null && contents.equals(newConfigs)) {
-            return;
-        }
-        contents = newConfigs;
+        contents = loadConfigs();
         DIRECTORY.mkdirs();
-        System.out.println(DIRECTORY.getAbsolutePath());
     }
     // получает все конфиги с папки
     private static ArrayList<Configuration> loadConfigs() {

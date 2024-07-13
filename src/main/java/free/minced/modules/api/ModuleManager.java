@@ -75,7 +75,6 @@ public class ModuleManager  {
         addModule(new NoRender());
         addModule(new FullBright());
         addModule(new EntityESP());
-        addModule(new Tracers());
     }
 
     /**
