@@ -46,8 +46,10 @@ public class ModuleManager  {
         addModule(new AutoAttack());
         addModule(new AutoPotion());
         addModule(new AttackAura());
+        addModule(new AutoTotem());
         addModule(new HitBox());
         addModule(new Reach());
+
         /* Category - Movement */
         addModule(new Speed());
         addModule(new NoClip());
@@ -70,11 +72,13 @@ public class ModuleManager  {
         addModule(new NoInteract());
         addModule(new ElytraUtils());
         addModule(new MiddleClick());
+        addModule(new ContainerStealer());
 
         /* Category - Render */
         addModule(new NoRender());
         addModule(new FullBright());
         addModule(new EntityESP());
+        addModule(new Tracers());
     }
 
     /**

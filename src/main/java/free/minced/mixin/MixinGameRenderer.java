@@ -58,6 +58,7 @@ public abstract class MixinGameRenderer {
         DrawHandler.lastModMat.set(RenderSystem.getModelViewMatrix());
         DrawHandler.lastWorldSpaceMatrix.set(matrix.peek().getPositionMatrix());
         EventCollects.call(new Render3DEvent(matrix, tickDelta));
+        DrawHandler.onRender3D(matrix);
 
     }
     @Inject(method = "tiltViewWhenHurt", at = @At("HEAD"), cancellable = true)

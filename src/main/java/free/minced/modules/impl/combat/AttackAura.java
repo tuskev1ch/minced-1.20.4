@@ -306,6 +306,7 @@ public class AttackAura extends Module {
                         || mc.player.getAbilities().flying
                         || (mc.player.isFallFlying() || Minced.getInstance().getModuleHandler().get(Flight.class).isEnabled())
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
+                        || PlayerHandler.isPlayerInWeb()
                         || mc.player.isHoldingOntoLadder()
                         || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos())).getBlock() == Blocks.COBWEB;
 

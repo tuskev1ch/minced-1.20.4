@@ -7,6 +7,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
@@ -22,6 +24,9 @@ import free.minced.modules.impl.combat.AttackAura;
 import free.minced.primary.IHolder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PlayerHandler implements IHolder {
 
@@ -35,11 +40,59 @@ public class PlayerHandler implements IHolder {
     public enum InteractType {
         INTERACT, ATTACK, INTERACT_AT
     }
+
+    public static boolean isPlayerInWeb() {
+        Box playerBox = mc.player.getBoundingBox();
+        BlockPos playerPosition = BlockPos.ofFloored(mc.player.getPos());
+
+        return getNearbyBlockPositions(playerPosition).stream()
+                .anyMatch(pos -> isBlockCobweb(playerBox, pos));
+    }
+
+    private static List<BlockPos> getNearbyBlockPositions(BlockPos center) {
+        List<BlockPos> positions = new ArrayList<>();
+        for (int x = center.getX() - 2; x <= center.getX() + 2; x++) {
+            for (int y = center.getY() - 1; y <= center.getY() + 4; y++) {
+                for (int z = center.getZ() - 2; z <= center.getZ() + 2; z++) {
+                    positions.add(new BlockPos(x, y, z));
+                }
+            }
+        }
+        return positions;
+    }
+
+    private static boolean isBlockCobweb(Box playerBox, BlockPos blockPos) {
+        return playerBox.intersects(new Box(blockPos)) && mc.world.getBlockState(blockPos).getBlock() == Blocks.COBWEB;
+    }
     
     public static float getCurrentItemAttackStrengthDelay() {
         return (float)(1.0D / mc.player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_SPEED) * 20.0D);
     }
+    public static int findItemSlot(Item item) {
+        return findItemSlot(item, true);
+    }
 
+    public static int findItemSlot(Item item, boolean armor) {
+        if (armor) {
+            for (ItemStack stack : mc.player.getInventory().armor) {
+                if (stack.getItem() == item) {
+                    return -2;
+                }
+            }
+        }
+        int slot = -1;
+        for (int i = 0; i < 36; i++) {
+            ItemStack s = mc.player.getInventory().getStack(i);
+            if (s.getItem() == item) {
+                slot = i;
+                break;
+            }
+        }
+        if (slot < 9 && slot != -1) {
+            slot = slot + 36;
+        }
+        return slot;
+    }
     public static float getAttackStrengthScale(float pAdjustTicks) {
         return MathHelper.clamp(((float) ((ILivingEntity) mc.player).getLastAttackedTicks() + pAdjustTicks) / getCurrentItemAttackStrengthDelay(), 0.0F, 1.0F);
     }

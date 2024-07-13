@@ -23,6 +23,7 @@ public class CommandHandler {
         // allow events to work
         register(new ConfigCommand());
         register(new DropCommand());
+        register(new VClipCommand());
         register(new EClipCommand());
         register(new HelpCommand());
 

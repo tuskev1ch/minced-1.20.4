@@ -18,7 +18,7 @@ import free.minced.primary.game.SearchInvResult;
 import free.minced.systems.setting.impl.BindSetting;
 import org.lwjgl.glfw.GLFW;
 
-@ModuleDescriptor(name = "ElytraUtils", category = ModuleCategory.MISC, key = GLFW.GLFW_KEY_U)
+@ModuleDescriptor(name = "ElytraUtils", category = ModuleCategory.MISC)
 
 public class ElytraUtils extends Module {
     private final BindSetting ElytraUtilsBind = new BindSetting("Elytra Swap Bind", this, -1);
