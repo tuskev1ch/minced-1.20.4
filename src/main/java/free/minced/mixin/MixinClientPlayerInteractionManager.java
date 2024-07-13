@@ -1,5 +1,6 @@
 package free.minced.mixin;
 
+import free.minced.modules.impl.combat.Reach;
 import net.minecraft.block.*;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -13,6 +14,7 @@ import free.minced.events.impl.mobility.EventBreakBlock;
 import free.minced.modules.impl.combat.AttackAura;
 import free.minced.modules.impl.misc.NoInteract;
 import free.minced.systems.rotations.Rotations;
+import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +30,19 @@ public class MixinClientPlayerInteractionManager {
 
     @Shadow
     private int blockBreakingCooldown;
+    @Shadow private GameMode gameMode;
 
+    @Inject(method = "getReachDistance", at = @At("HEAD"), cancellable = true)
+    public void getReachDistance(CallbackInfoReturnable<Float> cir) {
+        Reach reach = Minced.getInstance().getModuleHandler().get(Reach.class);
+
+        if (reach.isEnabled() && reach.getBlocks()) {
+            cir.setReturnValue(reach.getRange());
+        } else {
+            cir.setReturnValue(this.gameMode.isCreative() ? 5.0F : 4.5F);
+        }
+
+    }
     @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
     private void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
         Block bs = mc.world.getBlockState(hitResult.getBlockPos()).getBlock();

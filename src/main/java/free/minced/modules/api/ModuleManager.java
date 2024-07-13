@@ -46,7 +46,8 @@ public class ModuleManager  {
         addModule(new AutoAttack());
         addModule(new AutoPotion());
         addModule(new AttackAura());
-
+        addModule(new HitBox());
+        addModule(new Reach());
         /* Category - Movement */
         addModule(new Speed());
         addModule(new NoClip());
@@ -62,6 +63,7 @@ public class ModuleManager  {
         addModule(new NoPush());
         addModule(new NoDelay());
         addModule(new GuiMove());
+        addModule(new AutoTool());
         addModule(new FreeCam());
         addModule(new ItemsFix());
         addModule(new ElytraFix());
@@ -73,7 +75,6 @@ public class ModuleManager  {
         addModule(new NoRender());
         addModule(new FullBright());
         addModule(new EntityESP());
-        addModule(new JumpEffect());
         addModule(new Tracers());
     }
 

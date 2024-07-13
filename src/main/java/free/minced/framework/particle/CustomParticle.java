@@ -1,10 +1,8 @@
 package free.minced.framework.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import free.minced.framework.animation.base.AnimationHue;
-import free.minced.framework.animation.base.EasingHue;
-import free.minced.framework.animation.normal.Animation;
-import free.minced.framework.animation.normal.Easing;
+import free.minced.framework.animation.hue.AnimationHue;
+import free.minced.framework.animation.hue.EasingHue;
 import free.minced.framework.color.CustomColor;
 import free.minced.primary.IHolder;
 import lombok.Getter;

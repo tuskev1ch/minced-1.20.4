@@ -14,7 +14,7 @@ public class ProfileHandler implements IHolder {
 
     private static String build = "Free";
 
-    private static String version = "1.1";
+    private static String version = "1.11";
 
 
     public static String getUsername() {

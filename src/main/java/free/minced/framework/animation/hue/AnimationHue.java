@@ -1,4 +1,4 @@
-package free.minced.framework.animation.base;
+package free.minced.framework.animation.hue;
 
 import lombok.Getter;
 import lombok.Setter;
