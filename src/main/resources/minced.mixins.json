@@ -22,6 +22,7 @@
 		"MixinGameRenderer",
 		"MixinClientPlayNetworkHandler",
 		"MixinClientPlayerEntity",
+		"MixinHeldItemRenderer",
 		"MixinWorldRenderer",
 		"accesors.ShaderProgramAccessor",
 		"accesors.IInteractionManager",
@@ -37,6 +38,7 @@
 		"MixinPlayerEntity",
 		"MixinFlowableFluid",
 		"MixinEntity",
+		"MixinEntityLiving",
 		"accesors.IExplosionS2CPacket"
 	]
 }

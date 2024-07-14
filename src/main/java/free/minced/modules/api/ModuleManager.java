@@ -48,6 +48,7 @@ public class ModuleManager  {
         addModule(new AttackAura());
         addModule(new AutoTotem());
         addModule(new HitBox());
+        addModule(new AutoSwap());
         addModule(new Reach());
 
         /* Category - Movement */
@@ -78,7 +79,9 @@ public class ModuleManager  {
         addModule(new NoRender());
         addModule(new FullBright());
         addModule(new EntityESP());
+        addModule(new SwingAnimations());
         addModule(new Tracers());
+        addModule(new ViewModel());
     }
 
     /**

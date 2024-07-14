@@ -11,10 +11,6 @@ import lombok.Getter;
 public class NoRender extends Module {
 
     private final MultiBoxSetting comboBoxSetting = new MultiBoxSetting("Removals", this,
-            "Players",
-            "Signs",
-            "Explosion",
-            "Bad effects",
             "Block Overlay",
             "Water Overlay",
             "Fire Overlay",
@@ -31,14 +27,6 @@ public class NoRender extends Module {
 
     public boolean canRemoveFireOverlay() {
         return this.isEnabled() && comboBoxSetting.get("Fire Overlay").isEnabled();
-    }
-
-    public boolean canRemoveExplosion() {
-        return this.isEnabled() && comboBoxSetting.get("Explosion").isEnabled();
-    }
-
-    public boolean canRemoveBadEffects() {
-        return this.isEnabled() && comboBoxSetting.get("Bad effects").isEnabled();
     }
 
     public boolean canRemoveHurtCam() {

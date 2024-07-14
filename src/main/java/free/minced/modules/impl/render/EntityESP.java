@@ -1,11 +1,21 @@
 package free.minced.modules.impl.render;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+import com.mojang.blaze3d.systems.RenderSystem;
+import free.minced.modules.impl.display.hud.impl.PotionHUD;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.scoreboard.ReadableScoreboardScore;
 import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -45,6 +55,9 @@ import java.util.Set;
 public class EntityESP extends Module {
 
     public final MultiBoxSetting elements = new MultiBoxSetting("Elements", this, "NameTags", "Items");
+    public final MultiBoxSetting subElements = new MultiBoxSetting("Sub Elements", this, () -> !elements.get("NameTags").isEnabled(),
+            "Armor", "Effects");
+
     private double posYZ;
 
     @Override
@@ -103,8 +116,95 @@ public class EntityESP extends Module {
 
         Font.drawString(e.getStack(), textComponent, posX + 1, posY + 4, new CustomColor(255, 255, 255).getRGB());
 
+        double maxEnchantY = 0;
+        float item_offset = 0;
+
+        ArrayList<ItemStack> stacks = new ArrayList<>();
+
+
+        stacks.add(player.getInventory().armor.get(0));
+        stacks.add(player.getInventory().armor.get(1));
+        stacks.add(player.getInventory().armor.get(2));
+        stacks.add(player.getInventory().armor.get(3));
+        stacks.add(player.getMainHandStack());
+        stacks.add(player.getOffHandStack());
+
+        if (subElements.get("Armor").isEnabled()) {
+            for (ItemStack armorComponent : stacks) {
+                if (!armorComponent.isEmpty()) {
+                    e.getContext().getMatrices().push();
+                    e.getContext().getMatrices().translate(posX + item_offset, (float) (posY - 20), 0);
+                    e.getContext().getMatrices().scale(0.9f, 0.9f, 0.9f);
+                    DiffuseLighting.disableGuiDepthLighting();
+                    e.getContext().drawItem(armorComponent, 0, 0);
+                    e.getContext().drawItemInSlot(mc.textRenderer, armorComponent, 0, 0);
+                    e.getContext().getMatrices().pop();
+
+
+                    float enchantmentY = 0;
+
+                    NbtList enchants = armorComponent.getEnchantments();
+                    for (int index = 0; index < enchants.size(); ++index) {
+                        String id = enchants.getCompound(index).getString("id");
+                        short level = enchants.getCompound(index).getShort("lvl");
+                        String encName = " ";
+
+                        switch (id) {
+                            case "minecraft:blast_protection", "blast_protection" -> encName = "B" + level;
+                            case "minecraft:protection", "protection" -> encName = "P" + level;
+                            case "minecraft:thorns", "thorns" -> encName = "T" + level;
+                            case "minecraft:sharpness", "sharpness" -> encName = "S" + level;
+                            case "minecraft:efficiency", "efficiency" -> encName = "E" + level;
+                            case "minecraft:unbreaking", "unbreaking" -> encName = "U" + level;
+                            case "minecraft:power", "power" -> encName = "PO" + level;
+                            default -> {
+                                continue;
+                            }
+                        }
+
+                        Fonts.SEMI_12.drawString(e.getStack(), encName, posX + 3 + item_offset, (float) posY - 28 + enchantmentY, -1);
+
+                        enchantmentY -= 8;
+                        if (maxEnchantY > enchantmentY)
+                            maxEnchantY = enchantmentY;
+                    }
+                }
+                item_offset += 18f;
+            }
+        }
+        if (subElements.get("Effects").isEnabled()) {
+            renderStatusEffectOverlay(e.getContext(), (float) posX, (float) (posY + maxEnchantY - 60), player);
+        }
 
         e.getStack().pop();
+    }
+    private void renderStatusEffectOverlay(DrawContext context, float x, float y, PlayerEntity player) {
+        ArrayList<StatusEffectInstance> effects = new ArrayList<>(player.getStatusEffects());
+        if (effects.isEmpty())
+            return;
+        x += effects.size() * 12.5f;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        for (StatusEffectInstance statusEffectInstance : Ordering.natural().reverse().sortedCopy(effects)) {
+            x -= 25;
+            String power = "";
+            switch (statusEffectInstance.getAmplifier()) {
+                case 0 -> power = "I";
+                case 1 -> power = "II";
+                case 2 -> power = "III";
+                case 3 -> power = "IV";
+                case 4 -> power = "V";
+            }
+
+            context.getMatrices().push();
+            context.getMatrices().translate(x, y, 0);
+            context.drawSprite(0, 0, 0, 18, 18, mc.getStatusEffectSpriteManager().getSprite(statusEffectInstance.getEffectType()));
+            Fonts.SEMI_12.drawCenteredString(context.getMatrices(), PotionHUD.getDuration(statusEffectInstance), 9, -8, -1);
+            Fonts.SEMI_12.drawCenteredString(context.getMatrices(), power, 9, -16, -1);
+            context.getMatrices().pop();
+
+        }
+        RenderSystem.disableBlend();
     }
     private double interpolate(double previous, double current) {
         return previous + (current - previous) * mc.getTickDelta();

@@ -2,6 +2,7 @@ package free.minced.modules.impl.movement;
 
 
 import com.google.common.collect.Lists;
+import free.minced.systems.setting.impl.BooleanSetting;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +27,8 @@ import static net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket.Mode.
 @ModuleDescriptor(name = "Speed", category = ModuleCategory.MOVEMENT)
 
 public class Speed extends Module {
-    public final ModeSetting mode = new ModeSetting("Mode", this, "GrimCollision", "GrimCollision", "GrimDistance", "MatrixElytra");
+    public final ModeSetting mode = new ModeSetting("Mode", this, "GrimCollision", "GrimCollision", "GrimDistance");
+    private final BooleanSetting onlyPlayers = new BooleanSetting("Only Players", this, false, () -> !mode.is("GrimCollision"));
 
     public final NumberSetting speed = new NumberSetting("Speed", this, 8, 1, 8, 1);
 
@@ -54,9 +56,12 @@ public class Speed extends Module {
 
             if ((mode.is("GrimCollision")) && !e.isPre() && getSetBackTime() > 1000 && MobilityHandler.isMoving()) {
                 int collisions = 0;
-                for (Entity ent : mc.world.getEntities())
+                for (Entity ent : mc.world.getEntities()) {
+                    if (!(ent instanceof PlayerEntity) && onlyPlayers.isEnabled()) continue;
+
                     if (ent != mc.player && (ent instanceof LivingEntity || ent instanceof BoatEntity) && mc.player.getBoundingBox().expand(radius.getValue().doubleValue()).intersects(ent.getBoundingBox()))
                         collisions++;
+                }
 
                 double[] motion = MobilityHandler.forward((speed.getValue().intValue() * 0.01) * collisions);
                 mc.player.addVelocity(motion[0], 0.0, motion[1]);

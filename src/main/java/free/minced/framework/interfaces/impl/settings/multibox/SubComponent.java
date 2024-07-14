@@ -73,10 +73,10 @@ public class SubComponent extends CustomElement {
         int enabledSettingsCount = (int) parent.getSubComponents().stream().filter(subComponent -> subComponent.getSetting().isEnabled()).count();
 
     if (isHovered(x, y, width, height, mouseX, mouseY) && button == 0) {
-        if (!setting.isEnabled() || enabledSettingsCount > 1) {
+
 
             setting.toggle();
-        }
+
     }/////////////////
 
 
