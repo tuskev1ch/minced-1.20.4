@@ -40,7 +40,7 @@ public class Speed extends Module {
     @Override
     public void onEvent(Event event) {
         if (event instanceof EventPlayerTravel e) {
-            if (mode.is("GrimDistance") && !e.isPre() && getSetBackTime() > 1000) {
+            if (mode.is("GrimDistance") && !e.isPre()) {
                 for (PlayerEntity ent : Lists.newArrayList(mc.world.getPlayers())) {
                     if (ent != mc.player && mc.player.squaredDistanceTo(ent) <= distance.getValue().floatValue()) {
                         float p = mc.world.getBlockState(mc.player.getBlockPos()).getBlock().getSlipperiness();
@@ -54,7 +54,7 @@ public class Speed extends Module {
                 }
             }
 
-            if ((mode.is("GrimCollision")) && !e.isPre() && getSetBackTime() > 1000 && MobilityHandler.isMoving()) {
+            if ((mode.is("GrimCollision")) && !e.isPre() && MobilityHandler.isMoving()) {
                 int collisions = 0;
                 for (Entity ent : mc.world.getEntities()) {
                     if (!(ent instanceof PlayerEntity) && onlyPlayers.isEnabled()) continue;

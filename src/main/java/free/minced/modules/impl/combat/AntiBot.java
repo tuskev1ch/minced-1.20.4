@@ -34,6 +34,14 @@ public class AntiBot extends Module {
         }
     }
 
+    @Override
+    public void onDisable() {
+        bots.clear();
+        botsNumber = 0;
+        ticks = 0;
+        timer.reset();
+    }
+
     public void onSync(EventSync e) {
         mc.world.getPlayers().forEach(this::isABot);
         if (AttackAura.target instanceof PlayerEntity ent) isABot(ent);
