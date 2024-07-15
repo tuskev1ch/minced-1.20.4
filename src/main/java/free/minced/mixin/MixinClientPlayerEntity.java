@@ -73,6 +73,14 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
         }
     }
 
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/AbstractClientPlayerEntity;tick()V", shift = At.Shift.BEFORE))
+    public void tick(CallbackInfo callbackInfo) {
+        if (mc.player != null && mc.world != null) {
+            EventCollects.call(new TickEvent());
+        }
+    }
+
+
     @Inject(method = "pushOutOfBlocks", at = @At("HEAD"), cancellable = true)
     private void onPushOutOfBlocksHook(double x, double d, CallbackInfo info) {
         if (Minced.getInstance().getModuleHandler().get(NoPush.class).isEnabled() &&

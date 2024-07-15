@@ -24,7 +24,6 @@ import java.util.Set;
  * @author jbk
  */
 @CommandInfo(name = "EClip", description = "Elytra clip", aliases = {"eclip", "elytraclip"})
-
 public final class EClipCommand extends Command {
 
     @Override

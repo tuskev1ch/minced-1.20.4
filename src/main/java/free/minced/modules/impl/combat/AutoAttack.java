@@ -66,6 +66,7 @@ public class AutoAttack extends Module {
         boolean reasonForSkipCrit =
                 !onlyCriticals.isEnabled()
                         || mc.player.getAbilities().flying
+                        || mc.player.hasStatusEffect(StatusEffects.LEVITATION)
                         || mc.player.isFallFlying()
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
                         || mc.player.isHoldingOntoLadder()

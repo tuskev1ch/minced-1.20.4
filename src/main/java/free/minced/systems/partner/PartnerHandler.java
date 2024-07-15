@@ -26,7 +26,7 @@ public class PartnerHandler {
      */
     public void addFriend(String friend) {
         friends.add(friend);
-        //Minced.getInstance().getConfigHandler().save("default");
+        Minced.getInstance().getConfigHandler().save("autocfg");
     }
 
     /**
@@ -36,7 +36,7 @@ public class PartnerHandler {
      */
     public void addFriends(String... args) {
         friends.addAll(Arrays.asList(args));
-        //Minced.getInstance().getConfigHandler().save("default");
+        Minced.getInstance().getConfigHandler().save("autocfg");
     }
 
     /**
@@ -46,7 +46,7 @@ public class PartnerHandler {
      */
     public void removeFriend(Entity friend) {
         friends.remove(friend.getName().getString());
-        //Minced.getInstance().getConfigHandler().save("default");
+        Minced.getInstance().getConfigHandler().save("autocfg");
     }
 
     /**
@@ -56,7 +56,7 @@ public class PartnerHandler {
      */
     public void removeFriend(String friend) {
         friends.remove(friend);
-        //Minced.getInstance().getConfigHandler().save("default");
+        Minced.getInstance().getConfigHandler().save("autocfg");
     }
     /**
      * проверяет, находится ли энтити в спмиске друзей

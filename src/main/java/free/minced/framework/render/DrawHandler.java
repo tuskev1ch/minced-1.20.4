@@ -1,25 +1,25 @@
 package free.minced.framework.render;
 
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import free.minced.Minced;
+import free.minced.framework.color.ClientColors;
+import free.minced.framework.font.Fonts;
+import free.minced.systems.SharedClass;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import free.minced.framework.font.Texture;
 import free.minced.framework.render.shaders.ShaderHandler;
 import free.minced.primary.IHolder;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL40C;
@@ -28,11 +28,14 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.lang.Math;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static free.minced.framework.color.ClientColors.getTheme;
 
 
 public class DrawHandler implements IHolder {
@@ -99,6 +102,7 @@ public class DrawHandler implements IHolder {
     }
 
     public static void endRender() {
+        RenderSystem.defaultBlendFunc();
         RenderSystem.disableBlend();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
@@ -126,6 +130,65 @@ public class DrawHandler implements IHolder {
         endRender();
     }
 
+    public static void drawGPS(DrawContext poseStack) {
+
+        if (SharedClass.GPS_POSITION != null) {
+            float dst = getDistance(SharedClass.GPS_POSITION);
+            float xOffset = mc.getWindow().getScaledWidth() / 2f;
+            float yOffset = mc.getWindow().getScaledHeight() / 2f;
+            float yaw = getRotations(new Vec2f(SharedClass.GPS_POSITION.getX(), SharedClass.GPS_POSITION.getZ())) - mc.player.getYaw();
+            poseStack.getMatrices().translate(xOffset, yOffset, 0.0F);
+            poseStack.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
+            poseStack.getMatrices().translate(-xOffset, -yOffset, 0.0F);
+            drawTracerPointer(poseStack, xOffset, yOffset - 50, 0.5F, Minced.getInstance().getThemeHandler().getTheme().getFirstColor().getRGB());
+            poseStack.getMatrices().translate(xOffset, yOffset, 0.0F);
+            poseStack.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-yaw));
+            poseStack.getMatrices().translate(-xOffset, -yOffset, 0.0F);
+            RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+            Fonts.SEMI_15.drawCenteredString(poseStack.getMatrices(), "GPS (" + (int) dst + " blocks)", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 23, -1);
+
+            if(dst < 10)
+                SharedClass.GPS_POSITION = null;
+        }
+    }
+    public static void drawTracerPointer(DrawContext matrices, float x, float y, float size, int color) {
+        drawArrow(matrices, x, y, size + 8, new Color(color));
+    }
+    public static void drawArrow(DrawContext matrices, float x, float y, float size1, Color color) {
+        RenderSystem.setShaderTexture(0, SharedClass.ARROW_LOCATION);
+        setupRender();
+        RenderSystem.setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
+        RenderSystem.disableDepthTest();
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+        VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        Matrix4f matrix = matrices.getMatrices().peek().getPositionMatrix();
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        float size = size1 + 8;
+        bufferBuilder.vertex(matrix, x - (size / 2f), y + size, 0).texture(0f, 1f).next();
+        bufferBuilder.vertex(matrix, x + size / 2f, y + size, 0).texture(1f, 1f).next();
+        bufferBuilder.vertex(matrix, x + size / 2f, y, 0).texture(1f, 0).next();
+        bufferBuilder.vertex(matrix, x - (size / 2f), y, 0).texture(0, 0).next();
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        immediate.draw();
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
+        endRender();
+    }
+    public static float getRotations(Vec2f vec) {
+        if (mc.player == null) return 0;
+        double x = vec.x - mc.player.getPos().x;
+        double z = vec.y - mc.player.getPos().z;
+        return (float) -(Math.atan2(x, z) * (180 / Math.PI));
+    }
+
+    public static int getDistance(BlockPos bp) {
+        double d0 = mc.player.getX() - bp.getX();
+        double d2 = mc.player.getZ() - bp.getZ();
+        return (int) (MathHelper.sqrt((float) (d0 * d0 + d2 * d2)));
+    }
     public static void drawRound(MatrixStack matrices, float x, float y, float width, float height, float radius, Color color) {
         ShaderHandler.drawRound(matrices, x, y, width, height, radius, color);
     }

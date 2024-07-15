@@ -32,16 +32,16 @@ import java.util.List;
 @ModuleDescriptor(name = "AutoTotem", category = ModuleCategory.COMBAT)
 public class AutoTotem extends Module {
 
-    private final NumberSetting health = new NumberSetting("Здоровье", this, 4F, 1F, 20F, 1F);
-    private final BooleanSetting drawCounter = new BooleanSetting("Отображать кол-во", this, true);
-    private final BooleanSetting swapBack = new BooleanSetting("Возвращать", this, true);
+    private final NumberSetting health = new NumberSetting("Health", this, 4F, 1F, 20F, 1F);
+    private final BooleanSetting drawCounter = new BooleanSetting("Display quantity", this, true);
+    private final BooleanSetting swapBack = new BooleanSetting("Back Item", this, true);
 
-    private final BooleanSetting noBallSwitch = new BooleanSetting("Не брать при шаре", this, false);
-    private final MultiBoxSetting mode = new MultiBoxSetting("Условие", this, "Поглощение", "Обсидиан", "Кристалл", "Якорь", "Падение");
+    private final BooleanSetting noBallSwitch = new BooleanSetting("Dont take with ball", this, false);
+    private final MultiBoxSetting mode = new MultiBoxSetting("Condition", this, "Absort", "Obsidian", "Crystal", "Anchor", "Fall");
 
-    private final NumberSetting obsidianRadius = new NumberSetting("Радиус от обсы", this, 6, 1, 8, 1, () -> !mode.get("Обсидиан").isEnabled());
-    private final NumberSetting crystalRadius = new NumberSetting("Радиус от кристалла", this, 6, 1, 8, 1, () -> !mode.get("Кристалл").isEnabled());
-    private final NumberSetting anchorRadius = new NumberSetting("Радиус от якоря", this, 6, 1, 8, 1, () -> !mode.get("Якорь").isEnabled());
+    private final NumberSetting obsidianRadius = new NumberSetting("Radius Obsidian", this, 6, 1, 8, 1, () -> !mode.get("Obsidian").isEnabled());
+    private final NumberSetting crystalRadius = new NumberSetting("Radius Crystal", this, 6, 1, 8, 1, () -> !mode.get("Crystal").isEnabled());
+    private final NumberSetting anchorRadius = new NumberSetting("Radius Anchor", this, 6, 1, 8, 1, () -> !mode.get("Anchor").isEnabled());
 
     @Override
     public void onEvent(Event event) {
@@ -95,25 +95,9 @@ public class AutoTotem extends Module {
     private int swapBackSlot = -1;
     private final ItemStack stack = new ItemStack(Items.TOTEM_OF_UNDYING);
 
-/*
-    private final Listener<Render2DEvent> onRender2D = event -> {
-        if (!drawCounter.getValue())
-            return;
-
-        if (getTotemCount() > 0) {
-            Fonts.INTER_EXTRABOLD.get(12).drawOutline(event.getMatrix(), getTotemCount() + "x", mc.getMainWindow().getScaledWidth() / 2f + 12F,
-                    mc.getMainWindow().getScaledHeight() / 2f + 24, Color.WHITE.hashCode());
-            GlStateManager.pushMatrix();
-            GlStateManager.disableBlend();
-            mc.getItemRenderer().renderItemAndEffectIntoGUI(stack, mc.getMainWindow().getScaledWidth() / 2F - 8, mc.getMainWindow().getScaledHeight() / 2F + 20);
-            GlStateManager.popMatrix();
-        }
-    };
-*/
-
     private boolean condition() {
         float health = mc.player.getHealth();
-        if (mode.get("Поглощение").isEnabled()) {
+        if (mode.get("Absort").isEnabled()) {
             health += mc.player.getAbsorptionAmount();
         }
 
@@ -123,23 +107,23 @@ public class AutoTotem extends Module {
 
         if (!isBall()) {
             for (Entity entity : mc.world.getEntities()) {
-                if (mode.get("Кристалл").isEnabled()) {
+                if (mode.get("Crystal").isEnabled()) {
                     if (entity instanceof EndCrystalEntity && mc.player.squaredDistanceTo(entity) <= crystalRadius.getValue().floatValue()) {
                         return true;
                     }
                 }
             }
 
-            if (mode.get("Якорь").isEnabled()) {
+            if (mode.get("Anchor").isEnabled()) {
                 BlockPos pos = getSphere(mc.player.getBlockPos(), obsidianRadius.getValue().floatValue(), 6, false, true, 0).stream().filter(this::IsValidBlockPosAnchor).min(Comparator.comparing(blockPos -> getDistanceToBlock(mc.player, blockPos))).orElse(null);
                 return pos != null;
             }
 
-            if (mode.get("Обсидиан").isEnabled()) {
+            if (mode.get("Obsidian").isEnabled()) {
                 BlockPos pos = getSphere(mc.player.getBlockPos(), anchorRadius.getValue().floatValue(), 6, false, true, 0).stream().filter(this::IsValidBlockPosObisdian).min(Comparator.comparing(blockPos -> getDistanceToBlock(mc.player, blockPos))).orElse(null);
                 return pos != null;
             }
-            if (mode.get("Падение").isEnabled()) {
+            if (mode.get("Fall").isEnabled()) {
                 return mc.player.fallDistance >= 30;
             }
         }

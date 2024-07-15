@@ -96,7 +96,7 @@ public class BindSettingComponent extends SettingComponent {
                 bindSetting.setKey(keyCode);
             }
             binding = false;
-            //Minced.getInstance().getConfigHandler().save("default");
+            Minced.getInstance().getConfigHandler().save("autocfg");
         }
 
         super.keyPressed(keyCode, scanCode, modifiers);

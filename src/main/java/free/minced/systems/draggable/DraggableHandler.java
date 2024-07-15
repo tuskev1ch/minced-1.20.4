@@ -19,7 +19,7 @@ public class DraggableHandler {
     public HashMap<String, Draggable> draggables = new HashMap<>();
 
     // директория с данными
-    public final File DRAG_DATA = new File(FileHandler.DIRECTORY, "draggables.mncd");
+    public final File DRAG_DATA = new File(FileHandler.DIRECTORY, "Minced/draggables.mncd");
 
     // я тебя ненавижу, GСын
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();

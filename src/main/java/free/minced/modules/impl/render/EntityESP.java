@@ -100,11 +100,11 @@ public class EntityESP extends Module {
         textComponent += (player.getDisplayName().getString()) + " ";
         textComponent += getHealthColor(getHealth(player)) + round2(getHealth(player)) + " ";
 
-        CFontRenderer Font = Fonts.UNBOUNDED_BOLD14;
+        CFontRenderer Font = Fonts.SEMI_14;
 
         float textWidth = Font.getStringWidth(textComponent) + 6;
         float posX = (float) projectedPos.x - textWidth / 2;
-        float posY = /*elements.get("Players").isEnabled() ? (float) posYZ - 12.5f : */((float) projectedPos.y - getPlayerHeight(player));
+        float posY = ((float) projectedPos.y - getPlayerHeight(player));
 
         e.getStack().push();
         e.getStack().translate(posX + textWidth / 2, posY + 6.5f, 0);

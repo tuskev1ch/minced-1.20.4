@@ -291,7 +291,7 @@ public class AttackAura extends Module {
                 getDistance(targetEntity) >= MathHandler.getPow2Value((followTarget.isEnabled() ? attackRange.getValue().floatValue() * 2 : attackRange.getValue().floatValue()))) {
             return false;
         }
-        if (Minced.getInstance().getModuleHandler().get(AntiBot.class).isEnabled() && AntiBot.bots.contains(targetEntity)) return false;
+        if (Minced.getInstance().getModuleHandler().get(AntiBot.class).isEnabled() && AntiBot.isBot(targetEntity)) return false;
         if (Minced.getInstance().getPartnerHandler().isFriend(targetEntity) && !targets.get("Friends").isEnabled()) return false;
 
         return (targetEntity instanceof PlayerEntity && targets.get("Players").isEnabled()) ||
@@ -304,6 +304,7 @@ public class AttackAura extends Module {
         boolean reasonForSkipCrit =
                 !onlyCriticals.isEnabled()
                         || mc.player.getAbilities().flying
+                        || mc.player.hasStatusEffect(StatusEffects.LEVITATION)
                         || (mc.player.isFallFlying() || Minced.getInstance().getModuleHandler().get(Flight.class).isEnabled())
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
                         || PlayerHandler.isPlayerInWeb()

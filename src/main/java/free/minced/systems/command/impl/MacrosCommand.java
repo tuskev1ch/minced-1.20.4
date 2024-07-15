@@ -29,7 +29,7 @@ public class MacrosCommand extends Command {
     public void clearMacrosList() {
         Minced.getInstance().getMacrosHandler().macrosList.clear();
         ChatHandler.display("The list of macros has been cleared!");
-        //Minced.getInstance().getConfigManager().save("default");
+        Minced.getInstance().getConfigHandler().save("autocfg");
     }
 
     public void displayMacrosList() {
@@ -60,7 +60,7 @@ public class MacrosCommand extends Command {
             } else {
                 Minced.getInstance().getMacrosHandler().macrosList.remove(macros);
                 ChatHandler.display("Macro %s was deleted!".formatted(name));
-                // Minced.getInstance().getConfigManager().save("default");
+                Minced.getInstance().getConfigHandler().save("autocfg");
             }
         }
     }
@@ -90,7 +90,7 @@ public class MacrosCommand extends Command {
             } else {
                 Minced.getInstance().getMacrosHandler().macrosList.add(macros);
                 ChatHandler.display("Макрос %s был добавлен!".formatted(name));
-                //Minced.getInstance().getConfigManager().save("default");
+                Minced.getInstance().getConfigHandler().save("autocfg");
             }
         }
     }

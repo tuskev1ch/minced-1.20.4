@@ -132,7 +132,7 @@ public class NumberSettingComponent extends SettingComponent {
     public void mouseReleased(double mouseX, double mouseY, int button) {
         // при отпускании мыши мы больше не таскаем эту хуйню
         dragging = false;
-        //Minced.getInstance().getConfigHandler().save("default");
+        Minced.getInstance().getConfigHandler().save("autocfg");
         super.mouseReleased(mouseX, mouseY, button);
     }
 }

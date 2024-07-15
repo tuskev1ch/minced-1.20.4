@@ -44,9 +44,9 @@ public class Tracers extends Module {
             for (PlayerEntity player : Lists.newArrayList(mc.world.getPlayers())) {
                 if (player == mc.player)
                     continue;
+                Color color = Minced.getInstance().getPartnerHandler().isFriend(player) ? new Color(0, 255, 0, 99).darker() : new CustomColor(22, 22, 22).withAlpha(155);
 
-                Color color = Minced.getInstance().getPartnerHandler().isFriend(player) ?
-                        Minced.getInstance().getThemeHandler().getPrimaryTheme().getBackgroundColor() : new CustomColor(22, 22, 22).withAlpha(155);
+
 
 
                 Vec3d vec2 = new Vec3d(0, 0, 75)

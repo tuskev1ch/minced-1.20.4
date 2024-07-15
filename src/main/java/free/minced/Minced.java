@@ -3,6 +3,7 @@ package free.minced;
 
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mojang.logging.LogUtils;
 import free.minced.addition.ProfileHandler;
 import lombok.Getter;
@@ -94,6 +95,9 @@ public class Minced implements ModInitializer {
 			initTime = System.currentTimeMillis();
 
 			initializated = true;
+		}
+		if (initializated) {
+			Minced.getInstance().getConfigHandler().load("autocfg");
 		}
 	}
 	public static void verifyVersion() {

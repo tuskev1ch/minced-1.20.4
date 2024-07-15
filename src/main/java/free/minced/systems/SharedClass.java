@@ -20,6 +20,8 @@ import free.minced.primary.IHolder;
 import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.draggable.Draggable;
 import free.minced.systems.macros.MacrosHandler;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -33,6 +35,11 @@ public class SharedClass {
     public static int ticksElytraFlying, serverSideSlot;
     public static boolean lockSprint;
     public static boolean serverSprint;
+
+    public static final Identifier ARROW_LOCATION = new Identifier("minced", "textures/arrow.png");
+
+
+    public static BlockPos GPS_POSITION;
 
     public static void onMouseKeyReleased(int button) {
         for (Draggable draggable : Minced.getInstance().getDraggableHandler().draggables.values()) { // 0

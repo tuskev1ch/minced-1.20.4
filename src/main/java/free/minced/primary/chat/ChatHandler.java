@@ -13,7 +13,13 @@ public class ChatHandler implements IHolder {
 
     public static void display(String message) {
         if (mc.player == null) return;
-        mc.player.sendMessage(Text.of(PREFIX + message));
+        if (mc.isOnThread()) {
+            mc.player.sendMessage(Text.of(PREFIX + message));
+        } else {
+            mc.executeSync(() ->{
+                mc.player.sendMessage(Text.of(PREFIX + message));
+            });
+        }
     }
 
 }
