@@ -31,7 +31,7 @@ import java.util.stream.StreamSupport;
 @ModuleDescriptor(name = "AntiBot", category = ModuleCategory.COMBAT)
 
 public class AntiBot extends Module {
-    private final ModeSetting mode = new ModeSetting("Mode", this, "Beta", "Motion", "Motion", "UUID");
+    private final ModeSetting mode = new ModeSetting("Mode", this, "Beta", "Beta", "Motion", "UUID");
 
 
     Set<UUID> suspectSet = new HashSet<>();
