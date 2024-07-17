@@ -69,7 +69,7 @@ public class PartnerCommand extends Command {
     public void clearFriends() {
         Minced.getInstance().getPartnerHandler().getFriends().clear();
         ChatHandler.display("Success! The friend list has been cleared!");
-        Minced.getInstance().getConfigHandler().save("autocfg");
+        Minced.getInstance().getConfigHandler().saveAutoCfg();
     }
 
     public void sendErrorMessage() {

@@ -90,7 +90,7 @@ public class BooleanSettingComponent extends SettingComponent {
 
         if (hoveringClickableArea && button == 0) {
             getBooleanSetting().toggle();
-            Minced.getInstance().getConfigHandler().save("autocfg");
+            Minced.getInstance().getConfigHandler().saveAutoCfg();
         }
 
         super.mouseClicked(mouseX, mouseY, button);

@@ -9,8 +9,10 @@ import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.modules.impl.display.hud.impl.TargetHUD;
+import free.minced.primary.IHolder;
 import free.minced.primary.game.PlayerHandler;
 import free.minced.systems.setting.impl.BooleanSetting;
+import free.minced.systems.setting.impl.ModeSetting;
 import free.minced.systems.setting.impl.MultiBoxSetting;
 import free.minced.systems.setting.impl.NumberSetting;
 import net.minecraft.block.BlockState;
@@ -20,6 +22,7 @@ import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -31,6 +34,7 @@ import java.util.List;
 
 @ModuleDescriptor(name = "AutoTotem", category = ModuleCategory.COMBAT)
 public class AutoTotem extends Module {
+    private final ModeSetting swapMode = new ModeSetting("Swap Mode", this, "Window", "Window", "ViaVersion 1.17+");
 
     private final NumberSetting health = new NumberSetting("Health", this, 4F, 1F, 20F, 1F);
     private final BooleanSetting drawCounter = new BooleanSetting("Display quantity", this, true);
@@ -53,20 +57,15 @@ public class AutoTotem extends Module {
             if (condition()) {
                 if (slot >= 0) {
                     if (!totemInHand) {
-                        mc.interactionManager.clickSlot(0, slot, 1, SlotActionType.PICKUP, mc.player);
-                        mc.interactionManager.clickSlot(0, 45, 1, SlotActionType.PICKUP, mc.player);
+                        swapItem(slot);
                         if (handNotNull && swapBack.isEnabled()) {
-                            mc.interactionManager.clickSlot(0, slot, 0, SlotActionType.PICKUP, mc.player);
                             if (swapBackSlot == -1) swapBackSlot = slot;
                         }
                     }
                 }
-
             } else if (swapBackSlot >= 0) {
-                mc.interactionManager.clickSlot(0, swapBackSlot, 0, SlotActionType.PICKUP, mc.player);
-                mc.interactionManager.clickSlot(0, 45, 0, SlotActionType.PICKUP, mc.player);
                 if (handNotNull && swapBack.isEnabled()) {
-                    mc.interactionManager.clickSlot(0, swapBackSlot, 0, SlotActionType.PICKUP, mc.player);
+                    swapItem(swapBackSlot);
                 }
                 swapBackSlot = -1;
             }
@@ -138,7 +137,16 @@ public class AutoTotem extends Module {
         ItemStack stack = mc.player.getOffHandStack();
         return stack.getName().getString().toLowerCase().contains("шар") || stack.getName().getString().toLowerCase().contains("голова") || stack.getName().getString().toLowerCase().contains("head");
     }
-
+    public void swapItem(int slot) {
+        if (swapMode.is("Window")) {
+            mc.interactionManager.clickSlot(0, slot, 1, SlotActionType.PICKUP, mc.player);
+            mc.interactionManager.clickSlot(0, 45, 1, SlotActionType.PICKUP, mc.player);
+        }
+        if (swapMode.is("ViaVersion 1.17+")) {
+            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, slot, 40, SlotActionType.SWAP, mc.player);
+            IHolder.sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
+        }
+    }
    private int getTotemCount() {
        int count = 0;
        for (int i = 0; i < mc.player.getInventory().size(); i++) {

@@ -1,5 +1,6 @@
 package free.minced.modules.impl.render;
 
+import free.minced.Minced;
 import free.minced.events.EventCollects;
 import free.minced.events.impl.render.EventHeldItemRenderer;
 import free.minced.modules.Module;
@@ -34,6 +35,14 @@ public class SwingAnimations extends Module {
 
 
     private void renderSwordAnimation(MatrixStack matrices, float f, float swingProgress, float equipProgress, Arm arm) {
+        if (arm == Arm.LEFT) {
+            applyEquipOffset(matrices, arm, equipProgress);
+            matrices.translate(-Minced.getInstance().getModuleHandler().get(ViewModel.class).leftX.getValue().doubleValue(), Minced.getInstance().getModuleHandler().get(ViewModel.class).leftY.getValue().doubleValue(), Minced.getInstance().getModuleHandler().get(ViewModel.class).leftZ.getValue().doubleValue());
+            applySwingOffset(matrices, arm, swingProgress);
+            matrices.translate(Minced.getInstance().getModuleHandler().get(ViewModel.class).leftX.getValue().doubleValue(), -Minced.getInstance().getModuleHandler().get(ViewModel.class).leftY.getValue().doubleValue(), -Minced.getInstance().getModuleHandler().get(ViewModel.class).leftZ.getValue().doubleValue());
+            return;
+        }
+
         switch (mode.getCurrentMode()) {
             case "Default" -> {
                 applyEquipOffset(matrices, arm, equipProgress);

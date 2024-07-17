@@ -8,6 +8,7 @@ import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import free.minced.primary.IHolder;
 import free.minced.systems.SharedClass;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -20,6 +21,15 @@ public class MobilityHandler implements IHolder {
         return Math.hypot(mc.player.getVelocity().x, mc.player.getVelocity().z);
     }
 
+    public static Vec3d getRotationVector(float pitch, float yaw) {
+        float f = pitch * 0.017453292F;
+        float g = -yaw * 0.017453292F;
+        float h = MathHelper.cos(g);
+        float i = MathHelper.sin(g);
+        float j = MathHelper.cos(f);
+        float k = MathHelper.sin(f);
+        return new Vec3d((double)(i * j), (double)(-k), (double)(h * j));
+    }
 
     public static double[] forward(final double d) {
         float f = mc.player.input.movementForward;

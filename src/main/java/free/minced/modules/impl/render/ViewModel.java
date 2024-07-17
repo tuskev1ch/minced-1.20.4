@@ -19,13 +19,13 @@ public class ViewModel extends Module {
     private final NumberSetting customScaleValue = new NumberSetting("Scale Value", this, 1f, 0.1f, 1.5f, 0.1, () -> !customScale.isEnabled());
 
 
-    private final NumberSetting leftX = new NumberSetting("Left X", this, 0, -1, 1, 0.1);
-    private final NumberSetting leftY = new NumberSetting("Left Y", this, 0, -1, 1, 0.1);
-    private final NumberSetting leftZ = new NumberSetting("Left Z", this, 0, -1, 1, 0.1);
+    public final NumberSetting leftX = new NumberSetting("Left X", this, 0, -1, 1, 0.1);
+    public final NumberSetting leftY = new NumberSetting("Left Y", this, 0, -1, 1, 0.1);
+    public final NumberSetting leftZ = new NumberSetting("Left Z", this, 0, -1, 1, 0.1);
 
-    private final NumberSetting rightX = new NumberSetting("Right X", this, 0, -1, 1, 0.1);
-    private final NumberSetting rightY = new NumberSetting("Right Y", this, 0, -1, 1, 0.1);
-    private final NumberSetting rightZ = new NumberSetting("Right Z", this, 0, -1, 1, 0.1);
+    public final NumberSetting rightX = new NumberSetting("Right X", this, 0, -1, 1, 0.1);
+    public final NumberSetting rightY = new NumberSetting("Right Y", this, 0, -1, 1, 0.1);
+    public final NumberSetting rightZ = new NumberSetting("Right Z", this, 0, -1, 1, 0.1);
 
     @Override
     public void onEvent(Event event) {

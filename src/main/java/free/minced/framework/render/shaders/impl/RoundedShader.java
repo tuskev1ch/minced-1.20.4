@@ -1,5 +1,6 @@
 package free.minced.framework.render.shaders.impl;
 
+import free.minced.framework.render.shaders.WindowResizeCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.GlUniform;
@@ -27,9 +28,9 @@ public class RoundedShader extends GlProgram {
 
     public RoundedShader() {
         super(new Identifier("minced", "rounded"), VertexFormats.POSITION);
-/*        WindowResizeCallback.EVENT.register((client, window) -> {
+        WindowResizeCallback.EVENT.register((client, window) -> {
             if (input != null) input.resize(window.getFramebufferWidth(), window.getFramebufferHeight(), MinecraftClient.IS_SYSTEM_MAC);
-        });*/
+        });
     }
 
     public void setParameters(float x, float y, float width, float height, float r, Color c1, Color c2) {

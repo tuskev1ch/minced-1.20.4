@@ -37,6 +37,7 @@
 	"mixins": [
 		"MixinPlayerEntity",
 		"MixinFlowableFluid",
+		"FireworkRocketEntityMixin",
 		"MixinEntity",
 		"MixinEntityLiving",
 		"accesors.IExplosionS2CPacket"

@@ -50,7 +50,7 @@ public class StyleSelectorElement extends CustomElement {
     public void mouseClicked(double mouseX, double mouseY, int button) {
         if (isHovered(x, y, width, height, mouseX, mouseY) && button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             Minced.getInstance().getThemeHandler().setPrimaryTheme(theme);
-            Minced.getInstance().getConfigHandler().save("autocfg");
+            Minced.getInstance().getConfigHandler().saveAutoCfg();
         }
         super.mouseClicked(mouseX, mouseY, button);
     }

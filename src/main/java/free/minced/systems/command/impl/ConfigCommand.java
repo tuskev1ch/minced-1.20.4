@@ -48,7 +48,7 @@ public final class ConfigCommand extends Command {
         // если конфиг найден, удаляем его
         if (config != null) {
             Minced.getInstance().getConfigHandler().getContents().remove(config);
-            Minced.getInstance().getConfigHandler().save("autocfg");
+            Minced.getInstance().getConfigHandler().saveAutoCfg();
             ChatHandler.display("Removed config with name %s".formatted(name));
             // если это не так - отправляем сообщение о том, что конфиг не найден
         } else {
@@ -59,7 +59,7 @@ public final class ConfigCommand extends Command {
     private void clearConfigs() {
         Minced.getInstance().getConfigHandler().getContents().clear();
         ChatHandler.display("Configs was cleared");
-        Minced.getInstance().getConfigHandler().save("autocfg");
+        Minced.getInstance().getConfigHandler().saveAutoCfg();
     }
 
     private void displayConfigs() {

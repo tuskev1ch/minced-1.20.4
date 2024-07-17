@@ -125,6 +125,6 @@ public class Draggable {
 	// handle mouse release
 	public final void onRelease(int button) {
 		if (button == 0) dragging = false;
-		Minced.getInstance().getConfigHandler().save("autocfg");
+		Minced.getInstance().getConfigHandler().saveAutoCfg();
 	}
 }

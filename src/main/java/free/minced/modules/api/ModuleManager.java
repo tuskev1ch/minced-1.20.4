@@ -60,6 +60,7 @@ public class ModuleManager  {
         addModule(new AutoSprint());
         addModule(new NoSlowDown());
         addModule(new TimerModule());
+        addModule(new CreativeFlight());
 
         /* Category - Misc */
         addModule(new UnHook());

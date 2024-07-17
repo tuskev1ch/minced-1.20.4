@@ -1,6 +1,7 @@
 package free.minced.modules.impl.combat;
 
 
+import free.minced.events.impl.mobility.ElytraFixEvent;
 import lombok.Getter;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -14,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -62,6 +64,8 @@ public class AttackAura extends Module {
     public final ModeSetting mobilityFix = new ModeSetting("Movement Fix", this, "Off", "Off", "Free", "Focused");
 
     public final NumberSetting attackRange = new NumberSetting("Attack Range", this, 3, 2.5F, 6, 0.1F);
+    public BooleanSetting unpressShield = new BooleanSetting("Unpress Shield", this, false);
+
     public BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
     public BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
     public BooleanSetting followTarget = new BooleanSetting("Follow Target", this, false);
@@ -94,7 +98,10 @@ public class AttackAura extends Module {
             if (event.getPacket() instanceof PlayerInteractEntityC2SPacket pie && PlayerHandler.getInteractType(pie) != PlayerHandler.InteractType.ATTACK && target != null) {
                 e.setCancel(true);
             }
-        }  else if (e instanceof EventPlayerJump event) {
+        } else if (e instanceof ElytraFixEvent event) {
+            event.setYaw(rotationYaw);
+            event.setPitch(rotationPitch);
+        } else if (e instanceof EventPlayerJump event) {
             if (target == null) return;
             MobilityFix.onJump(event);
         } else if (e instanceof EventFixVelocity event) {
@@ -115,6 +122,7 @@ public class AttackAura extends Module {
     @Override
     public void onDisable() {
         target = null;
+        cpsLimit = 0;
         resetRotations();
         super.onDisable();
     }
@@ -279,6 +287,7 @@ public class AttackAura extends Module {
                 .min(Comparator.comparing(entity -> entity.squaredDistanceTo(mc.player)))
                 .map(entity -> (LivingEntity) entity)
                 .orElse(null);
+
     }
     private float getDistance(Entity targetEntity) {
         return PlayerHandler.squaredDistanceFromEyes(targetEntity.getPos().add(0, targetEntity.getEyeHeight(targetEntity.getPose()) / 2f, 0));
@@ -299,17 +308,17 @@ public class AttackAura extends Module {
                 (targetEntity.isInvisible() && targets.get("Invisible").isEnabled()) ||
                 (targetEntity instanceof AnimalEntity && targets.get("Animals").isEnabled());
     }
-
+    private boolean shouldCancelCrit() {
+        return !onlyCriticals.isEnabled()
+                || mc.player.getAbilities().flying
+                || mc.player.hasStatusEffect(StatusEffects.LEVITATION)
+                || (mc.player.isFallFlying() || Minced.getInstance().getModuleHandler().get(Flight.class).isEnabled())
+                || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
+                || PlayerHandler.isPlayerInWeb()
+                || mc.player.isHoldingOntoLadder();
+    }
     private boolean canCrit() {
-        boolean reasonForSkipCrit =
-                !onlyCriticals.isEnabled()
-                        || mc.player.getAbilities().flying
-                        || mc.player.hasStatusEffect(StatusEffects.LEVITATION)
-                        || (mc.player.isFallFlying() || Minced.getInstance().getModuleHandler().get(Flight.class).isEnabled())
-                        || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
-                        || PlayerHandler.isPlayerInWeb()
-                        || mc.player.isHoldingOntoLadder()
-                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos())).getBlock() == Blocks.COBWEB;
+
 
         if (cpsLimit > 0) return false;
 
@@ -323,7 +332,7 @@ public class AttackAura extends Module {
 
         if (!mc.options.jumpKey.isPressed() && PlayerHandler.isAboveWater()) return true;
 
-        if (!reasonForSkipCrit) return !mc.player.isOnGround() && mc.player.fallDistance > 0.0f;
+        if (!shouldCancelCrit()) return !mc.player.isOnGround() && mc.player.fallDistance > 0.0f;
 
 
         return true;
@@ -362,17 +371,27 @@ public class AttackAura extends Module {
         if (shieldBreaker(false))
             return;
 
-        boolean isBeforeSprint = mc.player.isSprinting();
-        if (onlyCriticals.isEnabled()) {
+        boolean negativeFlag = shouldCancelCrit();
+        boolean shouldBackSprint = mc.player.isSprinting() && !negativeFlag;
+        if (onlyCriticals.isEnabled() && !negativeFlag) {
             PlayerHandler.disableSprint();
         }
 
         cpsLimit = 10;
 
+
+        if (unpressShield.isEnabled()) {
+            if (mc.player.isUsingItem()) {
+                if (mc.player.getOffHandStack().getItem() == Items.SHIELD || mc.player.getMainHandStack().getItem() == Items.SHIELD) {
+                    mc.player.stopUsingItem();
+                }
+            }
+        }
+
         mc.interactionManager.attackEntity(mc.player, target);
         mc.player.swingHand(Hand.MAIN_HAND);
 
-        if (onlyCriticals.isEnabled() && isBeforeSprint) {
+        if (onlyCriticals.isEnabled() && shouldBackSprint) {
             PlayerHandler.enableSprint();
         }
 

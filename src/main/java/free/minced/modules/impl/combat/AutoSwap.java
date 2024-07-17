@@ -6,6 +6,7 @@ import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
+import free.minced.primary.IHolder;
 import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.game.PlayerHandler;
@@ -16,10 +17,12 @@ import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 
 @ModuleDescriptor(name = "AutoSwap", category = ModuleCategory.COMBAT)
 public class AutoSwap extends Module {
+    private final ModeSetting swapMode = new ModeSetting("Swap Mode", this, "Window", "Window", "ViaVersion 1.17+");
 
     private final BindSetting bindSetting = new BindSetting("Key for swap", this, 0);
     private final BooleanSetting takeIfEmpty = new BooleanSetting("Take If Empty", this, false);
@@ -80,10 +83,15 @@ public class AutoSwap extends Module {
         }
     }
 
-    public static void swapItem(int slot) {
-        mc.interactionManager.clickSlot(0, slot, 1, SlotActionType.SWAP, mc.player);
-        mc.interactionManager.clickSlot(0, 45, 1, SlotActionType.SWAP, mc.player);
-
+    public void swapItem(int slot) {
+        if (swapMode.is("Window")) {
+            mc.interactionManager.clickSlot(0, slot, 1, SlotActionType.PICKUP, mc.player);
+            mc.interactionManager.clickSlot(0, 45, 1, SlotActionType.PICKUP, mc.player);
+        }
+        if (swapMode.is("ViaVersion 1.17+")) {
+            mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, slot, 40, SlotActionType.SWAP, mc.player);
+            IHolder.sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
+        }
     }
 
 

@@ -4,6 +4,7 @@ package free.minced.systems.config.api;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import free.minced.modules.impl.misc.UnHook;
 import lombok.Getter;
 import lombok.Setter;
 import free.minced.Minced;
@@ -64,7 +65,10 @@ public class ConfigHandler extends IConfigHandler<Configuration> implements IHol
             e.printStackTrace();
         }
     }
-
+    public void saveAutoCfg() {
+        if (Minced.getInstance().getModuleHandler().get(UnHook.class).isEnabled()) return;
+        Minced.getInstance().getConfigHandler().save("autocfg");
+    }
     // сохраняет конфиг
     public void save(String fileName) {
         if (fileName == null) return;
