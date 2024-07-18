@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.Minced;
 import free.minced.framework.color.ClientColors;
+import free.minced.framework.color.ColorHandler;
 import free.minced.framework.font.Fonts;
 import free.minced.systems.SharedClass;
 import net.minecraft.client.MinecraftClient;
@@ -13,6 +14,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.*;
 import free.minced.framework.font.Texture;
 import free.minced.framework.render.shaders.ShaderHandler;
@@ -45,6 +47,8 @@ public class DrawHandler implements IHolder {
     public static final Matrix4f lastProjMat = new Matrix4f();
     public static final Matrix4f lastModMat = new Matrix4f();
     public static final Matrix4f lastWorldSpaceMatrix = new Matrix4f();
+    private static float prevCircleStep;
+    private static float circleStep;
 
     public static void onRender3D(MatrixStack stack) {
         if (!DEBUG_LINE_QUEUE.isEmpty()) {
@@ -153,6 +157,44 @@ public class DrawHandler implements IHolder {
     }
     public static void drawTracerPointer(DrawContext matrices, float x, float y, float size, int color) {
         drawArrow(matrices, x, y, size + 8, new Color(color));
+    }
+    public static double absSinAnimation(double input) {
+        return Math.abs(1 + Math.sin(input)) / 2;
+    }
+    public static void drawTargetEsp(MatrixStack stack, Entity target) {
+        double cs = prevCircleStep + (circleStep - prevCircleStep) * mc.getTickDelta();
+        double prevSinAnim = absSinAnimation(cs - 0.45f);
+        double sinAnim = absSinAnimation(cs);
+        double x = target.prevX + (target.getX() - target.prevX) * mc.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getX();
+        double y = target.prevY + (target.getY() - target.prevY) * mc.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY() + prevSinAnim * target.getHeight();
+        double z = target.prevZ + (target.getZ() - target.prevZ) * mc.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        double nextY = target.prevY + (target.getY() - target.prevY) * mc.getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY() + sinAnim * target.getHeight();
+        stack.push();
+        setupRender();
+        RenderSystem.disableCull();
+        RenderSystem.disableDepthTest();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+        float cos;
+        float sin;
+        for (int i = 0; i <= 30; i++) {
+            cos = (float) (x + Math.cos(i * 6.28 / 30) * target.getWidth() * 0.8);
+            sin = (float) (z + Math.sin(i * 6.28 / 30) * target.getWidth() * 0.8);
+
+            bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) nextY, sin).color(ColorHandler.applyOpacity(ClientColors.getTheme().getAccentColor().brighter(), 170).getRGB()).next();
+            bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) y, sin).color(ColorHandler.applyOpacity(ClientColors.getTheme().getAccentColor().darker(), 0).getRGB()).next();
+        }
+        tessellator.draw();
+        RenderSystem.enableCull();
+        endRender();
+        RenderSystem.enableDepthTest();
+        stack.pop();
+    }
+    public static void updateTargetESP() {
+        prevCircleStep = circleStep;
+        circleStep += 0.15f;
     }
     public static void drawArrow(DrawContext matrices, float x, float y, float size1, Color color) {
         RenderSystem.setShaderTexture(0, SharedClass.ARROW_LOCATION);

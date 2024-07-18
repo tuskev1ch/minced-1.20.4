@@ -6,17 +6,38 @@ import free.minced.events.impl.mobility.ElytraFixEvent;
 import free.minced.modules.impl.combat.AttackAura;
 import free.minced.modules.impl.render.SwingAnimations;
 import free.minced.primary.game.MobilityHandler;
+import free.minced.systems.helpers.IEntityLiving;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
-public class MixinEntityLiving {
+public class MixinEntityLiving implements IEntityLiving {
+
+    @Shadow
+    protected double serverX;
+    @Shadow
+    protected double serverY;
+    @Shadow
+    protected double serverZ;
+
+    @Unique
+    double prevServerX, prevServerY, prevServerZ;
+
+    @Inject(method = {"updateTrackedPositionAndAngles"}, at = {@At("HEAD")})
+    private void updateTrackedPositionAndAnglesHook(double x, double y, double z, float yaw, float pitch, int interpolationSteps, CallbackInfo ci) {
+        prevServerX = serverX;
+        prevServerY = serverY;
+        prevServerZ = serverZ;
+    }
 
     @Inject(method = "getHandSwingDuration", at = {@At("HEAD")}, cancellable = true)
     private void getArmSwingAnimationEnd(final CallbackInfoReturnable<Integer> info) {
@@ -51,5 +72,20 @@ public class MixinEntityLiving {
         Vec3d vec31 = MobilityHandler.getRotationVector(event.getPitch(), event.getYaw());
 
         return vec31;
+    }
+
+    @Override
+    public double getPrevServerX() {
+        return prevServerX;
+    }
+
+    @Override
+    public double getPrevServerY() {
+        return prevServerY;
+    }
+
+    @Override
+    public double getPrevServerZ() {
+        return prevServerZ;
     }
 }

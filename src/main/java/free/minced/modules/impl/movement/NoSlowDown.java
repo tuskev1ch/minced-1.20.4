@@ -1,6 +1,7 @@
 package free.minced.modules.impl.movement;
 
 
+import free.minced.systems.setting.impl.NumberSetting;
 import net.minecraft.item.BookItem;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.Items;
@@ -22,8 +23,11 @@ import free.minced.systems.setting.impl.ModeSetting;
 @ModuleDescriptor(name = "NoSlowDown", category = ModuleCategory.MOVEMENT)
 
 public class NoSlowDown extends Module {
-    public final ModeSetting mode = new ModeSetting("Mode", this, "Grim", "Grim", "Matrix");
 
+    public final ModeSetting mode = new ModeSetting("Mode", this, "Grim", "Grim", "Matrix", "Matrix2");
+
+    public final NumberSetting speedGrimMatrix = new
+            NumberSetting("Speed", this, 1, 1, 2, 1, () -> !mode.is("Matrix2"));
 
     @Override
     public void onEvent(Event event) {
@@ -50,6 +54,26 @@ public class NoSlowDown extends Module {
                         }
                     }
                 }
+
+                if (mode.is("Matrix2")) {
+                    if (mc.player.getItemUseTime() <= 1) return;
+
+
+                    if (mc.player.isOnGround()) {
+                        mc.player.input.movementForward /= 0.2f;
+                        mc.player.input.movementSideways /= 0.2f;
+
+                        if (mc.player.input.movementForward != 0 && mc.player.input.movementSideways != 0) {
+                            mc.player.input.movementForward *= 0.55f;
+                            mc.player.input.movementSideways *= 0.55f;
+                        } else {
+                            mc.player.input.movementForward *= speedGrimMatrix.getValue().intValue() == 1 ? 0.75f : 0.85f;
+                            mc.player.input.movementSideways *= speedGrimMatrix.getValue().intValue() == 1 ? 0.75f : 0.85f;
+                        }
+                    }
+
+                }
+
             }
         }
         if (event instanceof UpdatePlayerEvent e) {
@@ -68,7 +92,7 @@ public class NoSlowDown extends Module {
 
 
     public boolean canNoSlow() {
-        if (mode.is("Matrix")) return false;
+        if (mode.is("Matrix") || mode.is("Matrix2")) return false;
 
         if ((mc.player.getOffHandStack().isFood() || mc.player.getOffHandStack().getItem() == Items.SHIELD)
                 && (mode.is("Grim")) && mc.player.getActiveHand() == Hand.MAIN_HAND)

@@ -22,6 +22,7 @@ public class CommandHandler {
     public void initCommands() {
         // allow events to work
         register(new GpsCommand());
+        register(new ParseCommand());
         register(new ConfigCommand());
         register(new DropCommand());
         register(new VClipCommand());

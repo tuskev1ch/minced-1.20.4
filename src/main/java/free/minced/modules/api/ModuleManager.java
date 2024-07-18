@@ -60,6 +60,7 @@ public class ModuleManager  {
         addModule(new AutoSprint());
         addModule(new NoSlowDown());
         addModule(new TimerModule());
+        addModule(new ElytraBounce());
         addModule(new CreativeFlight());
 
         /* Category - Misc */
@@ -74,15 +75,17 @@ public class ModuleManager  {
         addModule(new NoInteract());
         addModule(new ElytraUtils());
         addModule(new MiddleClick());
+        addModule(new PluginsInspector());
         addModule(new ContainerStealer());
 
         /* Category - Render */
+        addModule(new Arrows());
         addModule(new NoRender());
-        addModule(new FullBright());
-        addModule(new EntityESP());
-        addModule(new SwingAnimations());
-        addModule(new Tracers());
         addModule(new ViewModel());
+        addModule(new EntityESP());
+        addModule(new TargetESP());
+        addModule(new FullBright());
+        addModule(new SwingAnimations());
     }
 
     /**

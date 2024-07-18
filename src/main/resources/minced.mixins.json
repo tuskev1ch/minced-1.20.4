@@ -15,6 +15,7 @@
 		"MixinInGameHud",
 		"MixinTitleScreen",
 		"MixinInGameOverlayRenderer",
+		"MixinOtherClientPlayerEntity",
 		"MixinRenderTickCounter",
 		"MixinClientPlayerInteractionManager",
 		"MixinClientConnection",

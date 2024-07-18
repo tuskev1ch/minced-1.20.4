@@ -1,9 +1,14 @@
 package free.minced.modules.impl.combat;
 
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.events.impl.mobility.ElytraFixEvent;
+import free.minced.systems.helpers.IOtherClientPlayerEntity;
 import lombok.Getter;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.network.OtherClientPlayerEntity;
+import net.minecraft.client.render.*;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -54,6 +59,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
 import java.util.stream.StreamSupport;
 
+import static free.minced.framework.render.DrawHandler.*;
+
 @ModuleDescriptor(name = "AttackAura", category = ModuleCategory.COMBAT)
 
 public class AttackAura extends Module {
@@ -65,6 +72,7 @@ public class AttackAura extends Module {
 
     public final NumberSetting attackRange = new NumberSetting("Attack Range", this, 3, 2.5F, 6, 0.1F);
     public BooleanSetting unpressShield = new BooleanSetting("Unpress Shield", this, false);
+    public BooleanSetting resolver = new BooleanSetting("Resolver", this, false);
 
     public BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
     public BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
@@ -90,7 +98,9 @@ public class AttackAura extends Module {
                 --cpsLimit;
             }
 
+            resolvePlayers();
             auraLogic();
+            restorePlayers();
 
             if (target == null) return;
             Rotations.rotate(rotationYaw, rotationPitch, 1);
@@ -281,6 +291,26 @@ public class AttackAura extends Module {
 
     }
 
+    public void resolvePlayers() {
+        if (resolver.isEnabled()) {
+            for (PlayerEntity player : mc.world.getPlayers()) {
+                if (player instanceof OtherClientPlayerEntity) {
+                    ((IOtherClientPlayerEntity) player).resolve();
+                }
+            }
+        }
+    }
+
+    public void restorePlayers() {
+        if (resolver.isEnabled()) {
+            for (PlayerEntity player : mc.world.getPlayers()) {
+                if (player instanceof OtherClientPlayerEntity) {
+                    ((IOtherClientPlayerEntity) player).releaseResolver();
+                }
+            }
+        }
+    }
+
     private LivingEntity findTarget() {
         return StreamSupport.stream(mc.world.getEntities().spliterator(), false)
                 .filter(entity -> entity instanceof LivingEntity && entity != mc.player && isValid((LivingEntity) entity))
@@ -361,6 +391,7 @@ public class AttackAura extends Module {
 
         return true;
     }
+
     private void attackTarget() {
         if (getDistance(target) >= MathHandler.getPow2Value(attackRange.getValue().floatValue())) return;
 

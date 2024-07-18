@@ -3,6 +3,8 @@ package free.minced.framework.color;
 
 
 import free.minced.primary.math.MathHandler;
+import net.minecraft.util.math.MathHelper;
+
 import java.awt.*;
 
 
@@ -19,6 +21,9 @@ public class ColorHandler {
         int green = in >> 8 & 0xFF;
         int blue = in & 0xFF;
         return new int[]{red, green, blue};
+    }
+    public static Color injectAlpha(final Color color, final int alpha) {
+        return new Color(color.getRed(), color.getGreen(), color.getBlue(), MathHelper.clamp(alpha, 0, 255));
     }
     public static int getColor(int r, int g, int b, int a) {
         return new Color(r, g, b, a).getRGB();
