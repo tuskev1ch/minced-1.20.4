@@ -12,7 +12,8 @@
 [![Discord Mine](https://img.shields.io/discord/1012747861819150456?label=discord&logo=discord&logoColor=white)](https://discord.gg/QxdMmgafV3)
 
 </div>
-
+## information:
+- Be aware Fecurity are both ratted and renames of this client.
 ## Requires:
 - [FabricLoader 0.15.11+](https://fabricmc.net/use/installer/)  fabric-loader:0.15.11
 - [FabricApi 1.20.4](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/5383731)  fabric-api:0.97.1+1.20.4
