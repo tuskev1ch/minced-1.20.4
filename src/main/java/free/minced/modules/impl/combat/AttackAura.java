@@ -70,13 +70,22 @@ public class AttackAura extends Module {
     private final MultiBoxSetting targets = new MultiBoxSetting("Targets", this, "Players", "Friends", "Invisible", "Mobs", "Animals");
     public final ModeSetting mobilityFix = new ModeSetting("Movement Fix", this, "Off", "Off", "Free", "Focused");
 
+
+    public BooleanSetting elytraOverride = new BooleanSetting("Elytra Override", this, false);
+
     public final NumberSetting attackRange = new NumberSetting("Attack Range", this, 3, 2.5F, 6, 0.1F);
+    public final NumberSetting preAttackRange = new NumberSetting("Pre Attack Range", this, 3, 0.0f, 6, 0.1F);
+
+    public final NumberSetting attackRangeElytra = new NumberSetting("Elytra Attack Range", this, 3, 1.0f, 6, 0.1F,  () -> !elytraOverride.isEnabled());
+    public final NumberSetting preAttackRangeElytra = new NumberSetting("Elytra Pre Attack Range", this, 3, 0.0f, 6, 0.1F,  () -> !elytraOverride.isEnabled());
+
+
+
     public BooleanSetting unpressShield = new BooleanSetting("Unpress Shield", this, false);
     public BooleanSetting resolver = new BooleanSetting("Resolver", this, false);
 
     public BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
     public BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
-    public BooleanSetting followTarget = new BooleanSetting("Follow Target", this, false);
     private final BooleanSetting rayCast = new BooleanSetting("Ray Cast", this, false);
     private final BooleanSetting ignoreWalls = new BooleanSetting("Ignore Walls", this, false, () -> !rayCast.isEnabled());
 
@@ -205,12 +214,12 @@ public class AttackAura extends Module {
         float[] rotation;
 
         // Если мы перестали смотреть на цель
-        if (!PlayerHandler.checkRtx(rotationYaw, rotationPitch, attackRange.getValue().floatValue(), ignoreWalls.isEnabled(), rayCast.isEnabled())) {
+        if (!PlayerHandler.checkRtx(rotationYaw, rotationPitch, getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled())) {
             float[] rotation1 = PlayerHandler.calcAngle(target.getPos().add(0, target.getEyeHeight(target.getPose()) / 2f, 0));
 
             // Проверяем видимость центра игрока
-            if (PlayerHandler.squaredDistanceFromEyes(target.getPos().add(0, target.getEyeHeight(target.getPose()) / 2f, 0)) <= MathHandler.getPow2Value(attackRange.getValue().floatValue())
-                    && PlayerHandler.checkRtx(rotation1[0], rotation1[1], attackRange.getValue().floatValue(), ignoreWalls.isEnabled(), rayCast.isEnabled())) {
+            if (PlayerHandler.squaredDistanceFromEyes(target.getPos().add(0, target.getEyeHeight(target.getPose()) / 2f, 0)) <= MathHandler.getPow2Value(getAttackRange())
+                    && PlayerHandler.checkRtx(rotation1[0], rotation1[1], getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled())) {
                 // наводим на центр
                 rotationPoint = new Vec3d(MathHandler.random(-0.1f, 0.1f), target.getEyeHeight(target.getPose()) / (MathHandler.random(1.8f, 2.5f)), MathHandler.random(-0.1f, 0.1f));
             } else {
@@ -224,10 +233,10 @@ public class AttackAura extends Module {
                             Vec3d v1 = new Vec3d(target.getX() + x1, target.getY() + y1, target.getZ() + z1);
 
                             // Скипаем, если вне досягаемости
-                            if (PlayerHandler.squaredDistanceFromEyes(v1) > MathHandler.getPow2Value(attackRange.getValue().floatValue())) continue;
+                            if (PlayerHandler.squaredDistanceFromEyes(v1) > MathHandler.getPow2Value(getAttackRange())) continue;
 
                             rotation = PlayerHandler.calcAngle(v1);
-                            if (PlayerHandler.checkRtx(rotation[0], rotation[1], attackRange.getValue().floatValue(), ignoreWalls.isEnabled(), rayCast.isEnabled())) {
+                            if (PlayerHandler.checkRtx(rotation[0], rotation[1], getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled())) {
                                 // Наводимся, если видим эту точку
                                 rotationPoint = new Vec3d(x1, y1, z1);
                                 break;
@@ -261,7 +270,7 @@ public class AttackAura extends Module {
         if (targetVec == null)
             return;
 
-        pitchAcceleration = PlayerHandler.checkRtx(rotationYaw, rotationPitch, attackRange.getValue().floatValue(), ignoreWalls.isEnabled(), rayCast.isEnabled())
+        pitchAcceleration = PlayerHandler.checkRtx(rotationYaw, rotationPitch, getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled())
                 ? 1F : pitchAcceleration < 8F ? pitchAcceleration * 1.65F : 8F;
 
         float delta_yaw = MathHelper.wrapDegrees((float) MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(targetVec.z - mc.player.getZ(), (targetVec.x - mc.player.getX()))) - 90) - rotationYaw);
@@ -287,7 +296,7 @@ public class AttackAura extends Module {
 
         MobilityFix.fixRotation = rotationYaw;
 
-        lookingAtHitbox = PlayerHandler.checkRtx(rotationYaw, rotationPitch, attackRange.getValue().floatValue(), ignoreWalls.isEnabled(), rayCast.isEnabled());
+        lookingAtHitbox = PlayerHandler.checkRtx(rotationYaw, rotationPitch, getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled());
 
     }
 
@@ -319,15 +328,23 @@ public class AttackAura extends Module {
                 .orElse(null);
 
     }
+
     private float getDistance(Entity targetEntity) {
         return PlayerHandler.squaredDistanceFromEyes(targetEntity.getPos().add(0, targetEntity.getEyeHeight(targetEntity.getPose()) / 2f, 0));
     }
+    private float getAttackRange() {
+        return elytraOverride.isEnabled() && mc.player.isFallFlying() ? attackRangeElytra.getValue().floatValue() : attackRange.getValue().floatValue();
+    }
+    private float getPreAttackRange() {
+        return elytraOverride.isEnabled() && mc.player.isFallFlying() ? preAttackRangeElytra.getValue().floatValue() : preAttackRange.getValue().floatValue();
+    }
+
     private boolean isValid(LivingEntity targetEntity) {
 
         if (targetEntity == null ||
                 targetEntity instanceof ArmorStandEntity ||
                 !targetEntity.isAlive() ||
-                getDistance(targetEntity) >= MathHandler.getPow2Value((followTarget.isEnabled() ? attackRange.getValue().floatValue() * 2 : attackRange.getValue().floatValue()))) {
+                getDistance(targetEntity) >= MathHandler.getPow2Value((getAttackRange() + getPreAttackRange()))) {
             return false;
         }
         if (Minced.getInstance().getModuleHandler().get(AntiBot.class).isEnabled() && AntiBot.isBot(targetEntity)) return false;
@@ -393,7 +410,7 @@ public class AttackAura extends Module {
     }
 
     private void attackTarget() {
-        if (getDistance(target) >= MathHandler.getPow2Value(attackRange.getValue().floatValue())) return;
+        if (getDistance(target) >= MathHandler.getPow2Value(getAttackRange())) return;
 
         if (!lookingAtHitbox && rayCast.isEnabled()) return;
 

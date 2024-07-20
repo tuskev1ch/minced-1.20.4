@@ -3,7 +3,6 @@ package free.minced;
 
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.mojang.logging.LogUtils;
 import free.minced.addition.ProfileHandler;
 import lombok.Getter;
@@ -25,15 +24,9 @@ import free.minced.systems.theme.ThemeHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.management.Notification;
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Optional;
 

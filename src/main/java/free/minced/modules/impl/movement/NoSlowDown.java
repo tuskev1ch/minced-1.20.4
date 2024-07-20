@@ -25,6 +25,7 @@ import free.minced.systems.setting.impl.ModeSetting;
 public class NoSlowDown extends Module {
 
     public final ModeSetting mode = new ModeSetting("Mode", this, "Grim", "Grim", "Matrix", "Matrix2");
+    private final BooleanSetting dobulepacket = new BooleanSetting("Double Packet", this, true, () -> !mode.is("Grim"));
 
     public final NumberSetting speedGrimMatrix = new
             NumberSetting("Speed", this, 1, 1, 2, 1, () -> !mode.is("Matrix2"));
@@ -81,6 +82,9 @@ public class NoSlowDown extends Module {
                 if (mode.is("Grim")) {
                     if (mc.player.getActiveHand() == Hand.OFF_HAND) {
                         IHolder.sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot % 8 + 1));
+                        if (dobulepacket.isEnabled()) {
+                            IHolder.sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot % 7 + 2));
+                        }
                         IHolder.sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot));
                     } else if ((mc.player.getItemUseTime() <= 3 || mc.player.age % 2 == 0)) {
                         IHolder.sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(Hand.OFF_HAND, id));
