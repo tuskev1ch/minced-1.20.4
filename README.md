@@ -14,7 +14,7 @@
 </div>
 
 ## Information:
-- Be aware Fecurity Client are both ratted and renames of this client.
+- Be aware `Fecurity Client` are both ratted and renames of this client.
 
 ## Requires:
 - [FabricLoader 0.15.11+](https://fabricmc.net/use/installer/)  fabric-loader:0.15.11
