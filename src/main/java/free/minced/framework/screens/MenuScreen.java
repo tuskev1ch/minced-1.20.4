@@ -1,4 +1,4 @@
-package free.minced.framework;
+package free.minced.framework.screens;
 
 import lombok.Getter;
 import lombok.Setter;

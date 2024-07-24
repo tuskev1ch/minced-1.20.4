@@ -1,11 +1,14 @@
 package free.minced.mixin;
 
 import free.minced.Minced;
+import free.minced.framework.screens.MainScreen;
+import free.minced.modules.impl.misc.UnHook;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.data.Main;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
@@ -26,7 +29,9 @@ public class MixinTitleScreen extends Screen {
 
     @Inject(method = "init", at = @At("RETURN"))
     public void postInitHook(CallbackInfo ci) {
-
+        if (!Minced.getInstance().getModuleHandler().get(UnHook.class).isEnabled()) {
+            mc.setScreen(new MainScreen());
+        }
         if (Minced.isOutdated /*&& !FabricLoader.getInstance().isDevelopmentEnvironment()*/) {
             mc.setScreen(new ConfirmScreen(
                     confirm -> {

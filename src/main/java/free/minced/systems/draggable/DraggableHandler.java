@@ -4,7 +4,10 @@ package free.minced.systems.draggable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import free.minced.Minced;
+import free.minced.modules.impl.misc.UnHook;
+import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.FileHandler;
+import net.minecraft.network.message.SentMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +30,7 @@ public class DraggableHandler {
     // сохраняем данные
     public void save() {
         if (!DRAG_DATA.exists()) {
+            System.out.println(DRAG_DATA.getAbsolutePath());
             DRAG_DATA.getParentFile().mkdirs();
         }
         try {

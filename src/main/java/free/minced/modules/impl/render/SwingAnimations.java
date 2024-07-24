@@ -35,17 +35,11 @@ public class SwingAnimations extends Module {
 
 
     private void renderSwordAnimation(MatrixStack matrices, float f, float swingProgress, float equipProgress, Arm arm) {
-        if (arm == Arm.LEFT) {
-            applyEquipOffset(matrices, arm, equipProgress);
-            matrices.translate(-Minced.getInstance().getModuleHandler().get(ViewModel.class).leftX.getValue().doubleValue(), Minced.getInstance().getModuleHandler().get(ViewModel.class).leftY.getValue().doubleValue(), Minced.getInstance().getModuleHandler().get(ViewModel.class).leftZ.getValue().doubleValue());
-            applySwingOffset(matrices, arm, swingProgress);
-            matrices.translate(Minced.getInstance().getModuleHandler().get(ViewModel.class).leftX.getValue().doubleValue(), -Minced.getInstance().getModuleHandler().get(ViewModel.class).leftY.getValue().doubleValue(), -Minced.getInstance().getModuleHandler().get(ViewModel.class).leftZ.getValue().doubleValue());
-            return;
-        }
+
 
         switch (mode.getCurrentMode()) {
             case "Default" -> {
-                applyEquipOffset(matrices, arm, equipProgress);
+                matrices.translate(0.56F, -0.52F, -0.72F);
                 applySwingOffset(matrices, arm, swingProgress);
             }
             case "One" -> {
@@ -141,6 +135,29 @@ public class SwingAnimations extends Module {
                 bl2 = arm == Arm.RIGHT;
                 int l;
                 float m = 0;
+                ViewModel viewModel = Minced.getInstance().getModuleHandler().get(ViewModel.class);
+                if (viewModel.isEnabled()) {
+                    if (bl2) {
+                        matrices.translate(viewModel.rightX.getValue().doubleValue(),
+                                viewModel.rightY.getValue().doubleValue(),
+                                viewModel.rightZ.getValue().doubleValue());
+                        if (viewModel.customScale.isEnabled()) {
+                            matrices.scale(viewModel.customScaleValue.getValue().floatValue(),
+                                    viewModel.customScaleValue.getValue().floatValue(),
+                                    viewModel.customScaleValue.getValue().floatValue());
+                        }
+                    } else {
+                        matrices.translate(-viewModel.leftX.getValue().doubleValue(),
+                                viewModel.leftY.getValue().doubleValue(),
+                                viewModel.leftZ.getValue().doubleValue());
+                        if (viewModel.customScale.isEnabled()) {
+                            matrices.scale(viewModel.customScaleValue.getValue().floatValue(),
+                                    viewModel.customScaleValue.getValue().floatValue(),
+                                    viewModel.customScaleValue.getValue().floatValue());
+                        }
+                    }
+                }
+
                 if (player.isUsingItem() && player.getItemUseTimeLeft() > 0 && player.getActiveHand() == hand) {
                     l = bl2 ? 1 : -1;
                     switch (item.getUseAction()) {
@@ -201,8 +218,14 @@ public class SwingAnimations extends Module {
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 65.0F));
                     matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -85.0F));
                 } else {
-                    renderSwordAnimation(matrices, f, swingProgress, equipProgress, arm);
+                    if (arm == Arm.RIGHT) {
+                        renderSwordAnimation(matrices, f, swingProgress, equipProgress, arm);
+                    } else {
+                        applyEquipOffset(matrices, arm, equipProgress);
+                        applySwingOffset(matrices, arm, swingProgress);
+                    }
                 }
+
                 EventHeldItemRenderer event = new EventHeldItemRenderer(hand, item, equipProgress, matrices);
                 EventCollects.call(event);
                 renderItem(player, item, bl2 ? ModelTransformationMode.FIRST_PERSON_RIGHT_HAND : ModelTransformationMode.FIRST_PERSON_LEFT_HAND, !bl2, matrices, vertexConsumers, light);

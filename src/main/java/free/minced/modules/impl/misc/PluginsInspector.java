@@ -25,6 +25,7 @@ public class PluginsInspector extends Module {
 
     private final String[] knownPlugins = {
             "matrix",
+            "aac5",
             "alice",
             "vulcan",
             "kauri",

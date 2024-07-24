@@ -33,7 +33,11 @@ public class SharedClass {
     public static boolean serverSprint;
 
     public static final Identifier ARROW_LOCATION = new Identifier("minced", "textures/arrow.png");
+    public static final Identifier LOGO_LOCATION = new Identifier("minced", "textures/logo.png");
+    public static final Identifier GLOW_LOCATION = new Identifier("minced", "textures/glow.png");
 
+    public static final Identifier STAR_LOCATION = new Identifier("minced", "textures/star.png");
+    public static final Identifier FIRE_FLIES_LOCATION = new Identifier("minced", "textures/glow2.png");
 
     public static BlockPos GPS_POSITION;
 

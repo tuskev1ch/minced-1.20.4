@@ -17,66 +17,66 @@ import free.minced.primary.IHolder;
 import static net.minecraft.util.math.MathHelper.clamp;
 
 public class MobilityFix implements IHolder {
-    public static float fixRotation;
 
-    private static float prevRotation;
+    public static float rotationYaw;
+    public static float rotationPitch;
+    
+    public static float prevYaw;
+    public static float prevPitch;
 
-    public static float yaw;
-    public static float pitch;
-    public static float bodyYaw;
-    public static float prevBodyYaw;
-
-    public static float lastYaw;
-    public static float lastPitch;
-
-    private static float clientYaw;
-    private static float clientPitch;
 
     public static void onJump(EventPlayerJump e) {
-        if (Float.isNaN(fixRotation) || Minced.getInstance().getModuleHandler().get(AttackAura.class).mobilityFix.is("Off"))
+        if (Float.isNaN(rotationYaw) || Minced.getInstance().getModuleHandler().get(AttackAura.class).mobilityFix.is("Off"))
             return;
 
         if (e.isPre()) {
-            prevRotation = mc.player.getYaw();
-            
-            mc.player.setYaw(fixRotation);
-            
+            prevYaw = mc.player.getYaw();
+            prevPitch = mc.player.getPitch();
+
+            mc.player.setYaw(rotationYaw);
+            if (mc.player.isFallFlying()) {
+                mc.player.setPitch(rotationPitch);
+            }
         } else {
-            mc.player.setYaw(prevRotation);
-            
+            mc.player.setYaw(prevYaw);
+            mc.player.setPitch(prevPitch);
         }
     }
 
     public static void onPlayerMove(EventFixVelocity event) {
         if (Minced.getInstance().getModuleHandler().get(AttackAura.class).mobilityFix.is("Free")) {
-            if (Float.isNaN(fixRotation))
+            if (Float.isNaN(rotationYaw))
                 return;
-            event.setVelocity(fix(fixRotation, event.getMovementInput(), event.getSpeed()));
+            event.setVelocity(fix(rotationYaw, event.getMovementInput(), event.getSpeed()));
         }
     }
 
     public static void modifyVelocity(EventPlayerTravel e) {
-        if (Minced.getInstance().getModuleHandler().get(AttackAura.class).mobilityFix.is("Focused") && !Float.isNaN(fixRotation)) {
+
+        if (Minced.getInstance().getModuleHandler().get(AttackAura.class).mobilityFix.is("Focused") && !Float.isNaN(rotationYaw)) {
             if (e.isPre()) {
-                prevRotation = mc.player.getYaw();
-                
-                mc.player.setYaw(fixRotation);
-                
+                prevYaw = mc.player.getYaw();
+                prevPitch = mc.player.getPitch();
+
+                mc.player.setYaw(rotationYaw);
+                if (mc.player.isFallFlying()) {
+                    mc.player.setPitch(rotationPitch);
+                }
             } else {
-                mc.player.setYaw(prevRotation);
-                
+                mc.player.setYaw(prevYaw);
+                mc.player.setPitch(prevPitch);
             }
         }
     }
 
     public static void onKeyInput(EventKeyboardInput e) {
         if (Minced.getInstance().getModuleHandler().get(AttackAura.class).mobilityFix.is("Free")) {
-            if (Float.isNaN(fixRotation))
+            if (Float.isNaN(rotationYaw))
                 return;
 
             float mF = mc.player.input.movementForward;
             float mS = mc.player.input.movementSideways;
-            float delta = (mc.player.getYaw() - fixRotation) * MathHelper.RADIANS_PER_DEGREE;
+            float delta = (mc.player.getYaw() - rotationYaw) * MathHelper.RADIANS_PER_DEGREE;
             float cos = MathHelper.cos(delta);
             float sin = MathHelper.sin(delta);
             mc.player.input.movementSideways = Math.round(mS * cos - mF * sin);

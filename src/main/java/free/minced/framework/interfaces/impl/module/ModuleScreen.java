@@ -58,7 +58,7 @@ public class ModuleScreen extends MenuScreen {
            overallHeight += component.getHeight() + moduleSpacing;
        }
 
-       scroll.setMax(-overallHeight / 2f - moduleSpacing * moduleComponents.size() + getClickGUI().getHeight());
+       scroll.setMax(-overallHeight / 2f - moduleSpacing * (moduleComponents.size() * 2) + getClickGUI().getHeight());
 
        // Отрисовываем модули с учетом скролла
        for (ModuleComponent component : getModuleComponents()) {

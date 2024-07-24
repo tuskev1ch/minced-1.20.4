@@ -57,6 +57,7 @@ public class ModuleManager  {
         addModule(new Strafe());
         addModule(new Flight());
         addModule(new Velocity());
+        addModule(new Scaffold());
         addModule(new AutoSprint());
         addModule(new NoSlowDown());
         addModule(new TimerModule());
@@ -79,12 +80,17 @@ public class ModuleManager  {
         addModule(new ContainerStealer());
 
         /* Category - Render */
+        addModule(new Trails());
         addModule(new Arrows());
         addModule(new NoRender());
         addModule(new ViewModel());
         addModule(new EntityESP());
         addModule(new TargetESP());
+        addModule(new ItemPhysic());
         addModule(new FullBright());
+        addModule(new CustomWorld());
+        addModule(new BlowParticles());
+        addModule(new WorldParticles());
         addModule(new SwingAnimations());
     }
 

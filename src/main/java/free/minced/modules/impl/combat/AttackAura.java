@@ -77,7 +77,7 @@ public class AttackAura extends Module {
     public final NumberSetting preAttackRange = new NumberSetting("Pre Attack Range", this, 3, 0.0f, 6, 0.1F);
 
     public final NumberSetting attackRangeElytra = new NumberSetting("Elytra Attack Range", this, 3, 1.0f, 6, 0.1F,  () -> !elytraOverride.isEnabled());
-    public final NumberSetting preAttackRangeElytra = new NumberSetting("Elytra Pre Attack Range", this, 3, 0.0f, 6, 0.1F,  () -> !elytraOverride.isEnabled());
+    public final NumberSetting preAttackRangeElytra = new NumberSetting("Elytra Pre Attack Range", this, 3, 1, 32, 1,  () -> !elytraOverride.isEnabled());
 
 
 
@@ -294,7 +294,8 @@ public class AttackAura extends Module {
         rotationYaw = (float) (newYaw - (newYaw - rotationYaw) % gcdFix);
         rotationPitch = (float) (newPitch - (newPitch - rotationPitch) % gcdFix);
 
-        MobilityFix.fixRotation = rotationYaw;
+        MobilityFix.rotationYaw = rotationYaw;
+        MobilityFix.rotationPitch = rotationPitch;
 
         lookingAtHitbox = PlayerHandler.checkRtx(rotationYaw, rotationPitch, getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled());
 
