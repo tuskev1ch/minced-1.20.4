@@ -43,7 +43,7 @@ public class SwingAnimations extends Module {
                 applySwingOffset(matrices, arm, swingProgress);
             }
             case "One" -> {
-                if(swingProgress > 0) {
+                if (swingProgress > 0) {
                     float g = MathHelper.sin(MathHelper.sqrt(swingProgress) *  (float) Math.PI);
                     matrices.translate(0.56F, equipProgress * -0.2f - 0.5F, -0.7F);
                     matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(45));

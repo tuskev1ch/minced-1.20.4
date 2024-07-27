@@ -37,6 +37,8 @@ public class Draggable {
 	// position of draggable when dragging is started
 	private float startX, startY;
 	private boolean dragging;
+	private int draggingValues;
+
 	// dimensions of the draggable
 	private float width, height;
 
@@ -48,7 +50,7 @@ public class Draggable {
 	// parent of the draggable
 	private final Module parent;
 
-
+	private static Draggable currentDraggable = null;
 	/**
 	 * constructor
 	 *
@@ -93,21 +95,29 @@ public class Draggable {
 		this.initY = initY;
 	}
 
+	public static float scrollAnimate(float endPoint, float current, float speed) {
+		return current + (endPoint - current) * speed;
+	}
 
 	public final void onRender(int mouseX, int mouseY) {
-		if (!(mc.currentScreen instanceof ChatScreen)) return;
+		if (!(mc.currentScreen instanceof ChatScreen)) {
+			dragging = false;
+			return;
+		}
+
 		if (dragging) {
-			this.x = (normaliseX() - startX);
-			this.y = (normaliseY() - startY);
+			this.x = scrollAnimate((normaliseX() - startX), getX(), .15f);
+			this.y = scrollAnimate((normaliseY() - startY), getY(), .15f);
 		}
 	}
 
 
 	public final void onClick() {
-		if (isHovering()) {
+		if (isHovering() && currentDraggable == null) {
 			dragging = true;
 			startX = (int) (normaliseX() - x);
 			startY = (int) (normaliseY() - y);
+			currentDraggable = this;
 		}
 	}
 
@@ -124,7 +134,7 @@ public class Draggable {
 
 	// handle mouse release
 	public final void onRelease(int button) {
-		if (button == 0) dragging = false;
-		Minced.getInstance().getConfigHandler().saveAutoCfg();
+		dragging = false;
+		currentDraggable = null;
 	}
 }

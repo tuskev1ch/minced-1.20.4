@@ -28,7 +28,6 @@ import free.minced.systems.setting.impl.BooleanSetting;
 import java.util.function.Consumer;
 
 @ModuleDescriptor(name = "MiddleClick", category = ModuleCategory.MISC)
-
 public class MiddleClick extends Module {
     private final BooleanSetting pearl = new BooleanSetting("Pearl", this, true);
 

@@ -1,7 +1,9 @@
 package free.minced.systems;
 
 
+import free.minced.primary.chat.ChatHandler;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
@@ -24,6 +26,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static free.minced.primary.IHolder.fullNullCheck;
 import static free.minced.primary.IHolder.mc;
 
 public class SharedClass {
@@ -31,6 +34,7 @@ public class SharedClass {
     public static int ticksElytraFlying, serverSideSlot;
     public static boolean lockSprint;
     public static boolean serverSprint;
+    public static boolean holdMouse;
 
     public static final Identifier ARROW_LOCATION = new Identifier("minced", "textures/arrow.png");
     public static final Identifier LOGO_LOCATION = new Identifier("minced", "textures/logo.png");
@@ -42,22 +46,30 @@ public class SharedClass {
     public static BlockPos GPS_POSITION;
 
     public static void onMouseKeyReleased(int button) {
-        for (Draggable draggable : Minced.getInstance().getDraggableHandler().draggables.values()) { // 0
-            draggable.onRelease(button);
+        if (mc.currentScreen instanceof ChatScreen) {
+            for (Draggable draggable : Minced.getInstance().getDraggableHandler().draggables.values()) { // 0
+                draggable.onRelease(button);
+            }
         }
+        holdMouse = false;
     }
 
     public static void onMouseKeyPressed(int button) {
-        if (button != 0) {
+        if (button != 0 && !fullNullCheck()) {
             EventCollects.call(new InputEvent(0, button));
         }
-        for (Draggable draggable : Minced.getInstance().getDraggableHandler().draggables.values()) { // 1
-            draggable.onClick();
+        if (mc.currentScreen instanceof ChatScreen) {
+            for (Draggable draggable : Minced.getInstance().getDraggableHandler().draggables.values()) { // 1
+                draggable.onClick();
+            }
         }
+        holdMouse = true;
     }
 
     public static void keyPress(int key) {
-        EventCollects.call(new InputEvent(1, key));
+        if (!fullNullCheck()) {
+            EventCollects.call(new InputEvent(1, key));
+        }
         if (!Minced.getInstance().getModuleHandler().get(UnHook.class).isEnabled()) {
             if (key == GLFW.GLFW_KEY_RIGHT_SHIFT && MinecraftClient.getInstance() != null) {
                 MinecraftClient.getInstance().setScreen(Minced.getInstance().getInterfaceScreen());

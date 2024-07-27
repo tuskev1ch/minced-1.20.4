@@ -53,7 +53,7 @@ public class ElytraUtils extends Module {
                 }
             }
             if (e.getButtonOrKey() == ElytraFireworkBind.getKey()) {
-                if (!mc.player.isFallFlying()) return;
+                if (mc.player == null || !mc.player.isFallFlying()) return;
 
                 useFireWork();
             }
@@ -72,7 +72,6 @@ public class ElytraUtils extends Module {
 
         } else {
             ChatHandler.display("Феерверки не найдены");
-            return;
         }
 
     }

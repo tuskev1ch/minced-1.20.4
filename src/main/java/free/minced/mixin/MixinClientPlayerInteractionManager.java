@@ -1,9 +1,12 @@
 package free.minced.mixin;
 
+import free.minced.events.impl.input.EventClickSlot;
 import free.minced.modules.impl.combat.Reach;
 import net.minecraft.block.*;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -20,6 +23,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -79,6 +83,14 @@ public class MixinClientPlayerInteractionManager {
             args.set(4, Rotations.serverPitch);
         }
     }
-
+    @Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
+    public void clickSlotHook(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
+        if (mc.player == null || mc.world == null) return;
+        EventClickSlot event = new EventClickSlot(actionType, slotId, button, syncId);
+        EventCollects.call(event);
+        if (event.isCancel()) {
+            ci.cancel();
+        }
+    }
 
 }

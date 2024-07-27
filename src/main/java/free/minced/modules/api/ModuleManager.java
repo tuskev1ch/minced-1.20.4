@@ -72,10 +72,16 @@ public class ModuleManager  {
         addModule(new AutoTool());
         addModule(new FreeCam());
         addModule(new ItemsFix());
+        addModule(new AutoWalk());
+        addModule(new ItemTimer());
+        addModule(new PingSpoof());
         addModule(new ElytraFix());
         addModule(new NoInteract());
         addModule(new ElytraUtils());
+        addModule(new NameProtect());
         addModule(new MiddleClick());
+        addModule(new ItemScroller());
+        addModule(new Optimization());
         addModule(new PluginsInspector());
         addModule(new ContainerStealer());
 
@@ -89,6 +95,7 @@ public class ModuleManager  {
         addModule(new ItemPhysic());
         addModule(new FullBright());
         addModule(new CustomWorld());
+        addModule(new Trajectories());
         addModule(new BlowParticles());
         addModule(new WorldParticles());
         addModule(new SwingAnimations());

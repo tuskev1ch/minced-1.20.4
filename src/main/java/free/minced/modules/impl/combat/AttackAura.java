@@ -81,6 +81,7 @@ public class AttackAura extends Module {
 
 
 
+    public BooleanSetting shieldBreaker = new BooleanSetting("Shield Breaker", this, true);
     public BooleanSetting unpressShield = new BooleanSetting("Unpress Shield", this, false);
     public BooleanSetting resolver = new BooleanSetting("Resolver", this, false);
 
@@ -368,8 +369,6 @@ public class AttackAura extends Module {
     private boolean canCrit() {
 
 
-        if (cpsLimit > 0) return false;
-
         if (mc.player.getAttackCooldownProgress(0.5f) < 0.9F) return false;
 
         boolean mergeWithSpeed = !Minced.getInstance().getModuleHandler().get(Speed.class).isEnabled() || mc.player.isOnGround();
@@ -394,6 +393,7 @@ public class AttackAura extends Module {
             }
         }
         if (axe == -1) return false;
+        if (!shieldBreaker.isEnabled()) return false;
 
         if (!(target instanceof PlayerEntity)) return false;
         if (!((PlayerEntity) target).isUsingItem() && !instant) return false;
@@ -415,7 +415,7 @@ public class AttackAura extends Module {
 
         if (!lookingAtHitbox && rayCast.isEnabled()) return;
 
-        if (!canCrit()) return;
+        if (!canCrit() || cpsLimit != 0) return;
 
         if (shieldBreaker(false))
             return;

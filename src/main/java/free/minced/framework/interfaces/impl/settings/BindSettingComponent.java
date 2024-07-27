@@ -59,9 +59,13 @@ public class BindSettingComponent extends SettingComponent {
         float rightMargin = 10; // на самом деле там отступ в 5 пикселей, но рендер настроек начинается с x + 5, поэтому приходится делать так
 
         // бг
-        DrawHandler.drawRect(pDrawContext.getMatrices(),x + getModuleComponent().getWidth() - width - rightMargin - Fonts.SEMI_13.getStringWidth(KeyHandler.getKeyboardKey(this.getBindSetting().getKey())), y, width + Fonts.SEMI_13.getStringWidth(KeyHandler.getKeyboardKey(this.getBindSetting().getKey())), height, ClientColors.getSecondaryBackgroundColor().withAlpha(255 * getClickGUI().getAlpha().getValue()));
+        DrawHandler.drawRound(pDrawContext.getMatrices(),x + getModuleComponent().getWidth() - width - rightMargin - Fonts.SEMI_13.getStringWidth(KeyHandler.getKeyboardKey(this.getBindSetting().getKey())), y,
+                width + Fonts.SEMI_13.getStringWidth(KeyHandler.getKeyboardKey(this.getBindSetting().getKey())),
+                height, 2, ClientColors.getSecondaryBackgroundColor().withAlpha(255 * getClickGUI().getAlpha().getValue()));
 
-        Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), KeyHandler.getKeyboardKey(this.getBindSetting().getKey()),x + getModuleComponent().getWidth() - width - rightMargin / 2 - Fonts.SEMI_13.getStringWidth(KeyHandler.getKeyboardKey(this.getBindSetting().getKey())), y + 3.5f, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB()); // рендер кнопки бинда
+        Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), KeyHandler.getKeyboardKey(this.getBindSetting().getKey()),
+                x + getModuleComponent().getWidth() - width - rightMargin / 2 - Fonts.SEMI_13.getStringWidth(KeyHandler.getKeyboardKey(this.getBindSetting().getKey())),
+                y + 3f, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB()); // рендер кнопки бинда
 
         // название сеттинга
         Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), getBindSetting().getName(), x, y + 3.5f, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB());
@@ -88,7 +92,7 @@ public class BindSettingComponent extends SettingComponent {
     @Override
     public void keyPressed(int keyCode, int scanCode, int modifiers) {
         if (binding) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_GRAVE_ACCENT) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_DELETE) {
                 // сбрасываем бинд
                 bindSetting.setKey(0);
             } else {

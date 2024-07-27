@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.modules.impl.display.hud.impl.PotionHUD;
+import free.minced.modules.impl.misc.NameProtect;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.enchantment.Enchantment;
@@ -93,11 +94,16 @@ public class EntityESP extends Module {
         Vec3d projectedPos = DrawHandler.projectCoordinates(new Vec3d(x, y + getPlayerHeight(player), z));
         if (projectedPos.z <= 0 || projectedPos.z >= 1) return;
 
-        StringBuilder stringbuilder = new StringBuilder();
-
         String textComponent = "";
 
-        textComponent += (player.getDisplayName().getString()) + " ";
+        NameProtect m4 = Minced.getInstance().getModuleHandler().get(NameProtect.class);
+
+        String playerName =  (player == mc.player ||
+                (m4.isEnabled() && m4.hideFriends.isEnabled() && Minced.getInstance().getPartnerHandler().isFriend(player))) ?
+                NameProtect.getCustomName(player) : player.getDisplayName().getString();
+
+        textComponent += playerName + " ";
+
         textComponent += getHealthColor(getHealth(player)) + round2(getHealth(player)) + " ";
 
         CFontRenderer Font = Fonts.SEMI_14;
@@ -112,6 +118,7 @@ public class EntityESP extends Module {
         e.getStack().translate(-posX - textWidth / 2, -posY - 6.5f, 0);
 
         Color colorRect = Minced.getInstance().getPartnerHandler().isFriend(player) ? new Color(0, 255, 0, 99).darker() : new CustomColor(22, 22, 22).withAlpha(155);
+
         DrawHandler.drawRect(e.getStack(), posX - 2, posY, textWidth, 11, colorRect);
 
         Font.drawString(e.getStack(), textComponent, posX + 1, posY + 4, new CustomColor(255, 255, 255).getRGB());

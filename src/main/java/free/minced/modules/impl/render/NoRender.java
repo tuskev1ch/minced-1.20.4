@@ -12,6 +12,7 @@ public class NoRender extends Module {
 
     private final MultiBoxSetting comboBoxSetting = new MultiBoxSetting("Removals", this,
             "Block Overlay",
+            "Score Board",
             "Water Overlay",
             "Fire Overlay",
             "HurtCam"
@@ -19,6 +20,10 @@ public class NoRender extends Module {
 
     public boolean canRemoveWaterOverlay() {
         return this.isEnabled() && comboBoxSetting.get("Water Overlay").isEnabled();
+    }
+
+    public boolean canRemoveScoreBoard() {
+        return this.isEnabled() && comboBoxSetting.get("Score Board").isEnabled();
     }
 
     public boolean canRemoveBlockOverlay() {

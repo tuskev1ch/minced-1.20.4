@@ -2,6 +2,7 @@ package free.minced.modules.impl.display.hud.impl;
 
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import free.minced.modules.impl.misc.NameProtect;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -106,8 +107,10 @@ public class TargetHUD extends Module {
                 float animatedHealthBarWidth = heartsWidthAnimation.getValue();
                 float goldenHealthBarWidth = goldenHeartsAnimation.getValue();
 
-                String username = getTarget().getName().getString();
+                String username = getTarget() == mc.player ? NameProtect.getCustomName() : getTarget().getName().getString();
+
                 username = username.substring(0, Math.min(username.length(), 13));
+
                 Fonts.SEMI_15.drawString(e.getStack(), username, x + margin + headScale + margin, y + margin + 2.5f,
                         ClientColors.getFontColor().withAlpha(255 * alphaAnimation.getValue()).getRGB());
                 DrawHandler.drawBlurredShadow(e.getStack(),x + 80 , y + margin, 25, 10, 8, ClientColors.getBrighterBackgroundColor().withAlpha(255 * alphaAnimation.getValue()));

@@ -2,6 +2,7 @@ package free.minced.modules.impl.display.hud;
 
 
 
+import free.minced.modules.impl.misc.NameProtect;
 import lombok.Getter;
 import net.minecraft.client.util.math.MatrixStack;
 import free.minced.Minced;
@@ -34,6 +35,11 @@ import java.util.List;
 public class HUD extends Module {
 
     public final MultiBoxSetting elements = new MultiBoxSetting("Elements", this, "Watermark", "Coords");
+    public final MultiBoxSetting reversedElements = new MultiBoxSetting("Sub Elements", this, () ->
+            (!elements.get("Watermark").isEnabled() ||
+            !elements.get("Coords").isEnabled()),
+
+            "Watermark", "Coords");
 
     public final NumberSetting offsetColor = new NumberSetting("Offset Color", this, 4, 4, 7, 1);
 
@@ -43,20 +49,19 @@ public class HUD extends Module {
             if (mc.player == null || mc.world == null) return;
 
             if (elements.get("Watermark").isEnabled()) {
-                drawStringWatermark(e.getStack());
+                drawStringWatermark(e.getStack(), reversedElements.get("Watermark").isEnabled());
             }
             if (elements.get("Coords").isEnabled()) {
-                drawStringCoords(e.getStack());
+                drawStringCoords(e.getStack(), reversedElements.get("Coords").isEnabled());
             }
 
 
         }
     }
 
-    public void drawStringCoords(MatrixStack pMatrixStack) {
-
+    public void drawStringCoords(MatrixStack pMatrixStack, boolean reversed) {
         String name = "Coords: " + String.format("%s %s %s", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ());
-        float x = 9;
+        float x = reversed ? sr.getScaledWidth().floatValue() - 9 - Fonts.SEMI_16.getStringWidth(name) - 6 : 9;
         float y = sr.getScaledHeight().floatValue() - 22.5f;
 
         float width = Fonts.SEMI_16.getStringWidth(name) + 6;
@@ -66,25 +71,21 @@ public class HUD extends Module {
         DrawHandler.drawRound(pMatrixStack,  x, y + 0.5f, width + 0.5f, height, 3, ClientColors.getBrighterBackgroundColor());
 
         Fonts.SEMI_16.drawString(pMatrixStack, name, x + 3, y + 5, ClientColors.getFontColor().withAlpha(255).getRGB());
-
     }
 
-
-    public void drawStringWatermark(MatrixStack pMatrixStack) {
+    public void drawStringWatermark(MatrixStack pMatrixStack, boolean reversed) {
         CFontRenderer normalFont = Fonts.SEMI_15;
         CFontRenderer logoIconFont = Fonts.ICONFONT_16;
-        CFontRenderer iconFont = Fonts.ICON_18; // по какой-то причине, иконки меньше чем должны были быть, поэтому тут другой размер шрифта
+        CFontRenderer iconFont = Fonts.ICON_18;
         float cornerRadius = 3;
 
-        float x = 10;
-        float y = 10;
         float leftAndRightPadding = 5.0F;
         float iconLeftMargin = 5.0F;
         float textLeftMargin = 5.0F;
         String logoIcon = "a";
         String profileIcon = Icons.USER.getCharacter();
         String clockIcon = Icons.WIFI.getCharacter();
-        String username = mc.player.getName().getString(); // TODO REPLACE
+        String username = NameProtect.getCustomName();
         String build = ProfileHandler.getBuild();
         String serverIP = ServerHandler.getServerIP();
 
@@ -97,30 +98,25 @@ public class HUD extends Module {
 
         float width = leftAndRightPadding * 2 + firstTextWidth + secondTextWidth + thirdTextWidth + leftAndRightPadding * 2;
 
-        // отступ от текста сверху и снизу
         float verticalMargin = 5.0F;
         float height = 7.5f + verticalMargin * 2;
 
-        // бэкграунд
+        float x = reversed ? sr.getScaledWidth().floatValue() - 10 - width : 10;
+        float y = 10;
+
         DrawHandler.drawBlurredShadow(pMatrixStack,x - 0.5f, y- 0.5f, width + 1, height + 1, 5, ClientColors.getBrighterBackgroundColor().withAlpha(225));
         DrawHandler.drawRound(pMatrixStack,x, y, width, height, cornerRadius, ClientColors.getBrighterBackgroundColor().withAlpha(255));
 
-        // рендерим первую иконку
         logoIconFont.drawString(pMatrixStack,logoIcon, x + leftAndRightPadding, y + 7.5f, ClientColors.getFontColor().getRGB());
 
-        // рендерим первый текст
         normalFont.drawGradientString(pMatrixStack,build, x + leftAndRightPadding + logoWidth + iconLeftMargin, y + 6.5f, 10);
 
-        // рендерим вторую иконку
         iconFont.drawString(pMatrixStack,profileIcon, x + leftAndRightPadding + firstTextWidth + textLeftMargin, y + 6.5f, ClientColors.getFontColor().getRGB());
 
-        // рендерим второй текст
         normalFont.drawString(pMatrixStack,username, x + leftAndRightPadding + firstTextWidth + textLeftMargin + profileIconWidth + iconLeftMargin, y + 6.5f, ClientColors.getFontColor().getRGB());
 
-        // рендерим третью иконку
         iconFont.drawString(pMatrixStack,clockIcon, x + leftAndRightPadding + firstTextWidth + secondTextWidth + textLeftMargin * 2, y + 6.5f, ClientColors.getFontColor().getRGB());
 
-        // рендерим третий текст
         normalFont.drawString(pMatrixStack,serverIP, x + leftAndRightPadding + firstTextWidth + secondTextWidth + textLeftMargin * 2 + clockIconWidth + iconLeftMargin, y + 6.5f, ClientColors.getFontColor().getRGB());
     }
 

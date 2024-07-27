@@ -24,19 +24,34 @@ public final class VClipCommand extends Command {
         if (args.length == 2) {
             try {
                 int delay = Integer.parseInt(args[1]);
-                execute(delay);
+                execute(delay, false);
             } catch (NumberFormatException e) {
                 error(".vclip requires a number");
             }
-        } else {
-            error(".vclip y [.vclip 5 / .vclip -5]");
+        } else if (args.length == 3) {
+            try {
+                int delay = Integer.parseInt(args[1]);
+                execute(delay, true);
+            } catch (NumberFormatException e) {
+                error(".vclip requires a number and value");
+            }
+        }  else {
+            error(".vclip y [.vclip 5 false / .vclip -5 true] (extra - false or true)");
         }
 
     }
 
 
 
-    private void execute(float y) {
+    private void execute(float y, boolean extra) {
+        if (extra) {
+            for (int i = 0; i < 10; ++i)
+                mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false));
+
+            for (int i = 0; i < 10; ++i)
+                mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + y, mc.player.getZ(), false));
+        }
+
         mc.player.setPosition(mc.player.getX(), mc.player.getY() + (double) y, mc.player.getZ());
     }
     private void sendErrorMessage() {

@@ -1,6 +1,7 @@
 package free.minced.modules.impl.display.hud.impl;
 
 
+import free.minced.systems.setting.impl.BooleanSetting;
 import net.minecraft.client.util.math.MatrixStack;
 import free.minced.Minced;
 import free.minced.events.Event;
@@ -21,9 +22,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @ModuleDescriptor(name = "ArrayList", category = ModuleCategory.DISPLAY)
-
 public class ArrayListMod extends AbstractHUDElement {
     private float x, y, width, height;
+    public BooleanSetting reversed = new BooleanSetting("Reversed", this, false);
 
     @Override
     public void onEvent(Event event) {
@@ -45,34 +46,61 @@ public class ArrayListMod extends AbstractHUDElement {
     public void render(MatrixStack pPoseStack) {
         float offset = 0.0F;
         for (Module module : getValidModules()) {
-
             if (module.getModuleCategory() == ModuleCategory.RENDER) continue;
             String moduleName = module.getName();
 
-            x = 12f;
-            y = 35 + offset;
-
-            float ycolor = y / Minced.getInstance().getModuleHandler().get(HUD.class).offsetColor.getValue().floatValue();
+            float ycolor = 0.0F;
             float padding = 4;
 
-            width = Fonts.SEMI_15.getStringWidth(moduleName) + padding; // умножаем на два потому что паддинг слева и справа
+            width = Fonts.SEMI_15.getStringWidth(moduleName) + padding;
             height = 7f + padding;
 
-            DrawHandler.drawBlurredShadow(pPoseStack, x * module.getEnableAnimation().getValue(), y  + 0.5F, width + 0.5f, height,
-                    5, ColorHandler.applyOpacity(ClientColors.getBrighterBackgroundColor(), 255 * module.getEnableAnimation().getValue()));
+            boolean a1 = reversed.isEnabled();
+            if (a1) {
+                x = sr.getScaledWidth().floatValue() - 12f; // move to the right side
+                y = 35 + offset;
 
-            DrawHandler.drawBlurredShadow( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 2, height, 2,
-                    ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
+                ycolor = y / Minced.getInstance().getModuleHandler().get(HUD.class).offsetColor.getValue().floatValue();
+
+                DrawHandler.drawBlurredShadow(pPoseStack, x - width * module.getEnableAnimation().getValue(), y  + 0.5F, width + 0.5f, height,
+                        5, ColorHandler.applyOpacity(ClientColors.getBrighterBackgroundColor(), 255 * module.getEnableAnimation().getValue()));
+
+                DrawHandler.drawBlurredShadow( pPoseStack, x - width * module.getEnableAnimation().getValue() - 3 , y  + 0.5F, 2, height, 2,
+                        ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
+
+                DrawHandler.drawRect( pPoseStack, x - width * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 3, height,
+                        ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
 
 
-            DrawHandler.drawRect( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 3, height,
-                    ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
+                DrawHandler.drawRect(pPoseStack, x - width * module.getEnableAnimation().getValue(), y + 0.5f, width + 0.5f, height, ClientColors.getBrighterBackgroundColor().withAlpha(255 * module.getEnableAnimation().getValue()));
 
-            DrawHandler.drawRect(pPoseStack, x * module.getEnableAnimation().getValue(), y + 0.5f, width + 0.5f, height, ClientColors.getBrighterBackgroundColor().withAlpha(255 * module.getEnableAnimation().getValue()));
+                // полоска справа
 
-            // имя модуля
-            if (module.getEnableAnimation().getValue() > 0.05F) {
-                Fonts.SEMI_15.drawString(pPoseStack, moduleName, (x * module.getEnableAnimation().getValue()) + 2.5f , y + 4,  ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()).getRGB());
+                // имя модуля
+                if (module.getEnableAnimation().getValue() > 0.05F) {
+                    Fonts.SEMI_15.drawString(pPoseStack, moduleName, x - width * module.getEnableAnimation().getValue() + 2.5f, y + 4, ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()).getRGB());
+                }
+            } else {
+                x = 12f;
+                y = 35 + offset;
+
+                ycolor = y / Minced.getInstance().getModuleHandler().get(HUD.class).offsetColor.getValue().floatValue();
+
+                DrawHandler.drawBlurredShadow(pPoseStack, x * module.getEnableAnimation().getValue(), y  + 0.5F, width + 0.5f, height,
+                        5, ColorHandler.applyOpacity(ClientColors.getBrighterBackgroundColor(), 255 * module.getEnableAnimation().getValue()));
+
+                DrawHandler.drawBlurredShadow( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 2, height, 2,
+                        ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
+
+                DrawHandler.drawRect( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 3, height,
+                        ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
+
+                DrawHandler.drawRect(pPoseStack, x * module.getEnableAnimation().getValue(), y + 0.5f, width + 0.5f, height, ClientColors.getBrighterBackgroundColor().withAlpha(255 * module.getEnableAnimation().getValue()));
+
+                // имя модуля
+                if (module.getEnableAnimation().getValue() > 0.05F) {
+                    Fonts.SEMI_15.drawString(pPoseStack, moduleName, (x * module.getEnableAnimation().getValue()) + 2.5f , y + 4,  ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()).getRGB());
+                }
             }
 
             offset += height * module.getEnableAnimation().getValue();

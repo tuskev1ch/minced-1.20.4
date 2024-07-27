@@ -1,6 +1,7 @@
 package free.minced.framework.interfaces.impl.settings.multibox;
 
 
+import free.minced.framework.render.ScissorHandler;
 import net.minecraft.client.gui.DrawContext;
 import lombok.Getter;
 import free.minced.framework.interfaces.api.SettingComponent;
@@ -18,6 +19,7 @@ import free.minced.systems.setting.impl.MultiBoxSetting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author jbk
@@ -91,8 +93,18 @@ public class MultiBoxSettingComponent extends SettingComponent {
             Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), multiBoxSetting.getName(), x, y + 5, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB());
 
             // выбранные элементы
-            Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), "Selected", x + getModuleComponent().width - width - 10 + leftMargin, y + 6, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB());
+            String enabledSettings = multiBoxSetting.getBoolSettings().stream()
+                    .filter(BooleanSetting::isEnabled)
+                    .map(BooleanSetting::getName)
+                    .collect(Collectors.joining(", "));
 
+            enabledSettings = enabledSettings.substring(0, Math.min(enabledSettings.length(), 19));
+
+            if (enabledSettings.isEmpty()) {
+                Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), "None", x + getModuleComponent().width - width - 10 + leftMargin, y + 6, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB());
+            } else {
+                Fonts.SEMI_13.drawString(pDrawContext.getMatrices(), enabledSettings, x + getModuleComponent().width - width - 10 + leftMargin, y + 6, ClientColors.getFontColor().withAlpha(255 * getClickGUI().getAlpha().getValue()).getRGB());
+            }
         }
 
         // рендерим другие моды если сеттинг открыт

@@ -34,6 +34,10 @@ public class TimerHandler {
             reset();
         return passed;
     }
+
+    public boolean hasTimeElapsed(long time) {
+        return System.currentTimeMillis() - startTime > time;
+    }
     public void reset() {
         this.millis = System.currentTimeMillis();
     }

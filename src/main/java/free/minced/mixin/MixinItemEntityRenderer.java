@@ -1,6 +1,7 @@
 package free.minced.mixin;
 
 import free.minced.Minced;
+import free.minced.modules.impl.misc.Optimization;
 import free.minced.modules.impl.render.ItemPhysic;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -38,6 +39,7 @@ public abstract class MixinItemEntityRenderer {
 
     // я ебанутый хаха
     private int getRenderedAmount(ItemStack stack) {
+        Optimization a1 = Minced.getInstance().getModuleHandler().get(Optimization.class);
         int i = 1;
         if (stack.getCount() > 48) {
             i = 5;
@@ -49,7 +51,7 @@ public abstract class MixinItemEntityRenderer {
             i = 2;
         }
 
-        return i;
+        return a1.isEnabled() && a1.getLimits().get("Dropped Items").isEnabled() ? 1 : i;
     }
 
     public void render2(ItemEntity pEntity, float pEntityYaw, float pPartialTicks, MatrixStack pMatrixStack, VertexConsumerProvider pBuffer, int pPackedLight) {
@@ -87,7 +89,7 @@ public abstract class MixinItemEntityRenderer {
             pMatrixStack.translate(f7, f8, f9);
         }
 
-        for(int k = 0; k < j; ++k) {
+        for (int k = 0; k < j; ++k) {
             pMatrixStack.push();
             if (k > 0) {
                 if (flag) {

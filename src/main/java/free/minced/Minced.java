@@ -51,7 +51,7 @@ public class Minced implements ModInitializer {
 
 	private DraggableHandler draggableHandler = new DraggableHandler();
 	private ModuleManager moduleHandler = new ModuleManager();
-	private ConfigHandler configHandler = new ConfigHandler();;
+	private ConfigHandler configHandler = new ConfigHandler();
 	private MacrosHandler macrosHandler = new MacrosHandler();
 
 	private CommandHandler commandHandler = new CommandHandler();

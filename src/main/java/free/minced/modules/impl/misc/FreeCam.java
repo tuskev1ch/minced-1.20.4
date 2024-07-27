@@ -24,6 +24,7 @@ import static free.minced.primary.other.KeyHandler.isKeyPressed;
 @ModuleDescriptor(name = "FreeCam", category = ModuleCategory.MISC)
 public class FreeCam extends Module {
     private final NumberSetting speed = new NumberSetting("Horizontal Speed", this, 1f, 0.1f, 3f, 0.1f);
+
     private final NumberSetting hspeed = new NumberSetting("Vertical Speed", this, 0.42f, 0.1f, 3f, 0.1f);
     private final BooleanSetting freeze = new BooleanSetting("Freeze", this, false);
     private float fakeYaw, fakePitch, prevFakeYaw, prevFakePitch, prevScroll;

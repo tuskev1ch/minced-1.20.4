@@ -8,7 +8,7 @@ import free.minced.modules.api.ModuleDescriptor;
 import net.minecraft.block.Block;
 import net.minecraft.util.hit.BlockHitResult;
 
-@ModuleDescriptor(name = "Auto Tool", category = ModuleCategory.MISC)
+@ModuleDescriptor(name = "AutoTool", category = ModuleCategory.MISC)
 public class AutoTool extends Module {
 
     private int previousSlot = -1;

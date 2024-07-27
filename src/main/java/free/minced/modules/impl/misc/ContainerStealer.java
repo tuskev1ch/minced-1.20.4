@@ -40,7 +40,7 @@ public class ContainerStealer extends Module {
 
     @Override
     public void onEvent(Event e) {
-        if(e instanceof UpdatePlayerEvent event) {
+        if (e instanceof UpdatePlayerEvent event) {
             if (mc.player.currentScreenHandler instanceof GenericContainerScreenHandler chest) {
                 for (int i = 0; i < chest.getInventory().size(); i++) {
                     Slot slot = chest.getSlot(i);

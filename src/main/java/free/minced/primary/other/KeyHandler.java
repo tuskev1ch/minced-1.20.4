@@ -135,7 +135,7 @@ public class KeyHandler implements IHolder {
         } else if (key == 93) {
             return "RightBracket";
         } else if (key == 96) {
-            return "GraveAccent";
+            return "Grave";
         } else if (key == 161) {
             return "World1";
         } else if (key == 162) {

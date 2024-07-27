@@ -161,7 +161,7 @@ public class ModuleComponent extends MenuComponent {
         }
 
         if (binding) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_DELETE || keyCode == GLFW.GLFW_KEY_GRAVE_ACCENT) {
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_DELETE) {
                 // сбрасываем бинд
                 module.setKey(0);
             } else {
