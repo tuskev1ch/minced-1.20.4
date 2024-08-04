@@ -20,7 +20,7 @@ public class CustomWorld extends Module {
         if (e instanceof UpdatePlayerEvent event) {
             if (nightMode.isEnabled()) {
                 if (mc.world != null) {
-                    mc.world.setTimeOfDay(time.getValue().intValue() * 1000);
+                    mc.world.setTimeOfDay(time.getValue().intValue() * 1000L);
                 }
             }
         }

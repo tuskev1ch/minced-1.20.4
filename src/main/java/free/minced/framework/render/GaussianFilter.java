@@ -23,9 +23,8 @@ public class GaussianFilter {
             int ioffset = y * width;
             for (int x = 0; x < width; x++) {
                 float r = 0.0F, g = 0.0F, b = 0.0F, a = 0.0F;
-                int moffset = cols2;
                 for (int col = -cols2; col <= cols2; col++) {
-                    float f = matrix[moffset + col];
+                    float f = matrix[cols2 + col];
                     if (f != 0.0F) {
                         int ix = x + col;
                         if (ix < 0) {

@@ -7,7 +7,6 @@ import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
 import free.minced.events.Event;
 import free.minced.events.impl.player.EventSync;
-import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
@@ -18,7 +17,7 @@ import free.minced.primary.time.TimerHandler;
 
 public class ElytraFix extends Module {
 
-    TimerHandler fixTimer = new TimerHandler();
+    final TimerHandler fixTimer = new TimerHandler();
 
     @Override
     public void onEvent(Event event) {

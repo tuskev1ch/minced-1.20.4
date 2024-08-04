@@ -16,9 +16,7 @@ public class ChatHandler implements IHolder {
         if (mc.isOnThread()) {
             mc.player.sendMessage(Text.of(PREFIX + message));
         } else {
-            mc.executeSync(() ->{
-                mc.player.sendMessage(Text.of(PREFIX + message));
-            });
+            mc.executeSync(() -> mc.player.sendMessage(Text.of(PREFIX + message)));
         }
     }
 

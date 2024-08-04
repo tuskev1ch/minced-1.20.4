@@ -27,9 +27,8 @@ public class FireworkRocketEntityMixin {
 
         ElytraFixEvent event = new ElytraFixEvent(instance.getYaw(), instance.getPitch());
         EventCollects.call(event);
-        Vec3d vec3d = MobilityHandler.getRotationVector(event.getPitch(), event.getYaw());
 
 
-        return vec3d;
+        return MobilityHandler.getRotationVector(event.getPitch(), event.getYaw());
     }
 }

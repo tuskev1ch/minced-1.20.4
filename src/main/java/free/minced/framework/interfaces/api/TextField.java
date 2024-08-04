@@ -5,7 +5,6 @@ import net.minecraft.client.gui.DrawContext;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.screen.Screen;
-import free.minced.Minced;
 import free.minced.primary.math.MathHandler;
 import free.minced.framework.render.DrawHandler;
 import free.minced.framework.color.ClientColors;

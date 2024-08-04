@@ -14,7 +14,6 @@ import free.minced.systems.SharedClass;
 import free.minced.systems.setting.impl.BooleanSetting;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
@@ -24,10 +23,11 @@ import java.util.ArrayList;
 
 import static free.minced.framework.color.ColorHandler.injectAlpha;
 import static free.minced.modules.impl.render.BlowParticles.ParticleBase.interpolatePos;
+import static free.minced.primary.IAccess.BUILDER;
 
 @ModuleDescriptor(name = "Trails", category = ModuleCategory.RENDER)
 public class Trails extends Module {
-    public BooleanSetting Glow = new BooleanSetting("Glow", this, true);
+    public final BooleanSetting Glow = new BooleanSetting("Glow", this, true);
 
 
 
@@ -40,7 +40,10 @@ public class Trails extends Module {
 
 
             for (int j = 0; j < 15; j++) {
-                float posX = (float) (mc.player.getX());
+                float posX = 0;
+                if (mc.player != null) {
+                    posX = (float) (mc.player.getX());
+                }
                 float posY = (float) (mc.player.getY() + 0.19);
                 float posZ = (float) (mc.player.getZ());
 
@@ -58,11 +61,10 @@ public class Trails extends Module {
             RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
-            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
             RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-            particles.forEach(p -> p.render(bufferBuilder));
-            BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+            BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+            particles.forEach(p -> p.render(BUILDER));
+            BufferRenderer.drawWithGlobalProgram(BUILDER.end());
             RenderSystem.depthMask(true);
             RenderSystem.disableDepthTest();
             RenderSystem.disableBlend();
@@ -72,8 +74,17 @@ public class Trails extends Module {
 
     public class ParticleBase {
 
-        protected float prevposX, prevposY, prevposZ, posX, posY, posZ, motionX, motionY, motionZ;
-        protected int age, maxAge;
+        protected float prevposX;
+        protected float prevposY;
+        protected float prevposZ;
+        protected float posX;
+        protected float posY;
+        protected float posZ;
+        protected final float motionX;
+        protected final float motionY;
+        protected final float motionZ;
+        protected int age;
+        protected final int maxAge;
 
         public ParticleBase(float posX, float posY, float posZ, float motionX, float motionY, float motionZ) {
             this.posX = posX;

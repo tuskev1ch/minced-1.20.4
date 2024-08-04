@@ -2,8 +2,6 @@ package free.minced.modules.impl.movement;
 
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
-import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +28,7 @@ import free.minced.systems.setting.impl.NumberSetting;
 public class Strafe extends Module {
     public final ModeSetting mode = new ModeSetting("Mode", this, "None", "None", "Elytra");
     private final NumberSetting setSpeed = new NumberSetting("Speed", this, 1.3F, 0.0F, 2f, 0.1f, () -> !mode.is("Elytra"));
-    public BooleanSetting force = new BooleanSetting("Force", this, false, () -> !mode.is("Elytra"));
+    public final BooleanSetting force = new BooleanSetting("Force", this, false, () -> !mode.is("Elytra"));
 
     public static double oldSpeed, contextFriction, fovval;
     public static boolean needSwap, needSprintState, disabled;

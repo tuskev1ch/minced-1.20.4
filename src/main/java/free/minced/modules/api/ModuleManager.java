@@ -1,6 +1,7 @@
 package free.minced.modules.api;
 
 import com.google.gson.JsonObject;
+import free.minced.primary.UnknownModuleException;
 import lombok.Getter;
 import free.minced.Minced;
 import free.minced.modules.Module;
@@ -17,7 +18,6 @@ import free.minced.modules.impl.render.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author jbk
@@ -35,21 +35,22 @@ public class ModuleManager  {
 
         /* Category - Display */
         addModule(new HUD());
-        addModule(new KeyBinds());
         addModule(new ClickGUI());
+        addModule(new StaffHUD());
+        addModule(new KeyBinds());
         addModule(new TargetHUD());
         addModule(new PotionHUD());
         addModule(new ArrayListMod());
 
         /* Category - Combat */
-        addModule(new AntiBot());
-        addModule(new AutoAttack());
-        addModule(new AutoPotion());
-        addModule(new AttackAura());
-        addModule(new AutoTotem());
-        addModule(new HitBox());
-        addModule(new AutoSwap());
         addModule(new Reach());
+        addModule(new HitBox());
+        addModule(new AntiBot());
+        addModule(new AutoSwap());
+        addModule(new AutoTotem());
+        addModule(new AutoPotion());
+        addModule(new AutoAttack());
+        addModule(new AttackAura());
 
         /* Category - Movement */
         addModule(new Speed());
@@ -111,25 +112,16 @@ public class ModuleManager  {
     }
 
     /**
-     * Get module by name
-     */
-    public <T extends Module> T get(final String name) {
-        return (T) modules.stream().filter(module -> (module.getName()).replace(" ", "").equalsIgnoreCase(name.replace(" ", ""))).findAny().orElse(null);
-    }
-
-    /**
      * Get module by class
      */
     public <T extends Module> T get(final Class<T> clazz) {
-        return (T) modules.stream().filter(module -> module.getClass() == clazz).findAny().orElse(null);
+        return (T) modules.stream()
+                .filter(module -> module.getClass().equals(clazz))
+                .findFirst()
+                .orElseThrow(() -> new UnknownModuleException(clazz.getSimpleName()));
     }
 
-    /**
-     * Get module by category
-     */
-    public List<Module> get(ModuleCategory moduleCategory) {
-        return modules.stream().filter(module -> module.getModuleCategory() == moduleCategory).collect(Collectors.toList());
-    }
+
     public JsonObject save() {
         JsonObject json = new JsonObject();
         for (Module module : modules) {

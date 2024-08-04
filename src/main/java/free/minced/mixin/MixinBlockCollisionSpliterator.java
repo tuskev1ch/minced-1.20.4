@@ -12,12 +12,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = BlockCollisionSpliterator.class, priority = 900)
+import static free.minced.primary.IHolder.mc;
+
+@Mixin(value = BlockCollisionSpliterator.class)
 public abstract class MixinBlockCollisionSpliterator {
 
     @Redirect(method = "computeNext", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/BlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
     private BlockState computeNextHook(BlockView instance, BlockPos blockPos) {
-        if (Minced.getInstance().getModuleHandler().get(NoClip.class) == null || !Minced.getInstance().getModuleHandler().get(NoClip.class).isEnabled()) {
+        if ((mc.player == null || mc.isInSingleplayer()) || Minced.getInstance().getModuleHandler().get(NoClip.class) == null || !Minced.getInstance().getModuleHandler().get(NoClip.class).isEnabled()) {
             return instance.getBlockState(blockPos);
         }
 

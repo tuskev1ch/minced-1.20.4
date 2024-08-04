@@ -6,7 +6,6 @@ import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 import lombok.Setter;
 import free.minced.modules.Module;
-import free.minced.primary.other.KeyHandler;
 import free.minced.systems.setting.Setting;
 
 /**

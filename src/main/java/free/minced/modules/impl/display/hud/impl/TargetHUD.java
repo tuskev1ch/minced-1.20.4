@@ -6,7 +6,6 @@ import free.minced.modules.impl.misc.NameProtect;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -18,7 +17,6 @@ import net.minecraft.scoreboard.ScoreboardDisplaySlot;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.number.StyledNumberFormat;
 import net.minecraft.text.MutableText;
-import net.minecraft.util.Identifier;
 import free.minced.Minced;
 import free.minced.events.Event;
 import free.minced.events.impl.render.Render2DEvent;
@@ -39,7 +37,6 @@ import free.minced.systems.draggable.Draggable;
 
 import free.minced.framework.font.Fonts;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL40C;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -194,7 +191,7 @@ public class TargetHUD extends Module {
         LivingEntity target = getTarget();
 
         if (target instanceof PlayerEntity ent && (ServerHandler.isOnFT())) {
-            ScoreboardObjective scoreBoard = null;
+            ScoreboardObjective scoreBoard;
             String resolvedHp = "";
             if ((ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
                 scoreBoard = (ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);

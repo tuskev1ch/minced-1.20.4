@@ -17,7 +17,6 @@ import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.primary.IHolder;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.setting.impl.ModeSetting;
 
 @ModuleDescriptor(name = "Velocity", category = ModuleCategory.COMBAT)
@@ -46,9 +45,8 @@ public class Velocity extends Module {
 
             if (e.getPacket() instanceof EntityStatusS2CPacket pac
                     && pac.getStatus() == 31
-                    && pac.getEntity(mc.world) instanceof FishingBobberEntity
+                    && pac.getEntity(mc.world) instanceof FishingBobberEntity fishHook
                 /*&& fishingHook.getValue()*/) {
-                FishingBobberEntity fishHook = (FishingBobberEntity) pac.getEntity(mc.world);
                 if (fishHook.getHookedEntity() == mc.player) {
                     e.setCancel(true);
                 }

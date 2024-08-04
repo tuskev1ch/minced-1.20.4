@@ -1,19 +1,14 @@
 package free.minced.systems.command.impl;
 
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.util.Formatting;
 import free.minced.Minced;
 import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.command.Command;
 import free.minced.systems.command.api.CommandInfo;
 import free.minced.systems.config.Configuration;
-import free.minced.systems.config.api.ConfigHandler;
 
-import java.io.FileReader;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 /**

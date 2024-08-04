@@ -9,18 +9,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings({"ALL", "GrazieInspection"})
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer<T extends Entity> {
-/*
-    @Inject(method = "renderLabelIfPresent", at = @At("HEAD"), cancellable = true)
-    private void renderLabelIfPresent(T entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo info) {
-        if (entity instanceof ArmorStandEntity && ModuleManager.noRender.isEnabled() && ModuleManager.noRender.noArmorStands.getValue())
-            info.cancel();
-
-        if (entity instanceof PlayerEntity && ModuleManager.nameTags.isEnabled())
-            info.cancel();
-    }
-*/
 
     @Inject(method = "getSkyLight", at = @At("RETURN"), cancellable = true)
     private void onGetSkyLight(CallbackInfoReturnable<Integer> cir) {

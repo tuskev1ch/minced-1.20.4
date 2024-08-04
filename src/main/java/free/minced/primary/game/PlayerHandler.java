@@ -137,7 +137,7 @@ public class PlayerHandler implements IHolder {
                 }
             }
         }
-        return targetedEntity;
+        return null;
     }
     public static void disableSprint() {
         mc.player.setSprinting(false);
@@ -185,14 +185,14 @@ public class PlayerHandler implements IHolder {
 
         EntityHitResult ehr = null;
 
-        double maxDistance = Math.max(distancePow2, Math.pow(ignorewalls ? 0 : distance, 2));
+        double maxDistance = Math.max(distancePow2, Math.pow(ignorewalls ? distance : 0, 2));
 
         if (AttackAura.target != null) {
             ehr = ProjectileUtil.raycast(mc.player, startPoint, endPoint, entityArea, e -> !e.isSpectator() && e.canHit() && e == AttackAura.target, maxDistance);
         }
 
         if (ehr != null) {
-            boolean allowedWallDistance = startPoint.squaredDistanceTo(ehr.getPos()) <= Math.pow(ignorewalls ? 0 : distance, 2);
+            boolean allowedWallDistance = startPoint.squaredDistanceTo(ehr.getPos()) <= Math.pow(!ignorewalls ? distance : 0, 2);
             boolean wallMissing = result == null;
             boolean wallBehindEntity = startPoint.squaredDistanceTo(ehr.getPos()) < distancePow2;
             boolean allowWallHit = wallMissing || allowedWallDistance || wallBehindEntity;

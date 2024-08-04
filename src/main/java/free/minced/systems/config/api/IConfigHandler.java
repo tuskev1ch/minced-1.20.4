@@ -13,5 +13,5 @@ import java.util.List;
 @Setter
 public abstract class IConfigHandler<T> {
 
-    public List<T> contents = new ArrayList<T>();
+    public List<T> contents = new ArrayList<>();
 }

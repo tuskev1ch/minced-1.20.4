@@ -1,45 +1,55 @@
 package free.minced.systems.rotations;
 
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import free.minced.primary.IHolder;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.concurrent.LinkedBlockingQueue;
+
+@Getter
+@Setter
 public class Rotations implements IHolder {
 
-    public static boolean rotating;
-
-    public static float serverYaw;
-    public static float serverPitch;
-    public static int currentPriority;
+    public static final LinkedBlockingQueue<RotationRequest> rotationQueue = new LinkedBlockingQueue<>();
 
     private static float preYaw, prePitch;
 
-    public static void rotate(double yaw, double pitch, int priority) {
-        if (priority >= currentPriority) {
-            serverYaw = (float) yaw;
-            serverPitch = (float) pitch;
-            currentPriority = priority;
-            rotating = true;
-        }
+    public static void rotate(double yaw, double pitch) {
+        rotationQueue.add(new RotationRequest(yaw, pitch));
     }
 
     public static void onSendMovementPacketsPre() {
-        if (mc.cameraEntity != mc.player) return;
+        if (mc.cameraEntity!= mc.player) return;
 
-        if (rotating) {
+        RotationRequest request = rotationQueue.poll();
+        if (request!= null) {
             preYaw = mc.player.getYaw();
             prePitch = mc.player.getPitch();
 
-            mc.player.setYaw(serverYaw);
-            mc.player.setPitch(serverPitch);
+            mc.player.setYaw((float) request.yaw);
+            mc.player.setPitch((float) request.pitch);
         }
     }
 
     public static void onSendMovementPacketsPost() {
-        if (rotating) {
+        if (preYaw!= 0 && prePitch!= 0) {
             mc.player.setYaw(preYaw);
             mc.player.setPitch(prePitch);
-            rotating = false;
-            currentPriority = 0;
+            preYaw = 0;
+            prePitch = 0;
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class RotationRequest {
+        double yaw;
+        double pitch;
+
+        public RotationRequest(double yaw, double pitch) {
+            this.yaw = yaw;
+            this.pitch = pitch;
         }
     }
 }

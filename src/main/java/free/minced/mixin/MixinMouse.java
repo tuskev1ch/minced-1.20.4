@@ -1,7 +1,6 @@
 package free.minced.mixin;
 
 import net.minecraft.client.Mouse;
-import free.minced.Minced;
 import free.minced.events.EventCollects;
 import free.minced.events.impl.input.EventMouse;
 import free.minced.systems.SharedClass;

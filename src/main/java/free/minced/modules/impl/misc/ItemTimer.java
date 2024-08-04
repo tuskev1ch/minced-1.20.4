@@ -7,14 +7,11 @@ import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.setting.impl.NumberSetting;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
-import net.minecraft.screen.GenericContainerScreenHandler;
 
 @ModuleDescriptor(name = "ItemTimer", category = ModuleCategory.MISC)
 public class ItemTimer extends Module {

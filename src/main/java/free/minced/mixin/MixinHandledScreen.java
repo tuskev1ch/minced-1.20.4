@@ -1,40 +1,25 @@
 package free.minced.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.Minced;
 import free.minced.modules.impl.misc.ItemScroller;
-import free.minced.primary.IHolder;
 import free.minced.primary.time.TimerHandler;
 import free.minced.systems.SharedClass;
-import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.*;
-import net.minecraft.item.map.MapState;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ShulkerBoxScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
-import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.*;
 
 import static free.minced.primary.IHolder.mc;
 
@@ -72,10 +57,12 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
         }
     }
 
+    @Unique
     private boolean shit() {
         return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344);
     }
 
+    @Unique
     private boolean attack() {
         return SharedClass.holdMouse;
     }

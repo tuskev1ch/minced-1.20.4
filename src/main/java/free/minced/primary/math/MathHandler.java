@@ -45,11 +45,11 @@ public class MathHandler implements IHolder {
         return ThreadLocalRandom.current().nextDouble(min, max);
     }
     public static float getPow2Value(float value) {
-        return (float) value * (float) value;
+        return value * value;
     }
     public static float getPow2Value(int value) {
 
-        return (int) value * (int) value;
+        return value * value;
 
     }
     public static float randomize(float min, float max) {

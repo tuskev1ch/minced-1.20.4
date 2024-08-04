@@ -4,11 +4,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.events.Event;
 import free.minced.events.impl.player.PacketEvent;
-import free.minced.framework.color.ColorHandler;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.math.MathHandler;
 import free.minced.framework.color.ClientColors;
 
@@ -31,6 +29,7 @@ import java.util.List;
 
 import static free.minced.framework.color.ColorHandler.injectAlpha;
 import static free.minced.modules.impl.render.BlowParticles.ParticleBase.interpolatePos;
+import static free.minced.primary.IAccess.BUILDER;
 
 
 @ModuleDescriptor(name = "WorldParticles", category = ModuleCategory.RENDER)
@@ -104,11 +103,10 @@ public class WorldParticles extends Module {
                 RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
                 RenderSystem.enableDepthTest();
                 RenderSystem.depthMask(false);
-                BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
                 RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-                fireFlies.forEach(p -> p.render(bufferBuilder));
-                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+                BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+                fireFlies.forEach(p -> p.render(BUILDER));
+                BufferRenderer.drawWithGlobalProgram(BUILDER.end());
                 RenderSystem.depthMask(true);
                 RenderSystem.disableDepthTest();
                 RenderSystem.disableBlend();
@@ -121,11 +119,10 @@ public class WorldParticles extends Module {
                 RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
                 RenderSystem.enableDepthTest();
                 RenderSystem.depthMask(false);
-                BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
                 RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-                bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-                particles.forEach(p -> p.render(bufferBuilder));
-                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+                BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+                particles.forEach(p -> p.render(BUILDER));
+                BufferRenderer.drawWithGlobalProgram(BUILDER.end());
                 RenderSystem.depthMask(true);
                 RenderSystem.disableDepthTest();
                 RenderSystem.disableBlend();
@@ -234,7 +231,8 @@ public class WorldParticles extends Module {
     public class ParticleBase {
 
         protected float prevposX, prevposY, prevposZ, posX, posY, posZ, motionX, motionY, motionZ;
-        protected int age, maxAge;
+        protected int age;
+        protected final int maxAge;
 
         public ParticleBase(float posX, float posY, float posZ, float motionX, float motionY, float motionZ) {
             this.posX = posX;

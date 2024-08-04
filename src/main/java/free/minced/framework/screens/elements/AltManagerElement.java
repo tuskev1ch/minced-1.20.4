@@ -14,7 +14,6 @@ import free.minced.primary.math.ScrollHandler;
 import lombok.Getter;
 import free.minced.framework.screens.elements.util.AltManagerConfig;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.glfw.GLFW;
 

@@ -1,6 +1,5 @@
 package free.minced.primary.game;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import free.minced.Minced;
@@ -8,13 +7,8 @@ import free.minced.events.impl.input.EventKeyboardInput;
 import free.minced.events.impl.mobility.EventFixVelocity;
 import free.minced.events.impl.mobility.EventPlayerTravel;
 import free.minced.events.impl.player.EventPlayerJump;
-import free.minced.events.impl.player.EventPostSync;
-import free.minced.events.impl.player.EventSync;
-import free.minced.mixin.accesors.IClientPlayerEntity;
 import free.minced.modules.impl.combat.AttackAura;
 import free.minced.primary.IHolder;
-
-import static net.minecraft.util.math.MathHelper.clamp;
 
 public class MobilityFix implements IHolder {
 
@@ -93,8 +87,6 @@ public class MobilityFix implements IHolder {
         float g = MathHelper.cos(yaw * MathHelper.RADIANS_PER_DEGREE);
         return new Vec3d(vec3d.x * (double) g - vec3d.z * (double) f, vec3d.y, vec3d.z * (double) g + vec3d.x * (double) f);
     }
-
-    /** ROTATIONS SILENT **/
 
 
 }

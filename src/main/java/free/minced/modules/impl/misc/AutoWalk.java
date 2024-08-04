@@ -5,8 +5,6 @@ import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import net.minecraft.block.Block;
-import net.minecraft.util.hit.BlockHitResult;
 
 @ModuleDescriptor(name = "AutoWalk", category = ModuleCategory.MISC)
 public class AutoWalk extends Module {

@@ -4,7 +4,7 @@ import free.minced.framework.render.shaders.WindowResizeCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import free.minced.framework.font.Fonts;
-import free.minced.systems.rotations.Rotations;
+
 import net.minecraft.client.util.Window;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

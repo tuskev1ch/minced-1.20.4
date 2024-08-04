@@ -18,13 +18,8 @@ import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.primary.IHolder;
-import free.minced.primary.chat.ChatHandler;
-import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.time.TimerHandler;
 import free.minced.systems.setting.impl.BooleanSetting;
-
-
-import javax.lang.model.element.ModuleElement;
 
 @ModuleDescriptor(name = "AutoPotion", category = ModuleCategory.COMBAT)
 
@@ -32,7 +27,7 @@ public class AutoPotion extends Module {
     // тут пиздец коду)) зато заработал
     private final BooleanSetting autoOff = new BooleanSetting("Auto Off", this, true);
 
-    public TimerHandler timer = new TimerHandler();
+    public final TimerHandler timer = new TimerHandler();
     private boolean spoofed = false;
     float rotprev;
 
@@ -65,9 +60,8 @@ public class AutoPotion extends Module {
 
         int slot = findPotionSlot(id); // Ищем слот с зельем
 
-        if (slot == -1) return false; // Если слот не найден скипаем
-
-        return true; // Если всё заебись то возвращаем true
+        return slot != -1; // Если слот не найден скипаем
+// Если всё заебись то возвращаем true
     }
 
     private boolean canBuff() {

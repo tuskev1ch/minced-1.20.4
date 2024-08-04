@@ -24,12 +24,14 @@ import org.joml.Matrix4f;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static free.minced.primary.IAccess.BUILDER;
+
 @ModuleDescriptor(name = "BlowParticles", category = ModuleCategory.RENDER)
 public class BlowParticles extends Module {
-    public BooleanSetting Minced = new BooleanSetting("Minced", this, true);
+    public final BooleanSetting Minced = new BooleanSetting("Minced", this, true);
 
 
-    public BooleanSetting ignoreSelf = new BooleanSetting("Ignore self", this, true);
+    public final BooleanSetting ignoreSelf = new BooleanSetting("Ignore self", this, true);
 
     public final NumberSetting particlesRadius = new NumberSetting("Particles Radius", this, 0.4, 0.1F, 1, 0.1);
     public final NumberSetting particlesCount = new NumberSetting("Particles Count", this, 4, 4, 200, 1);
@@ -67,11 +69,10 @@ public class BlowParticles extends Module {
             RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(false);
-            BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
             RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-            particles.forEach(p -> p.render(bufferBuilder));
-            BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+            BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+            particles.forEach(p -> p.render(BUILDER));
+            BufferRenderer.drawWithGlobalProgram(BUILDER.end());
             RenderSystem.depthMask(true);
             RenderSystem.disableDepthTest();
             RenderSystem.disableBlend();
@@ -87,7 +88,8 @@ public class BlowParticles extends Module {
     public class ParticleBase {
 
         protected float prevposX, prevposY, prevposZ, posX, posY, posZ, motionX, motionY, motionZ;
-        protected int age, maxAge;
+        protected int age;
+        protected final int maxAge;
 
         public ParticleBase(float posX, float posY, float posZ, float motionX, float motionY, float motionZ) {
             this.posX = posX;

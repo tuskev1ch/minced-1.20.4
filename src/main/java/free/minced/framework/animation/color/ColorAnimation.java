@@ -32,7 +32,7 @@ public class ColorAnimation {
         b.run(color.getBlue());
     }
 
-    public CustomColor getColor() {;
+    public CustomColor getColor() {
         return new CustomColor(r.getNumberValue().intValue(), g.getNumberValue().intValue(), b.getNumberValue().intValue());
     }
 

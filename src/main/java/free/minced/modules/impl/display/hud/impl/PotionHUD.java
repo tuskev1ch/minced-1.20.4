@@ -2,19 +2,14 @@ package free.minced.modules.impl.display.hud.impl;
 
 
 
-import lombok.Getter;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffectUtil;
 import net.minecraft.text.Text;
-import net.minecraft.util.StringHelper;
 import net.minecraft.util.math.MathHelper;
 import free.minced.Minced;
 import free.minced.events.Event;
 import free.minced.events.impl.render.Render2DEvent;
 
-import free.minced.framework.animation.normal.Animation;
-import free.minced.framework.animation.normal.Easing;
 import free.minced.framework.color.ColorHandler;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;

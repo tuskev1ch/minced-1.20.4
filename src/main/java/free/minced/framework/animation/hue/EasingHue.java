@@ -247,7 +247,7 @@ public interface EasingHue {
             if (t == 0) return b;
             if ((t /= d) == 1) return b + c;
             if (p == 0) p = d * .3f;
-            float s = 0;
+            float s;
             if (a < Math.abs(c)) {
                 a = c;
                 s = p / 4;
@@ -274,7 +274,7 @@ public interface EasingHue {
             if (t == 0) return b;
             if ((t /= d) == 1) return b + c;
             if (p == 0) p = d * .3f;
-            float s = 0;
+            float s;
             if (a < Math.abs(c)) {
                 a = c;
                 s = p / 4;
@@ -301,7 +301,7 @@ public interface EasingHue {
             if (t == 0) return b;
             if ((t /= d / 2) == 2) return b + c;
             if (p == 0) p = d * (.3f * 1.5f);
-            float s = 0;
+            float s;
             if (a < Math.abs(c)) {
                 a = c;
                 s = p / 4f;
@@ -315,12 +315,25 @@ public interface EasingHue {
     /**
      * A base class for Back EasingHues.
      */
+    @Getter
+    @Setter
     abstract class Back implements EasingHue {
         /**
          * The default overshoot is 10% (1.70158).
          */
         public static final float DEFAULT_OVERSHOOT = 1.70158f;
 
+        /**
+         * -- SETTER --
+         *  Sets the overshoot to the given value.
+         *
+         *
+         * -- GETTER --
+         *  Returns the overshoot for this EasingHue.
+         *
+         @param overshoot the new overshoot
+          * @return this EasingHue's overshoot
+         */
         private float overshoot;
 
         /**
@@ -341,23 +354,6 @@ public interface EasingHue {
             this.overshoot = overshoot;
         }
 
-        /**
-         * Returns the overshoot for this EasingHue.
-         *
-         * @return this EasingHue's overshoot
-         */
-        public float getOvershoot() {
-            return overshoot;
-        }
-
-        /**
-         * Sets the overshoot to the given value.
-         *
-         * @param overshoot the new overshoot
-         */
-        public void setOvershoot(float overshoot) {
-            this.overshoot = overshoot;
-        }
     }
 
     /////////// BOUNCE EasingHue: exponentially decaying parabolic bounce  //////////////
@@ -413,8 +409,8 @@ public interface EasingHue {
 
         public float ease(float t, float b, float c, float d) {
             float s = getOvershoot();
-            if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;
-            return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
+            if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= 1.525F) + 1) * t - s)) + b;
+            return c / 2 * ((t -= 2) * t * (((s *= 1.525F) + 1) * t + s) + 2) + b;
         }
     }
 }

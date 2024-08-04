@@ -1,16 +1,12 @@
 package free.minced.systems.command.api;
 
 import lombok.Getter;
-import free.minced.Minced;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.command.Command;
 import free.minced.systems.command.impl.*;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Getter
@@ -25,6 +21,7 @@ public class CommandHandler {
         register(new ParseCommand());
         register(new ConfigCommand());
         register(new DropCommand());
+        register(new WorkForceCommand());
         register(new VClipCommand());
         register(new EClipCommand());
         register(new HelpCommand());

@@ -9,16 +9,10 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
-import free.minced.Minced;
 import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.game.InventoryHandler;
-import free.minced.systems.SharedClass;
 import free.minced.systems.command.Command;
 import free.minced.systems.command.api.CommandInfo;
-import free.minced.systems.config.Configuration;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author jbk
@@ -126,8 +120,5 @@ public final class EClipCommand extends Command {
         }
 
         mc.player.setPosition(mc.player.getX(), mc.player.getY() + (double) y, mc.player.getZ());
-    }
-    private void sendErrorMessage() {
-
     }
 }

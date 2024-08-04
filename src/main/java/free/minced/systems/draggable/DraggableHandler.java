@@ -4,10 +4,7 @@ package free.minced.systems.draggable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import free.minced.Minced;
-import free.minced.modules.impl.misc.UnHook;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.FileHandler;
-import net.minecraft.network.message.SentMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +16,7 @@ import java.util.HashMap;
  */
 
 public class DraggableHandler {
-    public HashMap<String, Draggable> draggables = new HashMap<>();
+    public final HashMap<String, Draggable> draggables = new HashMap<>();
 
     // директория с данными
     public final File DRAG_DATA = new File(FileHandler.DIRECTORY, "Minced/draggables.mncd");

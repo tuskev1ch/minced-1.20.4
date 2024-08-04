@@ -1,8 +1,10 @@
 package free.minced.events.impl.input;
 
 import free.minced.events.Event;
+import lombok.Getter;
 import net.minecraft.screen.slot.SlotActionType;
 
+@Getter
 public class EventClickSlot extends Event {
 
     private final SlotActionType slotActionType;
@@ -15,19 +17,4 @@ public class EventClickSlot extends Event {
         this.slotActionType = slotActionType;
     }
 
-    public SlotActionType getSlotActionType() {
-        return slotActionType;
-    }
-
-    public int getSlot() {
-        return slot;
-    }
-
-    public int getButton() {
-        return button;
-    }
-
-    public int getId() {
-        return id;
-    }
 }

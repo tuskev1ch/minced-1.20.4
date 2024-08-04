@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL40C;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -32,24 +31,24 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.lang.Math;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static free.minced.framework.color.ClientColors.getTheme;
+import static free.minced.primary.IAccess.BUILDER;
+import static free.minced.primary.IAccess.TESSELLATOR;
 
 
 public class DrawHandler implements IHolder {
-    public static HashMap<Integer, BlurredShadow> shadowCache = new HashMap<>();
+    public static final HashMap<Integer, BlurredShadow> shadowCache = new HashMap<>();
 
-    public static List<FillAction> FILLED_QUEUE = new ArrayList<>();
-    public static List<OutlineAction> OUTLINE_QUEUE = new ArrayList<>();
-    public static List<FadeAction> FADE_QUEUE = new ArrayList<>();
-    public static List<FillSideAction> FILLED_SIDE_QUEUE = new ArrayList<>();
-    public static List<OutlineSideAction> OUTLINE_SIDE_QUEUE = new ArrayList<>();
-    public static List<DebugLineAction> DEBUG_LINE_QUEUE = new ArrayList<>();
-    public static List<LineAction> LINE_QUEUE = new ArrayList<>();
+    public static final List<FillAction> FILLED_QUEUE = new ArrayList<>();
+    public static final List<OutlineAction> OUTLINE_QUEUE = new ArrayList<>();
+    public static final List<FadeAction> FADE_QUEUE = new ArrayList<>();
+    public static final List<FillSideAction> FILLED_SIDE_QUEUE = new ArrayList<>();
+    public static final List<OutlineSideAction> OUTLINE_SIDE_QUEUE = new ArrayList<>();
+    public static final List<DebugLineAction> DEBUG_LINE_QUEUE = new ArrayList<>();
+    public static final List<LineAction> LINE_QUEUE = new ArrayList<>();
 
     public static final Matrix4f lastProjMat = new Matrix4f();
     public static final Matrix4f lastModMat = new Matrix4f();
@@ -59,21 +58,19 @@ public class DrawHandler implements IHolder {
 
     public static void onRender3D(MatrixStack stack) {
         if (!FILLED_QUEUE.isEmpty() || !FADE_QUEUE.isEmpty() || !FILLED_SIDE_QUEUE.isEmpty()) {
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferBuilder = tessellator.getBuffer();
 
             RenderSystem.disableDepthTest();
             setupRender();
             RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+            BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
-            FILLED_QUEUE.forEach(action -> setFilledBoxVertexes(bufferBuilder, stack.peek().getPositionMatrix(), action.box(), action.color()));
+            FILLED_QUEUE.forEach(action -> setFilledBoxVertexes(BUILDER, stack.peek().getPositionMatrix(), action.box(), action.color()));
 
-            FADE_QUEUE.forEach(action -> setFilledFadePoints(action.box(), bufferBuilder, stack.peek().getPositionMatrix(), action.color(), action.color2()));
+            FADE_QUEUE.forEach(action -> setFilledFadePoints(action.box(), BUILDER, stack.peek().getPositionMatrix(), action.color(), action.color2()));
 
-            FILLED_SIDE_QUEUE.forEach(action -> setFilledSidePoints(bufferBuilder, stack.peek().getPositionMatrix(), action.box, action.color(), action.side()));
+            FILLED_SIDE_QUEUE.forEach(action -> setFilledSidePoints(BUILDER, stack.peek().getPositionMatrix(), action.box, action.color(), action.side()));
 
-            tessellator.draw();
+            TESSELLATOR.draw();
             endRender();
             RenderSystem.enableDepthTest();
 
@@ -84,24 +81,19 @@ public class DrawHandler implements IHolder {
 
         if (!OUTLINE_QUEUE.isEmpty() || !OUTLINE_SIDE_QUEUE.isEmpty()) {
             setupRender();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
+
             RenderSystem.disableCull();
             RenderSystem.disableDepthTest();
             RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-            buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+            BUILDER.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 
             RenderSystem.lineWidth(2f);
 
-            OUTLINE_QUEUE.forEach(action -> {
-                setOutlinePoints(action.box(), matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color());
-            });
+            OUTLINE_QUEUE.forEach(action -> setOutlinePoints(action.box(), matrixFrom(action.box().minX, action.box().minY, action.box().minZ), BUILDER, action.color()));
 
-            OUTLINE_SIDE_QUEUE.forEach(action -> {
-                setSideOutlinePoints(action.box, matrixFrom(action.box().minX, action.box().minY, action.box().minZ), buffer, action.color(), action.side());
-            });
+            OUTLINE_SIDE_QUEUE.forEach(action -> setSideOutlinePoints(action.box, matrixFrom(action.box().minX, action.box().minY, action.box().minZ), BUILDER, action.color(), action.side()));
 
-            tessellator.draw();
+            TESSELLATOR.draw();
             RenderSystem.enableCull();
             RenderSystem.enableDepthTest();
             endRender();
@@ -112,16 +104,15 @@ public class DrawHandler implements IHolder {
         if (!DEBUG_LINE_QUEUE.isEmpty()) {
             setupRender();
             RenderSystem.disableDepthTest();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
+
             RenderSystem.disableCull();
             RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-            buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.LINES);
+            BUILDER.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.LINES);
             DEBUG_LINE_QUEUE.forEach(action -> {
                 MatrixStack matrices = matrixFrom(action.start.getX(), action.start.getY(), action.start.getZ());
-                vertexLine(matrices, buffer, 0f, 0f, 0f, (float) (action.end.getX() - action.start.getX()), (float) (action.end.getY() - action.start.getY()), (float) (action.end.getZ() - action.start.getZ()), action.color);
+                vertexLine(matrices, BUILDER, 0f, 0f, 0f, (float) (action.end.getX() - action.start.getX()), (float) (action.end.getY() - action.start.getY()), (float) (action.end.getZ() - action.start.getZ()), action.color);
             });
-            tessellator.draw();
+            TESSELLATOR.draw();
             RenderSystem.enableCull();
             RenderSystem.enableDepthTest();
             endRender();
@@ -130,18 +121,16 @@ public class DrawHandler implements IHolder {
 
         if (!LINE_QUEUE.isEmpty()) {
             setupRender();
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
             RenderSystem.disableCull();
             RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
             RenderSystem.lineWidth(2f);
             RenderSystem.disableDepthTest();
-            buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+            BUILDER.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
             LINE_QUEUE.forEach(action -> {
                 MatrixStack matrices = matrixFrom(action.start.getX(), action.start.getY(), action.start.getZ());
-                vertexLine(matrices, buffer, 0f, 0f, 0f, (float) (action.end.getX() - action.start.getX()), (float) (action.end.getY() - action.start.getY()), (float) (action.end.getZ() - action.start.getZ()), action.color);
+                vertexLine(matrices, BUILDER, 0f, 0f, 0f, (float) (action.end.getX() - action.start.getX()), (float) (action.end.getY() - action.start.getY()), (float) (action.end.getZ() - action.start.getZ()), action.color);
             });
-            tessellator.draw();
+            TESSELLATOR.draw();
             RenderSystem.enableCull();
             RenderSystem.lineWidth(1f);
             RenderSystem.enableDepthTest();
@@ -404,15 +393,14 @@ public class DrawHandler implements IHolder {
 
     public static void drawRect(MatrixStack matrices, float x, float y, float width, float height, Color c) {
         Matrix4f matrix = matrices.peek().getPositionMatrix();
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
         setupRender();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-        bufferBuilder.vertex(matrix, x, y + height, 0.0F).color(c.getRGB()).next();
-        bufferBuilder.vertex(matrix, x + width, y + height, 0.0F).color(c.getRGB()).next();
-        bufferBuilder.vertex(matrix, x + width, y, 0.0F).color(c.getRGB()).next();
-        bufferBuilder.vertex(matrix, x, y, 0.0F).color(c.getRGB()).next();
-        Tessellator.getInstance().draw();
+        BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        BUILDER.vertex(matrix, x, y + height, 0.0F).color(c.getRGB()).next();
+        BUILDER.vertex(matrix, x + width, y + height, 0.0F).color(c.getRGB()).next();
+        BUILDER.vertex(matrix, x + width, y, 0.0F).color(c.getRGB()).next();
+        BUILDER.vertex(matrix, x, y, 0.0F).color(c.getRGB()).next();
+        TESSELLATOR.draw();
         endRender();
     }
 
@@ -455,20 +443,18 @@ public class DrawHandler implements IHolder {
         setupRender();
         RenderSystem.disableCull();
         RenderSystem.disableDepthTest();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
         RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-        bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
+        BUILDER.begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
         float cos;
         float sin;
         for (int i = 0; i <= 30; i++) {
             cos = (float) (x + Math.cos(i * 6.28 / 30) * target.getWidth() * 0.8);
             sin = (float) (z + Math.sin(i * 6.28 / 30) * target.getWidth() * 0.8);
 
-            bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) nextY, sin).color(ColorHandler.applyOpacity(ClientColors.getTheme().getAccentColor().brighter(), 170).getRGB()).next();
-            bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) y, sin).color(ColorHandler.applyOpacity(ClientColors.getTheme().getAccentColor().darker(), 0).getRGB()).next();
+            BUILDER.vertex(stack.peek().getPositionMatrix(), cos, (float) nextY, sin).color(ColorHandler.applyOpacity(ClientColors.getTheme().getAccentColor().brighter(), 170).getRGB()).next();
+            BUILDER.vertex(stack.peek().getPositionMatrix(), cos, (float) y, sin).color(ColorHandler.applyOpacity(ClientColors.getTheme().getAccentColor().darker(), 0).getRGB()).next();
         }
-        tessellator.draw();
+        TESSELLATOR.draw();
         RenderSystem.enableCull();
         endRender();
         RenderSystem.enableDepthTest();
@@ -484,17 +470,16 @@ public class DrawHandler implements IHolder {
         RenderSystem.setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
         RenderSystem.disableDepthTest();
         RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+        VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(BUILDER);
         Matrix4f matrix = matrices.getMatrices().peek().getPositionMatrix();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         float size = size1 + 8;
-        bufferBuilder.vertex(matrix, x - (size / 2f), y + size, 0).texture(0f, 1f).next();
-        bufferBuilder.vertex(matrix, x + size / 2f, y + size, 0).texture(1f, 1f).next();
-        bufferBuilder.vertex(matrix, x + size / 2f, y, 0).texture(1f, 0).next();
-        bufferBuilder.vertex(matrix, x - (size / 2f), y, 0).texture(0, 0).next();
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        BUILDER.vertex(matrix, x - (size / 2f), y + size, 0).texture(0f, 1f).next();
+        BUILDER.vertex(matrix, x + size / 2f, y + size, 0).texture(1f, 1f).next();
+        BUILDER.vertex(matrix, x + size / 2f, y, 0).texture(1f, 0).next();
+        BUILDER.vertex(matrix, x - (size / 2f), y, 0).texture(0, 0).next();
+        BufferRenderer.drawWithGlobalProgram(BUILDER.end());
         immediate.draw();
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.defaultBlendFunc();
@@ -559,13 +544,12 @@ public class DrawHandler implements IHolder {
         double z = 0;
         Matrix4f matrix = matrices.peek().getPositionMatrix();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        bufferBuilder.vertex(matrix, (float) x0, (float) y1, (float) z).texture((u) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).next();
-        bufferBuilder.vertex(matrix, (float) x1, (float) y1, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).next();
-        bufferBuilder.vertex(matrix, (float) x1, (float) y0, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v) / (float) textureHeight).next();
-        bufferBuilder.vertex(matrix, (float) x0, (float) y0, (float) z).texture((u) / (float) textureWidth, (v + 0.0F) / (float) textureHeight).next();
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        BUILDER.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+        BUILDER.vertex(matrix, (float) x0, (float) y1, (float) z).texture((u) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).next();
+        BUILDER.vertex(matrix, (float) x1, (float) y1, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v + (float) regionHeight) / (float) textureHeight).next();
+        BUILDER.vertex(matrix, (float) x1, (float) y0, (float) z).texture((u + (float) regionWidth) / (float) textureWidth, (v) / (float) textureHeight).next();
+        BUILDER.vertex(matrix, (float) x0, (float) y0, (float) z).texture((u) / (float) textureWidth, (v + 0.0F) / (float) textureHeight).next();
+        BufferRenderer.drawWithGlobalProgram(BUILDER.end());
     }
 
     public static void registerBufferedImageTexture(Texture i, BufferedImage bi) {
@@ -642,7 +626,7 @@ public class DrawHandler implements IHolder {
     }
 
     public static class BlurredShadow {
-        Texture id;
+        final Texture id;
 
         public BlurredShadow(BufferedImage bufferedImage) {
             this.id = new Texture("texture/remote/" + RandomStringUtils.randomAlphanumeric(16));

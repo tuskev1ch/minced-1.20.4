@@ -1,5 +1,6 @@
 package free.minced.systems.command.impl;
 
+import free.minced.systems.macros.MacrosHandler;
 import net.minecraft.util.Formatting;
 import free.minced.Minced;
 import free.minced.primary.chat.ChatHandler;
@@ -27,17 +28,17 @@ public class MacrosCommand extends Command {
     }
 
     public void clearMacrosList() {
-        Minced.getInstance().getMacrosHandler().macrosList.clear();
+        MacrosHandler.macrosList.clear();
         ChatHandler.display("The list of macros has been cleared!");
         Minced.getInstance().getConfigHandler().saveAutoCfg();
     }
 
     public void displayMacrosList() {
 
-        if (Minced.getInstance().getMacrosHandler().macrosList.isEmpty()) {
+        if (MacrosHandler.macrosList.isEmpty()) {
             ChatHandler.display("Macros list is empty :(");
         } else {
-            for (Macros macros : Minced.getInstance().getMacrosHandler().macrosList) {
+            for (Macros macros : MacrosHandler.macrosList) {
                 ChatHandler.display(Formatting.GRAY + String.valueOf(Formatting.BOLD) + "> " + Formatting.WHITE + "%s [%s]: %s".formatted(
                         Formatting.GRAY + macros.getName() + Formatting.RESET,
                         KeyHandler.getKeyboardKey(macros.getKey()),
@@ -58,7 +59,7 @@ public class MacrosCommand extends Command {
             if (macros == null) {
                 ChatHandler.display("A macro with the name %s was not found!".formatted(name));
             } else {
-                Minced.getInstance().getMacrosHandler().macrosList.remove(macros);
+                MacrosHandler.macrosList.remove(macros);
                 ChatHandler.display("Macro %s was deleted!".formatted(name));
                 Minced.getInstance().getConfigHandler().saveAutoCfg();
             }
@@ -88,7 +89,7 @@ public class MacrosCommand extends Command {
             if (Minced.getInstance().getMacrosHandler().get(macros.getName()) != null) {
                 ChatHandler.display("Макрос %s уже существует!".formatted(name));
             } else {
-                Minced.getInstance().getMacrosHandler().macrosList.add(macros);
+                MacrosHandler.macrosList.add(macros);
                 ChatHandler.display("Макрос %s был добавлен!".formatted(name));
                 Minced.getInstance().getConfigHandler().saveAutoCfg();
             }

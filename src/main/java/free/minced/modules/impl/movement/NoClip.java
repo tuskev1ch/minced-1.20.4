@@ -1,17 +1,13 @@
 package free.minced.modules.impl.movement;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
-import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import free.minced.events.Event;
 import free.minced.events.impl.mobility.EventBreakBlock;
 import free.minced.events.impl.mobility.EventCollision;
 import free.minced.events.impl.player.EventSync;
-import free.minced.events.impl.player.UpdatePlayerEvent;
-import free.minced.mixin.accesors.ILivingEntity;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
@@ -26,8 +22,10 @@ import static free.minced.primary.game.InventoryHandler.getTool;
 @ModuleDescriptor(name = "NoClip", category = ModuleCategory.MOVEMENT)
 public class NoClip extends Module {
     public final ModeSetting mode = new ModeSetting("Mode", this, "None", "None", "Matrix");
-    public BooleanSetting silent = new BooleanSetting("Silent", this, false, () -> !mode.is("Matrix"));
-    public BooleanSetting waitBreak = new BooleanSetting("Wait Break", this, false, () -> !mode.is("Matrix"));
+    public final BooleanSetting noCrawling = new BooleanSetting("No Crawling", this, false, () -> !mode.is("Matrix"));
+
+    public final BooleanSetting silent = new BooleanSetting("Silent", this, false, () -> !mode.is("Matrix"));
+    public final BooleanSetting waitBreak = new BooleanSetting("Wait Break", this, false, () -> !mode.is("Matrix"));
 
     public int clipTimer;
 
@@ -36,6 +34,7 @@ public class NoClip extends Module {
         if (IHolder.fullNullCheck()) {
             return;
         }
+
         if (event instanceof EventCollision e) {
             BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
 
@@ -47,7 +46,9 @@ public class NoClip extends Module {
         }
         if (event instanceof EventSync e) {
             if (clipTimer > 0) clipTimer--;
-
+            if (mc.player.isCrawling() && !noCrawling.isEnabled()) {
+                mc.player.setPose(EntityPose.STANDING);
+            }
             if (mode.is("Matrix") && (mc.player.horizontalCollision || playerInsideBlock()) && !mc.player.isSubmergedInWater() && !mc.player.isInLava()) {
                 double[] dir = MobilityHandler.forward(0.5);
 

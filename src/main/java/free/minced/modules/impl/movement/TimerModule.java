@@ -4,7 +4,6 @@ import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.systems.setting.impl.NumberSetting;
-import lombok.Getter;
 
 @ModuleDescriptor(name = "Timer", category = ModuleCategory.MOVEMENT)
 public class TimerModule extends Module {

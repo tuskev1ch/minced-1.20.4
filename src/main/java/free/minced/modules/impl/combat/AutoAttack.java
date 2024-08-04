@@ -19,9 +19,9 @@ import free.minced.systems.setting.impl.BooleanSetting;
 @ModuleDescriptor(name = "AutoAttack", category = ModuleCategory.COMBAT)
 
 public class AutoAttack extends Module {
-    public BooleanSetting pauseEating = new BooleanSetting("Pause If Eating", this, true);
-    public BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
-    public BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
+    public final BooleanSetting pauseEating = new BooleanSetting("Pause If Eating", this, true);
+    public final BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
+    public final BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
 
     private int delay;
 

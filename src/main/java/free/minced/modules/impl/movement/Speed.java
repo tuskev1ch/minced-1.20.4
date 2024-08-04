@@ -7,22 +7,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
-import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
-import net.minecraft.screen.slot.SlotActionType;
 import free.minced.events.Event;
-import free.minced.events.impl.mobility.EventMove;
 import free.minced.events.impl.mobility.EventPlayerTravel;
-import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import free.minced.primary.chat.ChatHandler;
-import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.game.MobilityHandler;
 import free.minced.systems.setting.impl.ModeSetting;
 import free.minced.systems.setting.impl.NumberSetting;
-
-import static net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket.Mode.START_FALL_FLYING;
 
 @ModuleDescriptor(name = "Speed", category = ModuleCategory.MOVEMENT)
 

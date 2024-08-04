@@ -1,6 +1,5 @@
 package free.minced.mixin;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.util.Formatting;
 import free.minced.Minced;
@@ -33,9 +32,8 @@ public class MixinClientPlayNetworkHandler {
 
             try {
                 // Iterate over the registered commands to find a match
-                for (Command command : Minced.getInstance().getCommandHandler().commands) {
+                for (Command command : CommandHandler.commands) {
                     if (Arrays.stream(command.getAliases()).anyMatch(alias -> alias.equalsIgnoreCase(args[0]))) {
-                        commandFound = true;
                         command.execute(args);
                         ci.cancel(); // Cancel further processing of the chat message
                         return;
@@ -46,10 +44,8 @@ public class MixinClientPlayNetworkHandler {
             }
 
             // If no matching command is found, display an error message
-            if (!commandFound) {
-                ChatHandler.display(Formatting.RED + "Unknown Command. Please check .help" + Formatting.RESET);
-                ci.cancel(); // Cancel further processing of the chat message
-            }
+            ChatHandler.display(Formatting.RED + "Unknown Command. Please check .help" + Formatting.RESET);
+            ci.cancel(); // Cancel further processing of the chat message
         }
     }
 }

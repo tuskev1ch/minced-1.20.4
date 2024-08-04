@@ -1,15 +1,12 @@
 package free.minced.mixin;
 
-import com.llamalad7.mixinextras.sugar.Share;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
-import free.minced.Minced;
 import free.minced.events.EventCollects;
 import free.minced.events.impl.player.PacketEvent;
 import free.minced.modules.Module;
-import free.minced.primary.IHolder;
 import free.minced.systems.SharedClass;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

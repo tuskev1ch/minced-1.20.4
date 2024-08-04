@@ -22,11 +22,11 @@ public class MixinRenderTickCounter {
     private float tickTime;
 
     @Shadow public float tickDelta;
-
     @Inject(method = "beginRenderTick", at = @At("HEAD"), cancellable = true)
     public void modifyTimerSpeed(long timeMillis, CallbackInfoReturnable<Integer> cir) {
 
         TimerModule timerModule = Minced.getInstance().getModuleHandler().get(TimerModule.class);
+        if (timerModule == null) return;
 
         float speed = 1.0F;
         if (timerModule.isEnabled()) {

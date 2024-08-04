@@ -29,8 +29,8 @@ public class Sidebar extends MenuComponent {
     private final float padding = 5;
     private final List<Tab> tabs;
     private float iconTopMargin;
-    private List<PrimaryTheme> themes = Arrays.asList(PrimaryTheme.DARK, PrimaryTheme.BLUE, PrimaryTheme.LIGHT);
-    private int themeIndex = 0;
+    private final List<PrimaryTheme> themes = Arrays.asList(PrimaryTheme.DARK, PrimaryTheme.BLUE, PrimaryTheme.LIGHT);
+    private final int themeIndex = 0;
     private String nameC;
 
     private ColorAnimation firstAnimatedColor;

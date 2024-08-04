@@ -2,7 +2,6 @@ package free.minced.primary.math;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.client.Mouse;
 import free.minced.Minced;
 import free.minced.primary.IHolder;
 import free.minced.primary.math.MathHandler;

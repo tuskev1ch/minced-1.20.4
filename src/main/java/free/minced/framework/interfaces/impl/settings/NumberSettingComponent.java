@@ -28,7 +28,7 @@ public class NumberSettingComponent extends SettingComponent {
 
     // шрифты
 
-    private float sliderY = 3;
+    private final float sliderY = 3;
 
     // размеры
     private float sliderHeight, sliderWidth;

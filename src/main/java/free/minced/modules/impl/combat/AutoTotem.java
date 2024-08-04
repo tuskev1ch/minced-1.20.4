@@ -23,14 +23,19 @@ import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import static free.minced.modules.impl.combat.AutoSwap.findNearestCurrentItem;
 
 @ModuleDescriptor(name = "AutoTotem", category = ModuleCategory.COMBAT)
 public class AutoTotem extends Module {
@@ -83,8 +88,6 @@ public class AutoTotem extends Module {
                 RenderSystem.disableBlend();
 
                 TargetHUD.drawItemStack(event1.getContext(), Items.TOTEM_OF_UNDYING.getDefaultStack(), (int) (mc.getWindow().getScaledWidth() / 2F - 8), (int) (mc.getWindow().getScaledHeight() / 2F + 17.5f), 0.7f);
-/*                event1.getContext().drawItem(Items.TOTEM_OF_UNDYING.getDefaultStack(),
-                        (int) (mc.getWindow().getScaledWidth() / 2F - 8), (int) (mc.getWindow().getScaledHeight() / 2F + 20));*/
 
                 event1.getStack().pop();
             }
@@ -137,6 +140,7 @@ public class AutoTotem extends Module {
         ItemStack stack = mc.player.getOffHandStack();
         return stack.getName().getString().toLowerCase().contains("шар") || stack.getName().getString().toLowerCase().contains("голова") || stack.getName().getString().toLowerCase().contains("head");
     }
+
     public void swapItem(int slot) {
         if (swapMode.is("Window")) {
             mc.interactionManager.clickSlot(0, slot, 1, SlotActionType.PICKUP, mc.player);

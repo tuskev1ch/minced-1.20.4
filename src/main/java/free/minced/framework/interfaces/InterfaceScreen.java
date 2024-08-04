@@ -1,6 +1,7 @@
 package free.minced.framework.interfaces;
 
 
+import free.minced.modules.api.ModuleManager;
 import net.minecraft.client.gui.DrawContext;
 import lombok.Getter;
 import lombok.Setter;
@@ -98,7 +99,7 @@ public class InterfaceScreen extends Screen implements IHolder {
 
 
         alpha.run(closing ? 0 : 1);
-        alpha.setDuration(closing ? 0 : 0);
+        alpha.setDuration(0);
         alpha.setEasing(Easing.EASE_OUT_SINE);
 
         pDrawContext.getMatrices().push();
@@ -170,7 +171,7 @@ public class InterfaceScreen extends Screen implements IHolder {
     public void rebuildModules() {
         moduleList.clear();
 
-        List<Module> sortedModules = Minced.getInstance().getModuleHandler().modules;
+        List<Module> sortedModules = ModuleManager.modules;
         sortedModules.sort((o1, o2) -> Collator.getInstance().compare(o1.getName(), o2.getName()));
         sortedModules.forEach(module -> moduleList.add(new ModuleComponent(module)));
 
@@ -185,11 +186,6 @@ public class InterfaceScreen extends Screen implements IHolder {
             currentScreen.init();
         }
     }
-/*    @Override
-    public void onClose() {
-
-        super.onClose();
-    }*/
 
 
     @Override

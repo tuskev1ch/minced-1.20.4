@@ -20,8 +20,6 @@ import free.minced.framework.render.DrawHandler;
 import free.minced.framework.color.ClientColors;
 import free.minced.framework.font.Fonts;
 import free.minced.systems.setting.Setting;
-import free.minced.systems.setting.impl.BooleanSetting;
-import free.minced.systems.setting.impl.ModeSetting;
 import free.minced.systems.setting.impl.*;
 import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ public class ModuleComponent extends MenuComponent {
 
     private float headerHeight;
 
-    public ArrayList<SettingComponent> settings = new ArrayList<>();
+    public final ArrayList<SettingComponent> settings = new ArrayList<>();
 
     // другое
     private float spacing, margin;

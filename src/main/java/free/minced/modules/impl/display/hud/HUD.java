@@ -5,7 +5,6 @@ package free.minced.modules.impl.display.hud;
 import free.minced.modules.impl.misc.NameProtect;
 import lombok.Getter;
 import net.minecraft.client.util.math.MatrixStack;
-import free.minced.Minced;
 import free.minced.addition.ProfileHandler;
 import free.minced.events.Event;
 import free.minced.events.impl.render.Render2DEvent;
@@ -23,11 +22,6 @@ import free.minced.primary.other.ServerHandler;
 import free.minced.framework.font.Fonts;
 import free.minced.systems.setting.impl.MultiBoxSetting;
 import free.minced.systems.setting.impl.NumberSetting;
-import org.joml.Vector2f;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @ModuleDescriptor(name = "HUD",  category = ModuleCategory.DISPLAY)
@@ -60,7 +54,10 @@ public class HUD extends Module {
     }
 
     public void drawStringCoords(MatrixStack pMatrixStack, boolean reversed) {
-        String name = "Coords: " + String.format("%s %s %s", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ());
+        String name = null;
+        if (mc.player != null) {
+            name = "Coords: " + String.format("%s %s %s", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ());
+        }
         float x = reversed ? sr.getScaledWidth().floatValue() - 9 - Fonts.SEMI_16.getStringWidth(name) - 6 : 9;
         float y = sr.getScaledHeight().floatValue() - 22.5f;
 

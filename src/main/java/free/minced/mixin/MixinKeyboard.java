@@ -13,7 +13,7 @@ import static free.minced.primary.IHolder.mc;
 @Mixin(Keyboard.class)
 public class MixinKeyboard {
 
-    @Inject(method = "onKey", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "onKey", at = @At("HEAD"))
     private void onKey(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
         boolean whitelist = mc.currentScreen == null;
         if (!whitelist) return;

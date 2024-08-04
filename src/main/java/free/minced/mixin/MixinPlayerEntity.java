@@ -22,7 +22,9 @@ public class MixinPlayerEntity {
     public void attackAHook(CallbackInfo callbackInfo) {
         if (Minced.getInstance().getModuleHandler().get(AutoSprint.class).isEnabled() && Minced.getInstance().getModuleHandler().get(AutoSprint.class).keepSprint.isEnabled()) {
             final float multiplier = 0.6f + 0.4f * 1;
-            IHolder.mc.player.setVelocity(IHolder.mc.player.getVelocity().x / 0.6 * multiplier, IHolder.mc.player.getVelocity().y, IHolder.mc.player.getVelocity().z / 0.6 * multiplier);
+            if (IHolder.mc.player != null) {
+                IHolder.mc.player.setVelocity(IHolder.mc.player.getVelocity().x / 0.6 * multiplier, IHolder.mc.player.getVelocity().y, IHolder.mc.player.getVelocity().z / 0.6 * multiplier);
+            }
             IHolder.mc.player.setSprinting(true);
         }
     }

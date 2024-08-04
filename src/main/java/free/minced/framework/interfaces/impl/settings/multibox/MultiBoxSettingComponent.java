@@ -1,7 +1,6 @@
 package free.minced.framework.interfaces.impl.settings.multibox;
 
 
-import free.minced.framework.render.ScissorHandler;
 import net.minecraft.client.gui.DrawContext;
 import lombok.Getter;
 import free.minced.framework.interfaces.api.SettingComponent;

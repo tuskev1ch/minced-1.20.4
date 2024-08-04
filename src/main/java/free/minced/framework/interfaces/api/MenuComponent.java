@@ -23,9 +23,6 @@ public class MenuComponent extends GuiHandler implements IHolder {
     public void mouseReleased(double mouseX, double mouseY, int button) {
     }
 
-    public void mouseScrolled(double mouseX, double mouseY, double delta) {
-    }
-
     public void keyPressed(int keyCode, int scanCode, int modifiers) {
     }
 

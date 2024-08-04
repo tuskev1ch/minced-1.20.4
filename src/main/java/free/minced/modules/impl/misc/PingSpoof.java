@@ -7,15 +7,12 @@ import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.modules.impl.movement.Scaffold;
-import free.minced.primary.IHolder;
 import free.minced.systems.setting.impl.BooleanSetting;
 import free.minced.systems.setting.impl.NumberSetting;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import net.minecraft.network.packet.c2s.common.KeepAliveC2SPacket;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 
 import java.util.HashSet;
 
@@ -23,8 +20,8 @@ import java.util.HashSet;
 @ModuleDescriptor(name = "PingSpoof", category = ModuleCategory.MISC)
 public class PingSpoof extends Module {
 
-    public NumberSetting ping = new NumberSetting("Ping",this,500f,1f,1500f,1f);
-    public BooleanSetting scaffoldOnly = new BooleanSetting("Scaffold only", this, false);
+    public final NumberSetting ping = new NumberSetting("Ping",this,500f,1f,1500f,1f);
+    public final BooleanSetting scaffoldOnly = new BooleanSetting("Scaffold only", this, false);
     private final Object2LongMap<KeepAliveC2SPacket> packets = new Object2LongOpenHashMap<>();
 
     @Override
@@ -50,7 +47,7 @@ public class PingSpoof extends Module {
             if (mc.player == null || mc.world == null) return;
 
             for (KeepAliveC2SPacket packet : new HashSet<>(this.packets.keySet())) {
-                if (this.packets.getLong(packet) + (long) ping.getValue().longValue() <= System.currentTimeMillis()) {
+                if (this.packets.getLong(packet) + ping.getValue().longValue() <= System.currentTimeMillis()) {
                     mc.getNetworkHandler().sendPacket(packet);
                     break;
                 }
@@ -65,7 +62,7 @@ public class PingSpoof extends Module {
 
         if (!this.packets.isEmpty()) {
             for (KeepAliveC2SPacket packet : new HashSet<>(this.packets.keySet())) {
-                if (this.packets.getLong(packet) + (long) this.ping.getValue().longValue() <= System.currentTimeMillis()) {
+                if (this.packets.getLong(packet) + this.ping.getValue().longValue() <= System.currentTimeMillis()) {
                     mc.getNetworkHandler().sendPacket(packet);
                 }
             }

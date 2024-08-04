@@ -1,11 +1,12 @@
 package free.minced.framework.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import free.minced.primary.AdjustedDisplay;
 import free.minced.primary.IHolder;
 
 public class ScissorHandler implements IHolder {
     public static void doScissor(double x, double y, double width, double height) {
-        final double scale = sr.getScaleFactor().doubleValue();
+        final double scale = AdjustedDisplay.getScaleFactor().doubleValue();
 
         y = sr.getScaledHeight().floatValue() - y;
 

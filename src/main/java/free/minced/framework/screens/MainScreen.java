@@ -2,7 +2,6 @@ package free.minced.framework.screens;
 
 
 import free.minced.framework.screens.elements.AltManagerElement;
-import lombok.Getter;
 
 
 import free.minced.framework.buttons.impl.TextButtonElement;
@@ -18,9 +17,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.screen.option.OptionsScreen;
 import net.minecraft.client.gui.screen.world.SelectWorldScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import org.lwjgl.glfw.GLFW;
 
 
 /**
@@ -40,7 +37,7 @@ public class MainScreen extends Screen implements IHolder {
     // элементы
     public static AltManagerElement altManagerElement;
     // элементы
-    private TextButtonElement multiPlayerButton, settingsButton, exitButton;
+    private TextButtonElement singlePlayerButton, multiPlayerButton, settingsButton, exitButton;
 
 
     @Override
@@ -63,11 +60,13 @@ public class MainScreen extends Screen implements IHolder {
         float buttonY = sr.getScaledHeight().floatValue() / 2f - buttonHeight; // не делим на два потому что кнопки будут в два ряда
         float buttonX = sr.getScaledWidth().floatValue() / 2f - buttonWidth / 2f;
 
-        this.multiPlayerButton = new TextButtonElement(buttonX, buttonY, buttonWidth, buttonHeight, () -> mc.setScreen(new MultiplayerScreen(this)), "Multiplayer");
+        this.singlePlayerButton = new TextButtonElement(buttonX, buttonY, buttonWidth, buttonHeight, () -> mc.setScreen(new SelectWorldScreen(this)), "Singleplayer");
 
-        this.settingsButton = new TextButtonElement(buttonX, buttonY + buttonSpacing + buttonHeight, buttonWidth, buttonHeight, () -> mc.setScreen(new OptionsScreen(this, mc.options)), "Settings");
+        this.multiPlayerButton = new TextButtonElement(buttonX, buttonY + buttonHeight + buttonSpacing, buttonWidth, buttonHeight, () -> mc.setScreen(new MultiplayerScreen(this)), "Multiplayer");
 
-        this.exitButton = new TextButtonElement(buttonX, buttonY + buttonSpacing * 2 + buttonHeight * 2, buttonWidth, buttonHeight, () -> altManagerElement.setDisplayingElement(true), "AltManager");
+        this.settingsButton = new TextButtonElement(buttonX, buttonY + buttonSpacing * 2 + buttonHeight * 2, buttonWidth, buttonHeight, () -> altManagerElement.setDisplayingElement(true), "AltManager");
+
+        this.exitButton = new TextButtonElement(buttonX, buttonY + buttonSpacing * 3 + buttonHeight * 3, buttonWidth, buttonHeight, () ->  mc.setScreen(new OptionsScreen(this, mc.options)), "Settings");
 
         // элементы
         float altManagerWidth = 200;
@@ -97,6 +96,7 @@ public class MainScreen extends Screen implements IHolder {
         Fonts.UNBOUNDED_BOLD.drawCenteredString(pPoseStack.getMatrices(), Minced.NAME.toUpperCase(), width / 2f, height / 2f - 30 - 15 / 2f, ClientColors.getFontColor().getRGB());
 
         // кнопки
+        singlePlayerButton.draw(pPoseStack.getMatrices(), pMouseX, pMouseY);
         multiPlayerButton.draw(pPoseStack.getMatrices(), pMouseX, pMouseY);
         settingsButton.draw(pPoseStack.getMatrices(), pMouseX, pMouseY);
         exitButton.draw(pPoseStack.getMatrices(), pMouseX, pMouseY);
@@ -114,6 +114,7 @@ public class MainScreen extends Screen implements IHolder {
 
         // регистрируем нажатия по кнопкам
         if (!altManagerElement.isDisplayingElement()) {
+            singlePlayerButton.mouseClicked(mouseX, mouseY, button);
             multiPlayerButton.mouseClicked(mouseX, mouseY, button);
             settingsButton.mouseClicked(mouseX, mouseY, button);
             exitButton.mouseClicked(mouseX, mouseY, button);

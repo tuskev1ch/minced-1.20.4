@@ -5,15 +5,12 @@ import free.minced.modules.impl.misc.Optimization;
 import free.minced.modules.impl.render.ItemPhysic;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
@@ -22,6 +19,7 @@ import net.minecraft.util.math.random.Random;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -38,6 +36,7 @@ public abstract class MixinItemEntityRenderer {
     private ItemRenderer itemRenderer;
 
     // я ебанутый хаха
+    @Unique
     private int getRenderedAmount(ItemStack stack) {
         Optimization a1 = Minced.getInstance().getModuleHandler().get(Optimization.class);
         int i = 1;
@@ -54,13 +53,14 @@ public abstract class MixinItemEntityRenderer {
         return a1.isEnabled() && a1.getLimits().get("Dropped Items").isEnabled() ? 1 : i;
     }
 
+    @Unique
     public void render2(ItemEntity pEntity, float pEntityYaw, float pPartialTicks, MatrixStack pMatrixStack, VertexConsumerProvider pBuffer, int pPackedLight) {
         pMatrixStack.push();
         ItemStack itemstack = pEntity.getStack();
         int i = itemstack.isEmpty() ? 187 : Item.getRawId(itemstack.getItem()) + itemstack.getDamage();
 
-        this.random.setSeed((long)i);
-        BakedModel bakedmodel = this.itemRenderer.getModel(itemstack, pEntity.getWorld(), (LivingEntity)null, pEntity.getId());
+        this.random.setSeed(i);
+        BakedModel bakedmodel = this.itemRenderer.getModel(itemstack, pEntity.getWorld(), null, pEntity.getId());
         boolean flag = bakedmodel.hasDepth();
         int j = this.getRenderedAmount(itemstack);
         float f = 0.25F;

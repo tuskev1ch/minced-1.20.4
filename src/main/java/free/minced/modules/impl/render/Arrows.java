@@ -1,12 +1,10 @@
 package free.minced.modules.impl.render;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.Minced;
 import free.minced.events.Event;
 import free.minced.events.impl.render.Render2DEvent;
 import free.minced.framework.color.ClientColors;
-import free.minced.framework.color.CustomColor;
 import free.minced.framework.font.Fonts;
 import free.minced.framework.render.DrawHandler;
 import free.minced.modules.Module;
@@ -20,12 +18,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.EnderPearlEntity;
 import net.minecraft.util.math.RotationAxis;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
-
-import static free.minced.framework.render.DrawHandler.getRotations;
 
 @ModuleDescriptor(name = "Arrows", category = ModuleCategory.RENDER)
 public class Arrows extends Module {
@@ -42,7 +36,7 @@ public class Arrows extends Module {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof EnderPearlEntity pearl && targets.get("Ender Pearl").isEnabled()) {
 
-                    float yaw = (float) (getRotations(pearl) - mc.player.getYaw());
+                    float yaw = getRotations(pearl) - mc.player.getYaw();
                     render2DEvent.getStack().translate(middleW, middleH, 0.0F);
                     render2DEvent.getStack().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
                     render2DEvent.getStack().translate(-middleW, -middleH, 0.0F);
@@ -64,7 +58,7 @@ public class Arrows extends Module {
                     if (Minced.getInstance().getModuleHandler().get(AntiBot.class).isEnabled() && AntiBot.isBot(player)) continue;
 
 
-                    float yaw = (float) (getRotations(player) - mc.player.getYaw());
+                    float yaw = getRotations(player) - mc.player.getYaw();
                     render2DEvent.getStack().translate(middleW, middleH, 0.0F);
                     render2DEvent.getStack().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
                     render2DEvent.getStack().translate(-middleW, -middleH, 0.0F);

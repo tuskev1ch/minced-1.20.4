@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 @ModuleDescriptor(name = "NameProtect", category = ModuleCategory.MISC)
 public class NameProtect extends Module {
-    public BooleanSetting hideFriends = new BooleanSetting("Hide Friends", this, false);
+    public final BooleanSetting hideFriends = new BooleanSetting("Hide Friends", this, false);
     private final StringSetting name = new StringSetting("Message", this, "Minced", 12);
 
 

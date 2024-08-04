@@ -29,7 +29,9 @@ public abstract class MixinCamera {
         
         Flight flight = Minced.getInstance().getModuleHandler().get(Flight.class);
         if (flight.shouldFixElytra()) {
-            args.set(1, flight.getFakeY() + mc.player.getEyeHeight(EntityPose.STANDING));
+            if (mc.player != null) {
+                args.set(1, flight.getFakeY() + mc.player.getEyeHeight(EntityPose.STANDING));
+            }
         }
     }
     @Inject(method = "update", at = @At("TAIL"))

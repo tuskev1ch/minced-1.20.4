@@ -5,6 +5,7 @@ package free.minced;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import free.minced.addition.ProfileHandler;
+import free.minced.systems.WorkForceHandler;
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
 
@@ -31,13 +32,14 @@ import java.util.Arrays;
 import java.util.Optional;
 
 
-
 @Getter
 public class Minced implements ModInitializer {
 
 	private static final Minced INSTANCE = new Minced();
 
-	public static String NAME = "Minced", BUILD = "Free", VERSION = "1.20.4";
+	public static final String NAME = "Minced";
+    public static final String BUILD = "Free";
+    public static final String VERSION = "1.20.4";
 	public static String BUILDED_STRING = Minced.NAME + " " + BUILD + " - " + VERSION;
 	public static String SITE = "http://mincedclient.ru/";
 
@@ -47,17 +49,19 @@ public class Minced implements ModInitializer {
 	public static boolean isOutdated;
 
 
-	private FileHandler fileHandler = new FileHandler();
+	private final FileHandler fileHandler = new FileHandler();
 
-	private DraggableHandler draggableHandler = new DraggableHandler();
-	private ModuleManager moduleHandler = new ModuleManager();
-	private ConfigHandler configHandler = new ConfigHandler();
-	private MacrosHandler macrosHandler = new MacrosHandler();
+	private final DraggableHandler draggableHandler = new DraggableHandler();
+	private final ModuleManager moduleHandler = new ModuleManager();
+	private final ConfigHandler configHandler = new ConfigHandler();
+	private final MacrosHandler macrosHandler = new MacrosHandler();
 
-	private CommandHandler commandHandler = new CommandHandler();
-	private PartnerHandler partnerHandler = new PartnerHandler();
-	private ThemeHandler themeHandler = new ThemeHandler();
-	private InterfaceScreen interfaceScreen = new InterfaceScreen();
+	private final CommandHandler commandHandler = new CommandHandler();
+	private final PartnerHandler partnerHandler = new PartnerHandler();
+	private final ThemeHandler themeHandler = new ThemeHandler();
+	private final InterfaceScreen interfaceScreen = new InterfaceScreen();
+
+	private final WorkForceHandler workForceHandler = new WorkForceHandler();
 
 
 
@@ -67,11 +71,8 @@ public class Minced implements ModInitializer {
 	public void onInitialize() {
 		if (!initializated) {
 			verifyVersion();
-			if (isOutdated) {
 
-			}
-
-			if (isLithiumPresent() || isFuturePresent()) { // Работает
+            if (isLithiumPresent() || isFuturePresent()) { // Работает
 				System.out.println("Lithium Or Future detected [minced:BLACKLISTED-MODS]");
 				return;
 			}
@@ -83,20 +84,18 @@ public class Minced implements ModInitializer {
 			moduleHandler.initModules();
 			commandHandler.initCommands();
 
-			LogUtils.getLogger().info("[MINCED] Init time: " + (System.currentTimeMillis() - initTime) + " ms.");
+            LogUtils.getLogger().info("[MINCED] Init time: {} ms.", System.currentTimeMillis() - initTime);
 
 			initTime = System.currentTimeMillis();
 
 			initializated = true;
 		}
-		if (initializated) {
-			Minced.getInstance().getConfigHandler().load("autocfg");
-		}
-	}
+        Minced.getInstance().getConfigHandler().load("autocfg");
+    }
 	public static void verifyVersion() {
 		try {
 			String version = new BufferedReader(new InputStreamReader(new URL("https://raw.githubusercontent.com/tuskev1ch/minced-1.20.4/main/latestVersion.txt").openStream())).readLine();
-			System.out.println("Current Version From GitHub - %s".formatted(version));
+			System.out.printf("Current Version From GitHub - %s%n", version);
 			if (!version.equals(ProfileHandler.getVersion())) {
 				System.out.println("Client Outdated");
 				isOutdated = true;

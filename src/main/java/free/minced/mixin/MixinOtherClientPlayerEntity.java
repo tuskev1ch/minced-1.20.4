@@ -32,11 +32,9 @@ public class MixinOtherClientPlayerEntity extends AbstractClientPlayerEntity imp
         Vec3d from = new Vec3d(((IEntityLiving) this).getPrevServerX(), ((IEntityLiving) this).getPrevServerY(), ((IEntityLiving) this).getPrevServerZ());
         Vec3d to = new Vec3d(serverX, serverY, serverZ);
 
-            if (mc.player.squaredDistanceTo(from) > mc.player.squaredDistanceTo(to)) {
-                setPosition(to.x, to.y, to.z);
-            } else {
-                setPosition(from.x, from.y, from.z);
-            }
+        if (mc.player != null && mc.player.squaredDistanceTo(from) > mc.player.squaredDistanceTo(to)) {
+            setPosition(to.x, to.y, to.z);
+        }
 
 
     }

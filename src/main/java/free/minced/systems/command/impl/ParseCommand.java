@@ -1,13 +1,10 @@
 package free.minced.systems.command.impl;
 
-import free.minced.Minced;
 import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.FileHandler;
 import free.minced.systems.command.Command;
 import free.minced.systems.command.api.CommandInfo;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.scoreboard.Team;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.io.File;
@@ -17,8 +14,6 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static com.mojang.brigadier.Command.SINGLE_SUCCESS;
 
 @CommandInfo(name = "Parser", description = "parse a player's list", aliases = {"parse", "parser"})
 public class ParseCommand extends Command {

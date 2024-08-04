@@ -6,7 +6,7 @@ import free.minced.events.Event;
 
 public class EventCollision extends Event {
     private BlockState bs;
-    private BlockPos bp;
+    private final BlockPos bp;
 
     public EventCollision(BlockState bs, BlockPos bp) {
         this.bs = bs;

@@ -1,6 +1,7 @@
 package free.minced.modules.impl.misc;
 
 
+import free.minced.systems.setting.impl.ModeSetting;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
@@ -16,13 +17,15 @@ import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.game.SearchInvResult;
 import free.minced.systems.setting.impl.BindSetting;
-import org.lwjgl.glfw.GLFW;
 
 @ModuleDescriptor(name = "ElytraUtils", category = ModuleCategory.MISC)
 
 public class ElytraUtils extends Module {
     private final BindSetting ElytraUtilsBind = new BindSetting("Elytra Swap Bind", this, -1);
     private final BindSetting ElytraFireworkBind = new BindSetting("Elytra FireWork Bind", this, -1);
+
+    public final ModeSetting mode = new ModeSetting("Swing Mode",  this, "Packet",  "Packet", "None");
+
 
     @Override
     public void onEvent(Event event) {
@@ -64,12 +67,11 @@ public class ElytraUtils extends Module {
 
         if (hotbarFireWorkResult.found()) {
             IHolder.sendPacket(new UpdateSelectedSlotC2SPacket(hotbarFireWorkResult.slot()));
-
             IHolder.sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, id));
-            IHolder.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
-
+            if (mode.is("Packet")) {
+                IHolder.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+            }
             IHolder.sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot));
-
         } else {
             ChatHandler.display("Феерверки не найдены");
         }

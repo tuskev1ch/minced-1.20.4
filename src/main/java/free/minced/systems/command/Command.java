@@ -3,7 +3,6 @@ package free.minced.systems.command;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.util.Formatting;
-import free.minced.Minced;
 import free.minced.primary.IHolder;
 import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.command.api.CommandInfo;

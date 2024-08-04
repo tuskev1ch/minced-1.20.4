@@ -2,9 +2,6 @@ package free.minced.systems.command.impl;
 
 
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.util.Formatting;
-import free.minced.Minced;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.SharedClass;
 import free.minced.systems.command.Command;
 import free.minced.systems.command.api.CommandInfo;

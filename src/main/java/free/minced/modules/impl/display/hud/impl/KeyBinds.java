@@ -2,6 +2,7 @@ package free.minced.modules.impl.display.hud.impl;
 
 
 
+import free.minced.modules.api.ModuleManager;
 import net.minecraft.client.util.math.MatrixStack;
 import free.minced.Minced;
 import free.minced.events.Event;
@@ -30,7 +31,7 @@ public class KeyBinds extends AbstractHUDElement {
     private final Draggable draggable = registerDraggable(this, "Keybinds", 50, 50);
 
     public List<Module> getValidModules() {
-        return Minced.getInstance().getModuleHandler().modules.stream()
+        return ModuleManager.modules.stream()
                 .filter(module -> {
                     module.getEnableAnimation().run(module.isEnabled() ? 1 : 0);
                     return module.getKey() != GLFW.GLFW_KEY_UNKNOWN

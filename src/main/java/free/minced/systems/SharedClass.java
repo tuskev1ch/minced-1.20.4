@@ -1,7 +1,6 @@
 package free.minced.systems;
 
 
-import free.minced.primary.chat.ChatHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.entity.EquipmentSlot;
@@ -30,7 +29,7 @@ import static free.minced.primary.IHolder.fullNullCheck;
 import static free.minced.primary.IHolder.mc;
 
 public class SharedClass {
-    public static ExecutorService executor = Executors.newCachedThreadPool();
+    public static final ExecutorService executor = Executors.newCachedThreadPool();
     public static int ticksElytraFlying, serverSideSlot;
     public static boolean lockSprint;
     public static boolean serverSprint;
@@ -70,7 +69,10 @@ public class SharedClass {
         if (!fullNullCheck()) {
             EventCollects.call(new InputEvent(1, key));
         }
-        if (!Minced.getInstance().getModuleHandler().get(UnHook.class).isEnabled()) {
+        if (Minced.getInstance().getModuleHandler().get(UnHook.class).isEnabled() &&
+                Minced.getInstance().getModuleHandler().get(UnHook.class).getKey() != key) return;
+
+            if (!Minced.getInstance().getModuleHandler().get(UnHook.class).isEnabled()) {
             if (key == GLFW.GLFW_KEY_RIGHT_SHIFT && MinecraftClient.getInstance() != null) {
                 MinecraftClient.getInstance().setScreen(Minced.getInstance().getInterfaceScreen());
             }

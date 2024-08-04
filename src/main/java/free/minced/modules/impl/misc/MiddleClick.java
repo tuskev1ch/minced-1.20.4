@@ -1,28 +1,23 @@
 package free.minced.modules.impl.misc;
 
 
-import com.llamalad7.mixinextras.sugar.Share;
+
 import lombok.Getter;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
 import free.minced.Minced;
 import free.minced.events.Event;
-import free.minced.events.impl.input.EventMouse;
 import free.minced.events.impl.player.EventSync;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import free.minced.modules.impl.combat.AttackAura;
 import free.minced.primary.IHolder;
 import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.time.TimerHandler;
-import free.minced.systems.SharedClass;
-import free.minced.systems.rotations.Rotations;
+
 import free.minced.systems.setting.impl.BooleanSetting;
 
 import java.util.function.Consumer;

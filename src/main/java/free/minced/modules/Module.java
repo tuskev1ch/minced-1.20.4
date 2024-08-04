@@ -14,7 +14,6 @@ import free.minced.framework.animation.normal.Animation;
 import free.minced.framework.animation.normal.Easing;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import free.minced.modules.impl.display.ClickGUI;
 import free.minced.modules.impl.misc.UnHook;
 import free.minced.primary.IHolder;
 import free.minced.primary.module.ModuleHandler;
@@ -169,6 +168,7 @@ public abstract class Module extends ModuleHandler implements IHolder, EventLogi
 
         EventCollects.registerListener(this);
     }
+
     public long getSetBackTime() {
         return setBackTimer.getPassedTimeMs();
     }

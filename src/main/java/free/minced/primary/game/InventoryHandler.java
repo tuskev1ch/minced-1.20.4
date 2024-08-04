@@ -10,7 +10,6 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.loot.function.SetAttributesLootFunction;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 import free.minced.mixin.accesors.IInteractionManager;
@@ -29,8 +28,6 @@ public class InventoryHandler implements IHolder {
         for (int i = 0; i < 9; ++i) {
             final ItemStack stack = mc.player.getInventory().getStack(i);
             if (stack != ItemStack.EMPTY) {
-/*                if (!(mc.player.getInventory().getStack(i).getMaxDamage() - mc.player.getInventory().getStack(i).getDamage() > 10) && saveItem.getValue())
-                    continue;*/
 
                 final float digSpeed = EnchantmentHelper.getLevel(Enchantments.EFFICIENCY, stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));

@@ -11,7 +11,6 @@ import free.minced.framework.animation.normal.Easing;
 import free.minced.framework.render.DrawHandler;
 import free.minced.framework.color.ClientColors;
 import free.minced.framework.font.Fonts;
-import net.fabricmc.fabric.mixin.networking.client.accessor.MinecraftClientAccessor;
 import net.minecraft.client.session.ProfileKeys;
 import net.minecraft.client.session.Session;
 import net.minecraft.client.session.report.AbuseReportContext;
@@ -21,9 +20,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.UserApiService;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.SocialInteractionsManager;
 
 
@@ -98,8 +95,6 @@ public class AccountElement extends CustomElement {
         if (isHovered(x, y, width, height, mouseX, mouseY)) {
             switch (button) {
                 // позволяем менять юзернейм при нажатии на элемент левой кнопкой мыши
-/*                Session session = new Session("scallydima123f", UUID.randomUUID().toString(), "", Optional.empty(), Optional.empty(), Session.AccountType.MOJANG);
-                StringUtil.setSession(session);*/
                 case 0 -> setSession(new Session(getUsername(), UUID.randomUUID(), "", Optional.of("1"), Optional.of("1"), Session.AccountType.MOJANG));                // позволяем удалять аккаунт при нажатии на элемент правой кнопкой мыши
                 case 1 -> {
                     removing = true;

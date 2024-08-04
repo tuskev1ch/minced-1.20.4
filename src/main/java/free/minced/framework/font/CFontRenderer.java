@@ -12,8 +12,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import free.minced.framework.color.ClientColors;
-import free.minced.framework.font.GlyphMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +20,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.Closeable;
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -34,7 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static free.minced.framework.color.ClientColors.getTheme;
-import static free.minced.primary.IHolder.mc;
+import static free.minced.primary.IAccess.BUILDER;
 
 
 public class CFontRenderer implements Closeable {
@@ -172,7 +169,7 @@ public class CFontRenderer implements Closeable {
         if (prebakeGlyphsFuture != null && !prebakeGlyphsFuture.isDone()) {
             try {
                 prebakeGlyphsFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException ignored) {
             }
         }
         sizeCheck();
@@ -189,7 +186,6 @@ public class CFontRenderer implements Closeable {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
-        BufferBuilder bb = Tessellator.getInstance().getBuffer();
         Matrix4f mat = stack.peek().getPositionMatrix();
         char[] chars = s.toCharArray();
         float xOffset = 0;
@@ -247,7 +243,7 @@ public class CFontRenderer implements Closeable {
                 RenderSystem.setShaderTexture(0, identifier);
                 List<DrawEntry> objects = GLYPH_PAGE_CACHE.get(identifier);
 
-                bb.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+                BUILDER.begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
                 for (DrawEntry object : objects) {
                     float xo = object.atX;
@@ -264,12 +260,12 @@ public class CFontRenderer implements Closeable {
                     float u2 = (float) (glyph.u() + glyph.width()) / owner.width;
                     float v2 = (float) (glyph.v() + glyph.height()) / owner.height;
 
-                    bb.vertex(mat, xo + 0, yo + h, 0).texture(u1, v2).color(cr, cg, cb, a).next();
-                    bb.vertex(mat, xo + w, yo + h, 0).texture(u2, v2).color(cr, cg, cb, a).next();
-                    bb.vertex(mat, xo + w, yo + 0, 0).texture(u2, v1).color(cr, cg, cb, a).next();
-                    bb.vertex(mat, xo + 0, yo + 0, 0).texture(u1, v1).color(cr, cg, cb, a).next();
+                    BUILDER.vertex(mat, xo + 0, yo + h, 0).texture(u1, v2).color(cr, cg, cb, a).next();
+                    BUILDER.vertex(mat, xo + w, yo + h, 0).texture(u2, v2).color(cr, cg, cb, a).next();
+                    BUILDER.vertex(mat, xo + w, yo + 0, 0).texture(u2, v1).color(cr, cg, cb, a).next();
+                    BUILDER.vertex(mat, xo + 0, yo + 0, 0).texture(u1, v1).color(cr, cg, cb, a).next();
                 }
-                BufferRenderer.drawWithGlobalProgram(bb.end());
+                BufferRenderer.drawWithGlobalProgram(BUILDER.end());
             }
 
             GLYPH_PAGE_CACHE.clear();

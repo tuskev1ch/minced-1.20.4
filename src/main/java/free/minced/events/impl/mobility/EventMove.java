@@ -2,8 +2,12 @@ package free.minced.events.impl.mobility;
 
 
 import free.minced.events.Event;
+import lombok.Getter;
+import lombok.Setter;
 
 
+@Getter
+@Setter
 public class EventMove extends Event {
     public double x, y, z;
 
@@ -13,27 +17,4 @@ public class EventMove extends Event {
         this.z = z;
     }
 
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public void setZ(double z) {
-        this.z = z;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getX() {
-        return this.x;
-    }
-
-    public double getY() {
-        return this.y;
-    }
-
-    public double getZ() {
-        return this.z;
-    }
 }

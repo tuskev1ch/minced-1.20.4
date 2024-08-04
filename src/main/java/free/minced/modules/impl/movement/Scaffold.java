@@ -1,23 +1,18 @@
 package free.minced.modules.impl.movement;
 
 import free.minced.events.Event;
-import free.minced.events.impl.player.PacketEvent;
 import free.minced.events.impl.player.TickEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.primary.IHolder;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.game.MobilityHandler;
 import free.minced.primary.time.TimerHandler;
 import free.minced.systems.setting.impl.BooleanSetting;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.common.KeepAliveC2SPacket;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
@@ -28,8 +23,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashSet;
 
 
 @ModuleDescriptor(name = "Scaffold", category = ModuleCategory.MISC)
@@ -154,7 +147,7 @@ public class Scaffold extends Module {
     }
 
     private BlockPosWithFacing checkNearBlocksExtended(BlockPos blockPos) {
-        BlockPosWithFacing ret = null;
+        BlockPosWithFacing ret;
 
         ret = checkNearBlocks(blockPos);
         if (ret != null) return ret;

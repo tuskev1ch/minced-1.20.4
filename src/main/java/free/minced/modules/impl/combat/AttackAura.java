@@ -1,14 +1,13 @@
 package free.minced.modules.impl.combat;
 
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.events.impl.mobility.ElytraFixEvent;
+import free.minced.events.impl.player.EventSync;
 import free.minced.systems.helpers.IOtherClientPlayerEntity;
+
+import free.minced.systems.rotations.Rotations;
 import lombok.Getter;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -20,10 +19,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -48,7 +45,7 @@ import free.minced.primary.math.MathHandler;
 
 import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.primary.game.PlayerHandler;
-import free.minced.systems.rotations.Rotations;
+
 import free.minced.systems.setting.impl.BooleanSetting;
 import free.minced.systems.setting.impl.ModeSetting;
 import free.minced.systems.setting.impl.MultiBoxSetting;
@@ -59,8 +56,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
 import java.util.stream.StreamSupport;
 
-import static free.minced.framework.render.DrawHandler.*;
-
 @ModuleDescriptor(name = "AttackAura", category = ModuleCategory.COMBAT)
 
 public class AttackAura extends Module {
@@ -70,8 +65,9 @@ public class AttackAura extends Module {
     private final MultiBoxSetting targets = new MultiBoxSetting("Targets", this, "Players", "Friends", "Invisible", "Mobs", "Animals");
     public final ModeSetting mobilityFix = new ModeSetting("Movement Fix", this, "Off", "Off", "Free", "Focused");
 
+    public final BooleanSetting visualRotation = new BooleanSetting("Visual Rotation", this, false);
 
-    public BooleanSetting elytraOverride = new BooleanSetting("Elytra Override", this, false);
+    public final BooleanSetting elytraOverride = new BooleanSetting("Elytra Override", this, false);
 
     public final NumberSetting attackRange = new NumberSetting("Attack Range", this, 3, 2.5F, 6, 0.1F);
     public final NumberSetting preAttackRange = new NumberSetting("Pre Attack Range", this, 3, 0.0f, 6, 0.1F);
@@ -81,13 +77,14 @@ public class AttackAura extends Module {
 
 
 
-    public BooleanSetting shieldBreaker = new BooleanSetting("Shield Breaker", this, true);
-    public BooleanSetting unpressShield = new BooleanSetting("Unpress Shield", this, false);
-    public BooleanSetting resolver = new BooleanSetting("Resolver", this, false);
+    public final BooleanSetting shieldBreaker = new BooleanSetting("Shield Breaker", this, true);
+    public final BooleanSetting unpressShield = new BooleanSetting("Unpress Shield", this, false);
+    public final BooleanSetting resolver = new BooleanSetting("Resolver", this, false);
 
-    public BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
-    public BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
+    public final BooleanSetting onlyCriticals = new BooleanSetting("Only Criticals", this, true);
+    public final BooleanSetting spaceOnly = new BooleanSetting("Space Only", this, false, () -> !onlyCriticals.isEnabled());
     private final BooleanSetting rayCast = new BooleanSetting("Ray Cast", this, false);
+    private final BooleanSetting onlyOnElytra = new BooleanSetting("Only On Elytra", this, false, () -> !rayCast.isEnabled());
     private final BooleanSetting ignoreWalls = new BooleanSetting("Ignore Walls", this, false, () -> !rayCast.isEnabled());
 
 
@@ -112,8 +109,15 @@ public class AttackAura extends Module {
             auraLogic();
             restorePlayers();
 
-            if (target == null) return;
-            Rotations.rotate(rotationYaw, rotationPitch, 1);
+            if (mc.player == null) return;
+            Rotations.rotate(rotationYaw, rotationPitch);
+        } else if (e instanceof EventSync eventSync) {
+            if (mc.player == null) return;
+
+            if (visualRotation.isEnabled()) {
+                mc.player.setBodyYaw(rotationYaw);
+                mc.player.setHeadYaw(rotationYaw);
+            }
         } else if (e instanceof PacketEvent.@NotNull Send event) {
             if (event.getPacket() instanceof PlayerInteractEntityC2SPacket pie && PlayerHandler.getInteractType(pie) != PlayerHandler.InteractType.ATTACK && target != null) {
                 e.setCancel(true);
@@ -255,9 +259,7 @@ public class AttackAura extends Module {
 
         Vec3d targetVec;
 
-        if (mc.player.isFallFlying() || Minced.getInstance().getModuleHandler().get(Flight.class).isEnabled()) {
-            targetVec = target.getEyePos();
-        } else {
+
             if (mode.is("Rotate")) {
                 targetVec = target.getEyePos();
             } else if (mode.is("Legit")) {
@@ -265,14 +267,14 @@ public class AttackAura extends Module {
             } else {
                 return;
             }
-        }
+
 
 
         if (targetVec == null)
             return;
 
-        pitchAcceleration = PlayerHandler.checkRtx(rotationYaw, rotationPitch, getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled())
-                ? 1F : pitchAcceleration < 8F ? pitchAcceleration * 1.65F : 8F;
+        pitchAcceleration = mc.player.isFallFlying() ? 90 : (PlayerHandler.checkRtx(rotationYaw, rotationPitch, getAttackRange(), ignoreWalls.isEnabled(), rayCast.isEnabled())
+                ? 1F : pitchAcceleration < 8F ? pitchAcceleration * 1.65F : 8F);
 
         float delta_yaw = MathHelper.wrapDegrees((float) MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(targetVec.z - mc.player.getZ(), (targetVec.x - mc.player.getX()))) - 90) - rotationYaw);
         float delta_pitch = ((float) (-Math.toDegrees(Math.atan2(targetVec.y - (mc.player.getPos().y + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((targetVec.x - mc.player.getX()), 2) + Math.pow(targetVec.z - mc.player.getZ(), 2))))) - rotationPitch);
@@ -323,11 +325,9 @@ public class AttackAura extends Module {
     }
 
     private LivingEntity findTarget() {
-        return StreamSupport.stream(mc.world.getEntities().spliterator(), false)
+        return (LivingEntity) StreamSupport.stream(mc.world.getEntities().spliterator(), false)
                 .filter(entity -> entity instanceof LivingEntity && entity != mc.player && isValid((LivingEntity) entity))
-                .min(Comparator.comparing(entity -> entity.squaredDistanceTo(mc.player)))
-                .map(entity -> (LivingEntity) entity)
-                .orElse(null);
+                .min(Comparator.comparing(entity -> entity.squaredDistanceTo(mc.player))).orElse(null);
 
     }
 
@@ -385,7 +385,7 @@ public class AttackAura extends Module {
         return true;
     }
 
-    private boolean shieldBreaker(boolean instant) {
+    private boolean shieldBreaker() {
         int axe = -1;
         for (int i = 0; i < 9; ++i) {
             if (mc.player.getInventory().getStack(i).getItem() instanceof AxeItem) {
@@ -396,7 +396,7 @@ public class AttackAura extends Module {
         if (!shieldBreaker.isEnabled()) return false;
 
         if (!(target instanceof PlayerEntity)) return false;
-        if (!((PlayerEntity) target).isUsingItem() && !instant) return false;
+        if (!((PlayerEntity) target).isUsingItem()) return false;
         if (((PlayerEntity) target).getOffHandStack().getItem() != Items.SHIELD && ((PlayerEntity) target).getMainHandStack().getItem() != Items.SHIELD)
             return false;
 
@@ -413,21 +413,15 @@ public class AttackAura extends Module {
     private void attackTarget() {
         if (getDistance(target) >= MathHandler.getPow2Value(getAttackRange())) return;
 
-        if (!lookingAtHitbox && rayCast.isEnabled()) return;
+        if (rayCast.isEnabled() && (!onlyOnElytra.isEnabled() || mc.player.isFallFlying()) && !lookingAtHitbox) return;
 
         if (!canCrit() || cpsLimit != 0) return;
 
-        if (shieldBreaker(false))
+        if (shieldBreaker())
             return;
 
         boolean negativeFlag = shouldCancelCrit();
         boolean shouldBackSprint = mc.player.isSprinting() && !negativeFlag;
-        if (onlyCriticals.isEnabled() && !negativeFlag) {
-            PlayerHandler.disableSprint();
-        }
-
-        cpsLimit = 10;
-
 
         if (unpressShield.isEnabled()) {
             if (mc.player.isUsingItem()) {
@@ -436,6 +430,12 @@ public class AttackAura extends Module {
                 }
             }
         }
+
+        if (onlyCriticals.isEnabled() && !negativeFlag) {
+            PlayerHandler.disableSprint();
+        }
+
+        cpsLimit = 10;
 
         mc.interactionManager.attackEntity(mc.player, target);
         mc.player.swingHand(Hand.MAIN_HAND);

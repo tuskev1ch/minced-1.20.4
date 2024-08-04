@@ -1,20 +1,16 @@
 package free.minced.modules.impl.render;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.modules.impl.display.hud.impl.PotionHUD;
 import free.minced.modules.impl.misc.NameProtect;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AirBlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.scoreboard.ReadableScoreboardScore;
@@ -35,22 +31,16 @@ import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.framework.render.DrawHandler;
-import free.minced.framework.color.ClientColors;
 
-import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.other.ServerHandler;
 import free.minced.systems.setting.impl.MultiBoxSetting;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 import org.joml.Vector4d;
 
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 @ModuleDescriptor(name = "EntityESP", category = ModuleCategory.RENDER)
 public class EntityESP extends Module {
@@ -140,7 +130,7 @@ public class EntityESP extends Module {
             for (ItemStack armorComponent : stacks) {
                 if (!armorComponent.isEmpty()) {
                     e.getContext().getMatrices().push();
-                    e.getContext().getMatrices().translate(posX + item_offset, (float) (posY - 20), 0);
+                    e.getContext().getMatrices().translate(posX + item_offset, posY - 20, 0);
                     e.getContext().getMatrices().scale(0.9f, 0.9f, 0.9f);
                     DiffuseLighting.disableGuiDepthLighting();
                     e.getContext().drawItem(armorComponent, 0, 0);
@@ -154,7 +144,7 @@ public class EntityESP extends Module {
                     for (int index = 0; index < enchants.size(); ++index) {
                         String id = enchants.getCompound(index).getString("id");
                         short level = enchants.getCompound(index).getShort("lvl");
-                        String encName = " ";
+                        String encName;
 
                         switch (id) {
                             case "minecraft:blast_protection", "blast_protection" -> encName = "B" + level;
@@ -169,7 +159,7 @@ public class EntityESP extends Module {
                             }
                         }
 
-                        Fonts.SEMI_12.drawString(e.getStack(), encName, posX + 3 + item_offset, (float) posY - 28 + enchantmentY, -1);
+                        Fonts.SEMI_12.drawString(e.getStack(), encName, posX + 3 + item_offset, posY - 28 + enchantmentY, -1);
 
                         enchantmentY -= 8;
                         if (maxEnchantY > enchantmentY)
@@ -180,7 +170,7 @@ public class EntityESP extends Module {
             }
         }
         if (subElements.get("Effects").isEnabled()) {
-            renderStatusEffectOverlay(e.getContext(), (float) posX, (float) (posY + maxEnchantY - 60), player);
+            renderStatusEffectOverlay(e.getContext(), posX, (float) (posY + maxEnchantY - 60), player);
         }
 
         e.getStack().pop();
@@ -272,7 +262,7 @@ public class EntityESP extends Module {
     public float getHealth(PlayerEntity ent) {
         // Первый в комьюнити хп резольвер. Правда, еж?
         if ((mc.getNetworkHandler() != null && mc.getNetworkHandler().getServerInfo() != null && ServerHandler.isOnFT())) {
-            ScoreboardObjective scoreBoard = null;
+            ScoreboardObjective scoreBoard;
             String resolvedHp = "";
             if ((ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
                 scoreBoard = (ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
@@ -298,8 +288,7 @@ public class EntityESP extends Module {
         double z = ent.prevZ + (ent.getZ() - ent.prevZ) * mc.getTickDelta();
         Box axisAlignedBB2 = ent.getBoundingBox();
         Box axisAlignedBB = new Box(axisAlignedBB2.minX - ent.getX() + x - 0.05, axisAlignedBB2.minY - ent.getY() + y, axisAlignedBB2.minZ - ent.getZ() + z - 0.05, axisAlignedBB2.maxX - ent.getX() + x + 0.05, axisAlignedBB2.maxY - ent.getY() + y + 0.15, axisAlignedBB2.maxZ - ent.getZ() + z + 0.05);
-        Vec3d[] vectors = new Vec3d[]{new Vec3d(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ)};
-        return vectors;
+        return new Vec3d[]{new Vec3d(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.minZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.minY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.minX, axisAlignedBB.maxY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.minY, axisAlignedBB.maxZ), new Vec3d(axisAlignedBB.maxX, axisAlignedBB.maxY, axisAlignedBB.maxZ)};
     }
     private @NotNull String getHealthColor(float health) {
         if (health <= 15 && health > 7) return Formatting.YELLOW + "";

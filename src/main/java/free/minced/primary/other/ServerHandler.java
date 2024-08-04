@@ -1,7 +1,6 @@
 package free.minced.primary.other;
 
 
-import lombok.Getter;
 import free.minced.primary.IHolder;
 
 
@@ -10,9 +9,7 @@ public class ServerHandler implements IHolder {
     public static boolean isOnServer() {
         if (mc.player == null || mc.world == null) return false;
         if (mc.isInSingleplayer()) return false;
-        if (mc.getCurrentServerEntry() == null) return false;
-
-        return true;
+        return mc.getCurrentServerEntry() != null;
     }
 
     public static String getServerIP() {

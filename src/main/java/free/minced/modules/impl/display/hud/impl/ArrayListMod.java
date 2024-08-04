@@ -1,6 +1,7 @@
 package free.minced.modules.impl.display.hud.impl;
 
 
+import free.minced.modules.api.ModuleManager;
 import free.minced.systems.setting.impl.BooleanSetting;
 import net.minecraft.client.util.math.MatrixStack;
 import free.minced.Minced;
@@ -23,8 +24,7 @@ import java.util.stream.Collectors;
 
 @ModuleDescriptor(name = "ArrayList", category = ModuleCategory.DISPLAY)
 public class ArrayListMod extends AbstractHUDElement {
-    private float x, y, width, height;
-    public BooleanSetting reversed = new BooleanSetting("Reversed", this, false);
+    public final BooleanSetting reversed = new BooleanSetting("Reversed", this, false);
 
     @Override
     public void onEvent(Event event) {
@@ -35,7 +35,7 @@ public class ArrayListMod extends AbstractHUDElement {
     }
 
     public List<Module> getValidModules() {
-        return Minced.getInstance().getModuleHandler().modules.stream().filter(module -> {
+        return ModuleManager.modules.stream().filter(module -> {
                     module.getEnableAnimation().run(module.isEnabled() ? 1 : 0);
                     return module.getEnableAnimation().getValue() > 0.1f;
                 })
@@ -49,26 +49,28 @@ public class ArrayListMod extends AbstractHUDElement {
             if (module.getModuleCategory() == ModuleCategory.RENDER) continue;
             String moduleName = module.getName();
 
-            float ycolor = 0.0F;
+            float ycolor;
             float padding = 4;
 
-            width = Fonts.SEMI_15.getStringWidth(moduleName) + padding;
-            height = 7f + padding;
+            float width = Fonts.SEMI_15.getStringWidth(moduleName) + padding;
+            float height = 7f + padding;
 
             boolean a1 = reversed.isEnabled();
+            float y;
+            float x;
             if (a1) {
                 x = sr.getScaledWidth().floatValue() - 12f; // move to the right side
                 y = 35 + offset;
 
                 ycolor = y / Minced.getInstance().getModuleHandler().get(HUD.class).offsetColor.getValue().floatValue();
 
-                DrawHandler.drawBlurredShadow(pPoseStack, x - width * module.getEnableAnimation().getValue(), y  + 0.5F, width + 0.5f, height,
+                DrawHandler.drawBlurredShadow(pPoseStack, x - width * module.getEnableAnimation().getValue(), y + 0.5F, width + 0.5f, height,
                         5, ColorHandler.applyOpacity(ClientColors.getBrighterBackgroundColor(), 255 * module.getEnableAnimation().getValue()));
 
-                DrawHandler.drawBlurredShadow( pPoseStack, x - width * module.getEnableAnimation().getValue() - 3 , y  + 0.5F, 2, height, 2,
+                DrawHandler.drawBlurredShadow( pPoseStack, x - width * module.getEnableAnimation().getValue() - 3 , y + 0.5F, 2, height, 2,
                         ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
 
-                DrawHandler.drawRect( pPoseStack, x - width * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 3, height,
+                DrawHandler.drawRect( pPoseStack, x - width * module.getEnableAnimation().getValue() - 3, y + 0.5F, 3, height,
                         ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
 
 
@@ -86,13 +88,13 @@ public class ArrayListMod extends AbstractHUDElement {
 
                 ycolor = y / Minced.getInstance().getModuleHandler().get(HUD.class).offsetColor.getValue().floatValue();
 
-                DrawHandler.drawBlurredShadow(pPoseStack, x * module.getEnableAnimation().getValue(), y  + 0.5F, width + 0.5f, height,
+                DrawHandler.drawBlurredShadow(pPoseStack, x * module.getEnableAnimation().getValue(), y + 0.5F, width + 0.5f, height,
                         5, ColorHandler.applyOpacity(ClientColors.getBrighterBackgroundColor(), 255 * module.getEnableAnimation().getValue()));
 
-                DrawHandler.drawBlurredShadow( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 2, height, 2,
+                DrawHandler.drawBlurredShadow( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y + 0.5F, 2, height, 2,
                         ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
 
-                DrawHandler.drawRect( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y  + 0.5F, 3, height,
+                DrawHandler.drawRect( pPoseStack, x * module.getEnableAnimation().getValue() - 3, y + 0.5F, 3, height,
                         ColorHandler.applyOpacity(getTheme().getAccentColorReverse(x, ycolor), 255 * module.getEnableAnimation().getValue()));
 
                 DrawHandler.drawRect(pPoseStack, x * module.getEnableAnimation().getValue(), y + 0.5f, width + 0.5f, height, ClientColors.getBrighterBackgroundColor().withAlpha(255 * module.getEnableAnimation().getValue()));

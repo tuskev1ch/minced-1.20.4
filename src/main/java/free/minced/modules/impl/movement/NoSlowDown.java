@@ -2,16 +2,12 @@ package free.minced.modules.impl.movement;
 
 
 import free.minced.systems.setting.impl.NumberSetting;
-import net.minecraft.item.BookItem;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.network.packet.s2c.play.UpdateSelectedSlotS2CPacket;
 import net.minecraft.util.Hand;
 import free.minced.events.Event;
 import free.minced.events.impl.input.EventKeyboardInput;
-import free.minced.events.impl.player.PacketEvent;
 import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
@@ -24,7 +20,7 @@ import free.minced.systems.setting.impl.ModeSetting;
 
 public class NoSlowDown extends Module {
 
-    public final ModeSetting mode = new ModeSetting("Mode", this, "Grim", "Grim", "Matrix", "Matrix2");
+    public final ModeSetting mode = new ModeSetting("Mode", this, "Grim", "Cancel", "Grim", "Matrix", "Matrix2");
     private final BooleanSetting dobulepacket = new BooleanSetting("Double Packet", this, true, () -> !mode.is("Grim"));
 
     public final NumberSetting speedGrimMatrix = new
@@ -96,12 +92,11 @@ public class NoSlowDown extends Module {
 
 
     public boolean canNoSlow() {
+        if (mode.is("Cancel")) return true;
+
         if (mode.is("Matrix") || mode.is("Matrix2")) return false;
 
-        if ((mc.player.getOffHandStack().isFood() || mc.player.getOffHandStack().getItem() == Items.SHIELD)
-                && (mode.is("Grim")) && mc.player.getActiveHand() == Hand.MAIN_HAND)
-            return false;
-
-        return true;
+        return (!mc.player.getOffHandStack().isFood() && mc.player.getOffHandStack().getItem() != Items.SHIELD)
+                || (!mode.is("Grim")) || mc.player.getActiveHand() != Hand.MAIN_HAND;
     }
 }

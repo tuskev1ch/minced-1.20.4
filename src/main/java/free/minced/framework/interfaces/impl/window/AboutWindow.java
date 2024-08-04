@@ -111,7 +111,7 @@ public class AboutWindow extends CustomElement {
 
             normalFont.drawString(DrawContext.getMatrices(),"Valid until: %s".formatted(Formatting + ProfileHandler.getSubscribe()), x + leftMargin, infoY, ClientColors.getFontColor().withAlpha((255 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()).getRGB());
             normalFont.drawString(DrawContext.getMatrices(),"Username: %s".formatted(Formatting + ProfileHandler.getUsername()), x + leftMargin, infoY + gap, ClientColors.getFontColor().withAlpha((255 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()).getRGB());
-            normalFont.drawString(DrawContext.getMatrices(),"Updated: %s".formatted(Formatting + ProfileHandler.getVersion()), x + leftMargin, infoY + gap  * 2, ClientColors.getFontColor().withAlpha((255 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()).getRGB());
+            normalFont.drawString(DrawContext.getMatrices(),"Version: %s".formatted(Formatting + ProfileHandler.getVersion()), x + leftMargin, infoY + gap  * 2, ClientColors.getFontColor().withAlpha((255 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()).getRGB());
 
             normalFont.drawString(DrawContext.getMatrices(),"Branch: %s".formatted(Formatting + ProfileHandler.getBuild()), x + leftMargin, infoY + gap  * 3, ClientColors.getFontColor().withAlpha((255 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()).getRGB());
             // стили

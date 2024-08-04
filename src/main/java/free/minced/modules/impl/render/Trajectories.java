@@ -24,8 +24,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 
-import static free.minced.framework.color.ClientColors.getTheme;
-
 
 @ModuleDescriptor(name = "Trajectories", category = ModuleCategory.RENDER)
 public class Trajectories extends Module {

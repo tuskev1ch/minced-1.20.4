@@ -1,34 +1,23 @@
 package free.minced.addition;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import free.minced.primary.IHolder;
+import lombok.Getter;
 
 
 public class ProfileHandler implements IHolder {
 
-    private static String username = "User";
+    @Getter
+    private static final String username = "User";
 
-    private static String subscribe = "Never";
+    @Getter
+    private static final String subscribe = "Never";
 
-    private static String build = "Free";
+    @Getter
+    private static final String build = "Free";
 
-    private static String version = "1.8";
+    @Getter
+    private static final String version = "1.9";
 
 
-    public static String getUsername() {
-        return username;
-    }
-
-    public static String getSubscribe() {
-        return subscribe;
-    }
-    public static String getBuild() {
-        return build;
-    }
-
-    public static String getVersion() {
-        return version;
-    }
 }

@@ -26,7 +26,7 @@ import java.util.Random;
 @ModuleDescriptor(name = "ContainerStealer", category = ModuleCategory.MISC)
 public class ContainerStealer extends Module {
 
-    public NumberSetting delay = new NumberSetting("Delay",this,0,0,1500,0.1f);
+    public final NumberSetting delay = new NumberSetting("Delay",this,0,0,1500,0.1f);
     private final BooleanSetting randomDelay = new BooleanSetting("Random Delay", this, false);
 
     private final BooleanSetting autoClose = new BooleanSetting("Auto Close", this, false);

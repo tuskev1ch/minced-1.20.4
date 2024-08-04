@@ -14,14 +14,12 @@ import free.minced.events.impl.player.EventSync;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.time.TimerHandler;
 import free.minced.systems.setting.impl.ModeSetting;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRemoveS2CPacket;
-import org.lwjgl.glfw.GLFW;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -34,10 +32,10 @@ public class AntiBot extends Module {
     private final ModeSetting mode = new ModeSetting("Mode", this, "Beta", "Beta", "Motion", "UUID");
 
 
-    Set<UUID> suspectSet = new HashSet<>();
-    static Set<UUID> botSet = new HashSet<>();
+    final Set<UUID> suspectSet = new HashSet<>();
+    static final Set<UUID> botSet = new HashSet<>();
 
-    public static ArrayList<PlayerEntity> bots = new ArrayList<>();
+    public static final ArrayList<PlayerEntity> bots = new ArrayList<>();
     private final TimerHandler timer = new TimerHandler();
     private int botsNumber = 0;
     private int ticks = 0;

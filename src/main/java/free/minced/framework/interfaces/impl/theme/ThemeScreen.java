@@ -56,7 +56,7 @@ public class ThemeScreen extends MenuScreen {
             component.render(DrawContext,x, y, width, height, mouseX, mouseY);
         }
 
-        float rows = themeComponents.size() / 2;
+        float rows = (float) themeComponents.size() / 2;
         scroll.handle();
         scroll.setMax((-height + gap) * Math.max(0, (rows - 3)));
 

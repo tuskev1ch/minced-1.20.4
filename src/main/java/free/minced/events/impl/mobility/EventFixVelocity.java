@@ -1,14 +1,20 @@
 package free.minced.events.impl.mobility;
 
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.math.Vec3d;
 import free.minced.events.Event;
 
 
 public class EventFixVelocity extends Event {
-    Vec3d movementInput;
-    float speed;
-    float yaw;
+    @Getter
+    final Vec3d movementInput;
+    @Getter
+    final float speed;
+    final float yaw;
+    @Getter
+    @Setter
     Vec3d velocity;
 
     public EventFixVelocity(Vec3d movementInput, float speed, float yaw, Vec3d velocity) {
@@ -18,19 +24,4 @@ public class EventFixVelocity extends Event {
         this.velocity = velocity;
     }
 
-    public Vec3d getMovementInput() {
-        return this.movementInput;
-    }
-
-    public float getSpeed() {
-        return this.speed;
-    }
-
-    public Vec3d getVelocity() {
-        return this.velocity;
-    }
-
-    public void setVelocity(Vec3d velocity) {
-        this.velocity = velocity;
-    }
 }

@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 import free.minced.Minced;
 import free.minced.primary.IHolder;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.FileHandler;
 import free.minced.systems.config.Configuration;
 

@@ -1,7 +1,9 @@
 package free.minced.events.impl.player;
 
 import free.minced.events.Event;
+import lombok.Setter;
 
+@Setter
 public class EventSprint extends Event {
     private boolean sprintState;
 
@@ -13,7 +15,4 @@ public class EventSprint extends Event {
         return this.sprintState;
     }
 
-    public void setSprintState(boolean sprintState) {
-        this.sprintState = sprintState;
-    }
 }

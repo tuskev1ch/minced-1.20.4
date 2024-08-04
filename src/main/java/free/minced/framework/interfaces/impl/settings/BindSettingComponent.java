@@ -7,7 +7,6 @@ import free.minced.Minced;
 import free.minced.framework.font.Fonts;
 import free.minced.framework.interfaces.api.SettingComponent;
 import free.minced.framework.interfaces.impl.module.ModuleComponent;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.other.KeyHandler;
 import free.minced.framework.render.DrawHandler;
 import free.minced.framework.color.ClientColors;

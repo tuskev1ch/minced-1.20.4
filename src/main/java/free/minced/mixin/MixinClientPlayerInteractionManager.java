@@ -2,6 +2,7 @@ package free.minced.mixin;
 
 import free.minced.events.impl.input.EventClickSlot;
 import free.minced.modules.impl.combat.Reach;
+import free.minced.systems.rotations.Rotations;
 import net.minecraft.block.*;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -14,9 +15,8 @@ import net.minecraft.util.math.BlockPos;
 import free.minced.Minced;
 import free.minced.events.EventCollects;
 import free.minced.events.impl.mobility.EventBreakBlock;
-import free.minced.modules.impl.combat.AttackAura;
 import free.minced.modules.impl.misc.NoInteract;
-import free.minced.systems.rotations.Rotations;
+
 import net.minecraft.world.GameMode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,7 +49,10 @@ public class MixinClientPlayerInteractionManager {
     }
     @Inject(method = "interactBlock", at = @At("HEAD"), cancellable = true)
     private void interactBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
-        Block bs = mc.world.getBlockState(hitResult.getBlockPos()).getBlock();
+        Block bs = null;
+        if (mc.world != null) {
+            bs = mc.world.getBlockState(hitResult.getBlockPos()).getBlock();
+        }
         if (Minced.getInstance().getModuleHandler().get(NoInteract.class).isEnabled() && (
                 bs == Blocks.CHEST ||
                         bs == Blocks.TRAPPED_CHEST ||
@@ -78,11 +81,13 @@ public class MixinClientPlayerInteractionManager {
 
     @ModifyArgs(method = "interactItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/c2s/play/PlayerMoveC2SPacket$Full;<init>(DDDFFZ)V"))
     private void onInteractItem(Args args) {
-        if (Rotations.rotating) {
-            args.set(3, Rotations.serverYaw);
-            args.set(4, Rotations.serverPitch);
+        Rotations.RotationRequest request = Rotations.rotationQueue.peek();
+        if (request != null) {
+            args.set(3, request.getYaw());
+            args.set(4, request.getPitch());
         }
     }
+
     @Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
     public void clickSlotHook(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
         if (mc.player == null || mc.world == null) return;

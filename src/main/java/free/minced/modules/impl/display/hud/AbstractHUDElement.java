@@ -1,6 +1,5 @@
 package free.minced.modules.impl.display.hud;
 
-import lombok.Getter;
 import free.minced.modules.Module;
 import free.minced.framework.animation.normal.Animation;
 import free.minced.framework.animation.normal.Easing;

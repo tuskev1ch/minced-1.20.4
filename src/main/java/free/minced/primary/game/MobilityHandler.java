@@ -1,15 +1,10 @@
 package free.minced.primary.game;
 
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import free.minced.primary.IHolder;
-import free.minced.systems.SharedClass;
 import net.minecraft.util.math.Vec3d;
-import org.jetbrains.annotations.NotNull;
 
 
 public class MobilityHandler implements IHolder {
@@ -28,7 +23,7 @@ public class MobilityHandler implements IHolder {
         float i = MathHelper.sin(g);
         float j = MathHelper.cos(f);
         float k = MathHelper.sin(f);
-        return new Vec3d((double)(i * j), (double)(-k), (double)(h * j));
+        return new Vec3d(i * j, -k, h * j);
     }
 
     public static double[] forward(final double d) {

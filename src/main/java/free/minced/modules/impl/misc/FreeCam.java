@@ -1,23 +1,24 @@
 package free.minced.modules.impl.misc;
 
+import free.minced.events.impl.render.Render2DEvent;
+import free.minced.framework.font.Fonts;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import free.minced.events.Event;
-import free.minced.events.impl.input.EventKeyboardInput;
 import free.minced.events.impl.mobility.EventMove;
 import free.minced.events.impl.player.EventSync;
 import free.minced.events.impl.player.PacketEvent;
-import free.minced.events.impl.player.UpdatePlayerEvent;
 import free.minced.framework.render.DrawHandler;
 import free.minced.modules.Module;
 import free.minced.modules.api.ModuleCategory;
 import free.minced.modules.api.ModuleDescriptor;
 import free.minced.primary.IHolder;
-import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.game.MobilityHandler;
 import free.minced.systems.setting.impl.BooleanSetting;
 import free.minced.systems.setting.impl.NumberSetting;
 import org.lwjgl.glfw.GLFW;
+
+import java.awt.*;
 
 import static free.minced.primary.other.KeyHandler.isKeyPressed;
 
@@ -27,7 +28,7 @@ public class FreeCam extends Module {
 
     private final NumberSetting hspeed = new NumberSetting("Vertical Speed", this, 0.42f, 0.1f, 3f, 0.1f);
     private final BooleanSetting freeze = new BooleanSetting("Freeze", this, false);
-    private float fakeYaw, fakePitch, prevFakeYaw, prevFakePitch, prevScroll;
+    private float fakeYaw, fakePitch, prevFakeYaw, prevFakePitch, YFORVCLIP;
     private double fakeX, fakeY, fakeZ, prevFakeX, prevFakeY, prevFakeZ;
     public LivingEntity trackEntity;
 
@@ -74,7 +75,12 @@ public class FreeCam extends Module {
             }
 
         }
+        if (e instanceof Render2DEvent event) {
+            String y = String.valueOf((int) (fakeY - YFORVCLIP));
+            Fonts.SEMI_12.drawString(event.getStack(), y, mc.getWindow().getScaledWidth() / 2f + 10F,
+                    mc.getWindow().getScaledHeight() / 2f - 1.5f, Color.WHITE);
 
+        }
         if (e instanceof EventMove eventMove) {
             if (freeze.isEnabled()) {
                 eventMove.setX(0.);
@@ -93,6 +99,8 @@ public class FreeCam extends Module {
     public void onEnable() {
         mc.chunkCullingEnabled = false;
         trackEntity = null;
+
+        YFORVCLIP = (float) mc.player.getY();
 
         fakePitch = mc.player.getPitch();
         fakeYaw = mc.player.getYaw();

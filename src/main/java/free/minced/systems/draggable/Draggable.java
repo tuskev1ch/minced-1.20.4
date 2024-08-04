@@ -5,12 +5,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 import net.minecraft.client.gui.screen.ChatScreen;
-import free.minced.Minced;
 import free.minced.framework.render.DrawHandler;
 import free.minced.modules.Module;
-import free.minced.framework.render.GuiHandler;
-import free.minced.primary.chat.ChatHandler;
-import free.minced.primary.math.MathHandler;
 
 import static free.minced.primary.IHolder.mc;
 

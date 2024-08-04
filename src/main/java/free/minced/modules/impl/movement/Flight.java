@@ -16,7 +16,6 @@ import free.minced.primary.chat.ChatHandler;
 import free.minced.primary.game.InventoryHandler;
 import free.minced.primary.game.MobilityHandler;
 import free.minced.primary.game.PlayerHandler;
-import free.minced.systems.SharedClass;
 import free.minced.systems.setting.impl.BooleanSetting;
 import free.minced.systems.setting.impl.ModeSetting;
 import free.minced.systems.setting.impl.NumberSetting;
@@ -27,7 +26,7 @@ import static net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket.Mode.
 
 public class Flight extends Module {
     public final ModeSetting mode = new ModeSetting("Mode", this, "MatrixElytra", "MatrixElytra");
-    public BooleanSetting stayOffGround = new BooleanSetting("Stay Off Ground", this, false, () -> !mode.is("MatrixElytra"));
+    public final BooleanSetting stayOffGround = new BooleanSetting("Stay Off Ground", this, false, () -> !mode.is("MatrixElytra"));
 
     public final NumberSetting XZspeed = new NumberSetting("Horizontal Speed", this, 0.1, 0.1, 2, 0.1, () -> !mode.is("MatrixElytra"));
     public final NumberSetting Yspeed = new NumberSetting("Vertical Speed", this, 0.1, 0.1, 2, 0.1, () -> !mode.is("MatrixElytra"));
@@ -54,11 +53,7 @@ public class Flight extends Module {
                     disabled = false;
                     mc.player.jump();
                 } else {
-                    if (!mc.player.isOnGround() && mc.player.fallDistance > 0.1f && !isDisabled) {
-                        disabled = true;
-                    } else {
-                        disabled = false;
-                    }
+                    disabled = !mc.player.isOnGround() && mc.player.fallDistance > 0.1f && !isDisabled;
                 }
 
 
@@ -96,13 +91,10 @@ public class Flight extends Module {
                         }
                     }
                     float f2 = XZspeed.getValue().floatValue() - 0.017f;
-                    f2 *= Math.min((float)(acceleration += 9) / 100.0f, 1.0f);
+                    f2 *= Math.min((acceleration += 9) / 100.0f, 1.0f);
 
                     double[] xz = MobilityHandler.forward(f2);
                     IHolder.mc.player.setVelocity(xz[0], IHolder.mc.player.getVelocity().y, xz[1]);
-
-/*                    eventMove.setX(xz[0]);
-                    eventMove.setZ(xz[1]);*/
 
                     if (!MobilityHandler.isMoving()) acceleration = 0;
 

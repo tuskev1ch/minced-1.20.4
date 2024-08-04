@@ -1,7 +1,7 @@
 package free.minced.mixin;
 
-import com.llamalad7.mixinextras.sugar.Share;
 import com.mojang.authlib.GameProfile;
+import free.minced.systems.rotations.Rotations;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -14,9 +14,7 @@ import free.minced.events.impl.mobility.EventMove;
 import free.minced.events.impl.player.*;
 import free.minced.modules.impl.misc.NoPush;
 import free.minced.modules.impl.movement.NoSlowDown;
-import free.minced.primary.game.MobilityFix;
 import free.minced.systems.SharedClass;
-import free.minced.systems.rotations.Rotations;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,12 +26,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static free.minced.primary.IHolder.fullNullCheck;
 import static free.minced.primary.IHolder.mc;
 
-@Mixin(value = ClientPlayerEntity.class, priority = 900)
+@Mixin(value = ClientPlayerEntity.class)
 public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity {
     @Unique
     boolean pre_sprint_state = false;
     @Unique
-    private boolean updateLock = false;
+    private final boolean updateLock = false;
     @Unique
     private Runnable postAction;
 
@@ -46,6 +44,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     public MixinClientPlayerEntity(ClientWorld world, GameProfile profile) {
         super(world, profile);
     }
+
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void tickHook(CallbackInfo info) {
@@ -109,6 +108,7 @@ public abstract class MixinClientPlayerEntity extends AbstractClientPlayerEntity
     private void sendMovementPacketsHook(CallbackInfo info) {
         if (fullNullCheck()) return;
         Rotations.onSendMovementPacketsPre();
+
 
         EventSync event = new EventSync(getYaw(), getPitch());
         EventCollects.call(event);

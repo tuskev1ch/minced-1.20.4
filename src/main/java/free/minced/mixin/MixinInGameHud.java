@@ -16,8 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.awt.*;
-
 import static free.minced.primary.IHolder.fullNullCheck;
 import static free.minced.primary.IHolder.mc;
 

@@ -1,7 +1,9 @@
 package free.minced.mixin;
 
+import free.minced.framework.interfaces.InterfaceScreen;
 import free.minced.modules.impl.combat.HitBox;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -26,7 +28,9 @@ import static free.minced.primary.IHolder.mc;
 public abstract class MixinEntity  {
     @Shadow
     private Box boundingBox;
-    
+
+    @Shadow public abstract void readNbt(NbtCompound nbt);
+
     @ModifyArgs(method = "pushAwayFrom", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;addVelocity(DDD)V"))
     public void pushAwayFromHook(Args args) {
 
@@ -41,8 +45,10 @@ public abstract class MixinEntity  {
     }
     @Inject(method = "getBoundingBox", at = {@At("HEAD")}, cancellable = true)
     public final void getBoundingBox(CallbackInfoReturnable<Box> cir) {
-        if (Minced.getInstance().getModuleHandler().get(HitBox.class).isEnabled() && mc != null && mc.player != null && ((Entity) (Object) this).getId() != mc.player.getId()) {
-            cir.setReturnValue(new Box(this.boundingBox.minX - Minced.getInstance().getModuleHandler().get(HitBox.class).size.getValue().floatValue() / 2f, this.boundingBox.minY, this.boundingBox.minZ - Minced.getInstance().getModuleHandler().get(HitBox.class).size.getValue().floatValue() / 2f, this.boundingBox.maxX + Minced.getInstance().getModuleHandler().get(HitBox.class).size.getValue().floatValue() / 2f, this.boundingBox.maxY, this.boundingBox.maxZ + Minced.getInstance().getModuleHandler().get(HitBox.class).size.getValue().floatValue() / 2f));
+        HitBox hitBox = Minced.getInstance().getModuleHandler().get(HitBox.class);
+        if (mc.currentScreen instanceof InterfaceScreen || (mc.player==null||mc.isInSingleplayer()) || hitBox == null) return;// я хуй знает из за чего крашит
+        if (hitBox.isEnabled() && mc != null && mc.player != null && ((Entity) (Object) this).getId() != mc.player.getId()) {// поэтому напихал кучу проверок
+            cir.setReturnValue(new Box(this.boundingBox.minX - hitBox.size.getValue().floatValue() / 2f, this.boundingBox.minY, this.boundingBox.minZ - hitBox.size.getValue().floatValue() / 2f, this.boundingBox.maxX + hitBox.size.getValue().floatValue() / 2f, this.boundingBox.maxY, this.boundingBox.maxZ + hitBox.size.getValue().floatValue() / 2f));
         }
     }
     @Inject(method = "updateVelocity", at = {@At("HEAD")}, cancellable = true)

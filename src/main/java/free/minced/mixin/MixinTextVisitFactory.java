@@ -4,6 +4,7 @@ import free.minced.Minced;
 import free.minced.modules.impl.misc.NameProtect;
 import net.minecraft.text.TextVisitFactory;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
@@ -16,6 +17,7 @@ public class MixinTextVisitFactory {
         return protect(text);
     }
 
+    @Unique
     private static String protect(String string) {
         NameProtect m4 = Minced.getInstance().getModuleHandler().get(NameProtect.class);
         if (m4 == null ||  !m4.isEnabled() || mc.player == null)
@@ -23,7 +25,7 @@ public class MixinTextVisitFactory {
 
         String me = mc.getSession().getUsername();
         if (string.contains(me) || (Minced.getInstance().getPartnerHandler().getFriends().stream().anyMatch(i -> i.contains(string)) && m4.hideFriends.isEnabled())) {
-            return string.replace(me, m4.getCustomName());
+            return string.replace(me, NameProtect.getCustomName());
         }
 
         return string;
