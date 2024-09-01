@@ -1,5 +1,9 @@
 package free.minced.systems.helpers;
 
+import free.minced.modules.impl.combat.BackTrack;
+
+import java.util.List;
+
 public interface IEntityLiving {
     double getPrevServerX();
 
@@ -7,4 +11,5 @@ public interface IEntityLiving {
 
     double getPrevServerZ();
 
+    List<BackTrack.Position> getBackTrack();
 }

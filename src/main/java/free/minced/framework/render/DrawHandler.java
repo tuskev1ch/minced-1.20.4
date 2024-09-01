@@ -6,8 +6,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import free.minced.Minced;
 import free.minced.framework.color.ClientColors;
 import free.minced.framework.color.ColorHandler;
+import free.minced.framework.color.CustomColor;
 import free.minced.framework.font.Fonts;
+import free.minced.modules.impl.display.hud.HUD;
 import free.minced.systems.SharedClass;
+import free.minced.systems.theme.Theme;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
@@ -509,9 +512,48 @@ public class DrawHandler implements IHolder {
         ShaderHandler.drawRoundGradient(matrices, x, y, width, height, radius, c1, c2, c3, c4);
     }
 
+    public static void drawStyledRect(MatrixStack matrixStack, float x, float y, float width, float height) {
+        HUD hud = Minced.getInstance().getModuleHandler().get(HUD.class);
+        DrawHandler.drawBlurredShadow(matrixStack,  x, y, width, height, 5, ClientColors.getSecondaryBackgroundColor().withAlpha(255));
+        int radius = hud.getCustomHud().isEnabled() ? hud.getRoundness().getValue().intValue() : 3;
+        if (hud.getCustomHud().isEnabled()) {
+            Color firstColor = Minced.getInstance().getThemeHandler().getTheme().getFirstColor();
+            Color secondColor = Minced.getInstance().getThemeHandler().getTheme().getSecondColor();
+            Color transparent = new Color(0, 0, 0, 255);
+
+            if (hud.getGlow().isEnabled()) {
+                DrawHandler.drawBlurredShadow(matrixStack, x - 0.5f, y - 0.5f, width + 0.5f, height + 0.5f, 6,
+                        firstColor);
+            }
+            switch (hud.getRoundSide().getCurrentMode()) {
+
+                case "Up" ->
+                        DrawHandler.drawRoundGradient(matrixStack, x - 0.5f, y - 0.5f, width + 1, height + 1, radius,
+                                firstColor, transparent, secondColor, transparent);
+                case "Left" ->
+                        DrawHandler.drawRoundGradient(matrixStack, x - 0.5f, y - 0.5f, width + 1, height + 1, radius,
+                                firstColor, secondColor, transparent, transparent);
+                case "Right" ->
+                        DrawHandler.drawRoundGradient(matrixStack, x - 0.5f, y - 0.5f, width + 1, height + 1, radius,
+                                transparent, transparent, firstColor, secondColor);
+                case "Down" ->
+                        DrawHandler.drawRoundGradient(matrixStack, x - 0.5f, y - 0.5f, width + 1, height + 1, radius,
+                                transparent, firstColor, transparent, secondColor);
+                case "Full" ->
+                        DrawHandler.drawRoundGradient(matrixStack, x - 0.5f, y - 0.5f, width + 1, height + 1, radius,
+                                firstColor, firstColor, secondColor, secondColor);
+            }
+        }
+        DrawHandler.drawRound(matrixStack,  x, y, width, height, radius,
+                ClientColors.getBackgroundColor().darker(0.85F));
+
+    }
+
+
+
 
     public static void drawBlurredShadow(MatrixStack matrices, float x, float y, float width, float height, int blurRadius, Color color) {
-        //if (!HudEditor.glow.getValue()) return;
+        if (!Minced.getInstance().getModuleHandler().get(HUD.class).getEnableGlow().isEnabled()) return;
         width = width + blurRadius * 2;
         height = height + blurRadius * 2;
         x = x - blurRadius;

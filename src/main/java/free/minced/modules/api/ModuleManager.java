@@ -48,6 +48,8 @@ public class ModuleManager  {
         addModule(new AntiBot());
         addModule(new AutoSwap());
         addModule(new AutoTotem());
+        addModule(new TPAura());
+        addModule(new BackTrack());
         addModule(new AutoPotion());
         addModule(new AutoAttack());
         addModule(new AttackAura());
@@ -79,7 +81,9 @@ public class ModuleManager  {
         addModule(new ElytraFix());
         addModule(new NoInteract());
         addModule(new ElytraUtils());
+        addModule(new ClientSpoof());
         addModule(new NameProtect());
+        addModule(new KTLeave());
         addModule(new MiddleClick());
         addModule(new ItemScroller());
         addModule(new Optimization());

@@ -11,6 +11,7 @@
 		"MixinEntityRenderer",
 		"MixinLightmapTextureManager",
 		"MixinHandledScreen",
+		"MixinClientBrandRetriever",
 		"MixinMouse",
 		"MixinTextVisitFactory",
 		"MixinParticleManager",
@@ -43,6 +44,7 @@
 	},
 	"mixins": [
 		"MixinPlayerEntity",
+		"MixinProjectileUtil",
 		"MixinFlowableFluid",
 		"MixinBlock",
 		"FireworkRocketEntityMixin",

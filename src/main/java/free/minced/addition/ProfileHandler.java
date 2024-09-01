@@ -17,7 +17,7 @@ public class ProfileHandler implements IHolder {
     private static final String build = "Free";
 
     @Getter
-    private static final String version = "1.9";
+    private static final String version = "2.0";
 
 
 }

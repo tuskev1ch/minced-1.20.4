@@ -58,7 +58,7 @@ public class TargetHUD extends Module {
         if (event instanceof Render2DEvent e) {
             float margin = 4; // отступ
             float headScale = 25;
-            if (getTarget() == null)
+            if (getTarget() == null || !(getTarget() instanceof PlayerEntity))
                 return;
 
             float x = draggable.getX();
@@ -80,7 +80,7 @@ public class TargetHUD extends Module {
             if (alphaAnimation.getValue() > 0.05) {
                 DrawHandler.drawBlurredShadow(e.getStack(), x, y, width, height, 5, ClientColors.getBrighterBackgroundColor().withAlpha(255 * alphaAnimation.getValue()));
 
-                DrawHandler.drawRound(e.getStack(), x, y, width, height, 3,ColorHandler.applyOpacity(ClientColors.getBrighterBackgroundColor(), 255 * alphaAnimation.getValue()));
+                DrawHandler.drawStyledRect(e.getStack(), x, y, width, height);
 
                 hurtAnimation.setDuration(100);
                 hurtAnimation.run(getTarget().hurtTime > 0 ? 1 : 0);
@@ -110,7 +110,8 @@ public class TargetHUD extends Module {
 
                 Fonts.SEMI_15.drawString(e.getStack(), username, x + margin + headScale + margin, y + margin + 2.5f,
                         ClientColors.getFontColor().withAlpha(255 * alphaAnimation.getValue()).getRGB());
-                DrawHandler.drawBlurredShadow(e.getStack(),x + 80 , y + margin, 25, 10, 8, ClientColors.getBrighterBackgroundColor().withAlpha(255 * alphaAnimation.getValue()));
+
+                DrawHandler.drawBlurredShadow(e.getStack(),x + 80 , y + margin, 25, 10, 8, ClientColors.getBackgroundColor().darker(0.85F).withAlpha(255 * alphaAnimation.getValue()));
 
                 DrawHandler.drawRect(e.getStack(), x + width - margin * 2, y + margin, 2.5f, 25, ClientColors.getSecondaryBackgroundColor().withAlpha(255 * alphaAnimation.getValue()));
 

@@ -31,4 +31,5 @@ public class FireworkRocketEntityMixin {
 
         return MobilityHandler.getRotationVector(event.getPitch(), event.getYaw());
     }
+
 }

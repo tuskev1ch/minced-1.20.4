@@ -3,6 +3,8 @@ package free.minced.modules.impl.display.hud;
 
 
 import free.minced.modules.impl.misc.NameProtect;
+import free.minced.systems.setting.impl.BooleanSetting;
+import free.minced.systems.setting.impl.ModeSetting;
 import lombok.Getter;
 import net.minecraft.client.util.math.MatrixStack;
 import free.minced.addition.ProfileHandler;
@@ -27,6 +29,13 @@ import free.minced.systems.setting.impl.NumberSetting;
 @ModuleDescriptor(name = "HUD",  category = ModuleCategory.DISPLAY)
 
 public class HUD extends Module {
+    public final BooleanSetting customHud = new BooleanSetting("Custom Hud", this, false);
+
+    public final NumberSetting roundness = new NumberSetting("Roundness", this, 3, 1, 7, 1, () -> !customHud.isEnabled());
+    public final BooleanSetting enableGlow = new BooleanSetting("Enable Glow", this, false, () -> !customHud.isEnabled());
+    public final BooleanSetting glow = new BooleanSetting("Hud Glow", this, false, () -> !enableGlow.isEnabled());
+
+    public final ModeSetting roundSide = new ModeSetting("Style Side", this, "None", () -> !customHud.isEnabled(), "None", "Left", "Right", "Up", "Down", "Full");
 
     public final MultiBoxSetting elements = new MultiBoxSetting("Elements", this, "Watermark", "Coords");
     public final MultiBoxSetting reversedElements = new MultiBoxSetting("Sub Elements", this, () ->
@@ -63,9 +72,9 @@ public class HUD extends Module {
 
         float width = Fonts.SEMI_16.getStringWidth(name) + 6;
         float height = 14;
-        DrawHandler.drawBlurredShadow(pMatrixStack,  x, y + 0.5f, width + 0.5f, height,  5, ClientColors.getSecondaryBackgroundColor().withAlpha(255));
 
-        DrawHandler.drawRound(pMatrixStack,  x, y + 0.5f, width + 0.5f, height, 3, ClientColors.getBrighterBackgroundColor());
+        DrawHandler.drawStyledRect(pMatrixStack,  x, y + 0.5f, width + 0.5f, height);
+
 
         Fonts.SEMI_16.drawString(pMatrixStack, name, x + 3, y + 5, ClientColors.getFontColor().withAlpha(255).getRGB());
     }
@@ -101,8 +110,8 @@ public class HUD extends Module {
         float x = reversed ? sr.getScaledWidth().floatValue() - 10 - width : 10;
         float y = 10;
 
-        DrawHandler.drawBlurredShadow(pMatrixStack,x - 0.5f, y- 0.5f, width + 1, height + 1, 5, ClientColors.getBrighterBackgroundColor().withAlpha(225));
-        DrawHandler.drawRound(pMatrixStack,x, y, width, height, cornerRadius, ClientColors.getBrighterBackgroundColor().withAlpha(255));
+       // DrawHandler.drawBlurredShadow(pMatrixStack,x - 0.5f, y- 0.5f, width + 1, height + 1, 5, ClientColors.getBrighterBackgroundColor().withAlpha(225));
+        DrawHandler.drawStyledRect(pMatrixStack,x, y, width, height);
 
         logoIconFont.drawString(pMatrixStack,logoIcon, x + leftAndRightPadding, y + 7.5f, ClientColors.getFontColor().getRGB());
 

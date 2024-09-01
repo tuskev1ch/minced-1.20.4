@@ -55,7 +55,9 @@ public class MathHandler implements IHolder {
     public static float randomize(float min, float max) {
         return (float) (Math.random() * (double) (max - min)) + min;
     }
-
+    public static int randomize(int min, int max) {
+        return (int) (Math.random() * (double) (max - min)) + min;
+    }
     public static float lerp(float min, float max, float delta) {
         return min + (max - min) * delta;
     }

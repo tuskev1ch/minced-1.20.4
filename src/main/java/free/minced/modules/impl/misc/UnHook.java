@@ -25,6 +25,7 @@ public class UnHook extends Module {
 
     @Override
     public void onDisable() {
+        if (list == null) return;
         for (Module module : list) {
             if (module.equals(this)) {
                 continue;

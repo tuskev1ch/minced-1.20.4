@@ -1,6 +1,7 @@
 package free.minced.modules.impl.combat;
 
 
+import free.minced.modules.impl.movement.Flight;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffects;
@@ -63,14 +64,13 @@ public class AutoAttack extends Module {
     }
 
     private boolean autoCrit() {
-        boolean reasonForSkipCrit =
-                !onlyCriticals.isEnabled()
-                        || mc.player.getAbilities().flying
-                        || mc.player.hasStatusEffect(StatusEffects.LEVITATION)
-                        || mc.player.isFallFlying()
-                        || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
-                        || mc.player.isHoldingOntoLadder()
-                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos())).getBlock() == Blocks.COBWEB;
+        boolean reasonForSkipCrit = !onlyCriticals.isEnabled()
+                || mc.player.getAbilities().flying
+                || mc.player.hasStatusEffect(StatusEffects.LEVITATION)
+                || (mc.player.isFallFlying() || Minced.getInstance().getModuleHandler().get(Flight.class).isEnabled())
+                || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
+                || PlayerHandler.isPlayerInWeb()
+                || mc.world.getBlockState(mc.player.getBlockPos()).getBlock() == Blocks.LADDER;
 
         if (PlayerHandler.getAttackStrengthScale(0.5f) < (mc.player.isOnGround() ? 1f : 0.9f))
             return false;

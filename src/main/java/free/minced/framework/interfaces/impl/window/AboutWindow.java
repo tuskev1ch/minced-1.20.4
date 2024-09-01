@@ -1,6 +1,7 @@
 package free.minced.framework.interfaces.impl.window;
 
 
+import free.minced.framework.render.shaders.ShaderHandler;
 import net.minecraft.client.gui.DrawContext;
 import lombok.Getter;
 import net.minecraft.util.Formatting;
@@ -69,8 +70,12 @@ public class AboutWindow extends CustomElement {
         // бекграунд
         DrawHandler.drawBlurredShadow(DrawContext.getMatrices(),x - 0.5f, y - 0.5f, width + 1, height + 1, 12, ClientColors.getSecondaryBackgroundColor().withAlpha((180 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()));
 
+/*
         DrawHandler.drawRound(DrawContext.getMatrices(),x, y, width, height, 3, ClientColors.getBackgroundColor().withAlpha((180 * alphaAnimation.getValue()) * getClickGUI().getAlpha().getValue()));
-
+*/
+        if (getClickGUI().getAlpha().getValue() > 0.05F && getAlphaAnimation().getValue() > 0.05F) {
+            ShaderHandler.drawRoundedBlur(DrawContext.getMatrices(), x, y, width, height, 3, ClientColors.getBackgroundColor().withAlpha((180 * alphaAnimation.getValue())), 20, 0.55f);
+        }
         // хеадер (бг)
         float headerHeight = 15;
         DrawHandler.drawRound(DrawContext.getMatrices(),x, y, width, headerHeight, 3, ColorHandler.applyOpacity(ClientColors.getBackgroundColor().brighter(),255 * alphaAnimation.getValue() * getClickGUI().getAlpha().getValue()));

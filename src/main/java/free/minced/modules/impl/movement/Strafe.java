@@ -52,6 +52,7 @@ public class Strafe extends Module {
 
     @Override
     public void onEnable() {
+        if (mc.options == null) return;
         oldSpeed = 0.0;
         fovval = mc.options.getFovEffectScale().getValue();
         mc.options.getFovEffectScale().setValue(0d);
@@ -60,6 +61,7 @@ public class Strafe extends Module {
 
     @Override
     public void onDisable() {
+        if (mc.options == null) return;
         mc.options.getFovEffectScale().setValue(fovval);
         super.onDisable();
     }

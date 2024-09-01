@@ -31,6 +31,7 @@ public class Speed extends Module {
 
     @Override
     public void onEvent(Event event) {
+        if (mc.player == null || mc.world == null) return;
         if (event instanceof EventPlayerTravel e) {
             if (mode.is("GrimDistance") && !e.isPre()) {
                 for (PlayerEntity ent : Lists.newArrayList(mc.world.getPlayers())) {

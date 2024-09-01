@@ -5,6 +5,7 @@ package free.minced;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import free.minced.addition.ProfileHandler;
+import free.minced.systems.SharedClass;
 import free.minced.systems.WorkForceHandler;
 import lombok.Getter;
 import net.fabricmc.api.ModInitializer;
@@ -63,6 +64,7 @@ public class Minced implements ModInitializer {
 
 	private final WorkForceHandler workForceHandler = new WorkForceHandler();
 
+	private final SharedClass sharedClass = new SharedClass();
 
 
 	boolean initializated = false;

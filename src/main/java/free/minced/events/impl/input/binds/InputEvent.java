@@ -13,8 +13,4 @@ public class InputEvent extends Event {
         this.buttonOrKey = buttonOrKey;
     }
 
-    public boolean isKeyDown(int key) {
-        return key == buttonOrKey;
-    }
-
 }

@@ -61,7 +61,6 @@ public class Sidebar extends MenuComponent {
         float separatorWidth = 25;
         float separatorHeight = 0.5F;
         DrawHandler.drawRound(DrawContext.getMatrices(), x, y, getClickGUI().getSidebar().width, height, 3, ColorHandler.applyOpacity(ClientColors.getBackgroundColor().brighter(),255 * getClickGUI().getAlpha().getValue()));
-        DrawHandler.drawRect(DrawContext.getMatrices(), x + 47.5f, y, 2.5f, height, ColorHandler.applyOpacity(ClientColors.getBackgroundColor().brighter(),255 * getClickGUI().getAlpha().getValue()));
         // разделитель
         float iconBottomMargin = 15; // отступ от иконки снизу
         DrawHandler.drawRect(DrawContext.getMatrices(),x + width / 2f - separatorWidth / 2f, y + iconTopMargin + Fonts.ICONFONT_27.getFontHeight() + iconBottomMargin, separatorWidth, separatorHeight, ClientColors.GRAY.withAlpha(200 * getClickGUI().getAlpha().getValue()));

@@ -25,11 +25,11 @@ import static net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket.Mode.
 @ModuleDescriptor(name = "Flight", category = ModuleCategory.MOVEMENT)
 
 public class Flight extends Module {
-    public final ModeSetting mode = new ModeSetting("Mode", this, "MatrixElytra", "MatrixElytra");
+    public final ModeSetting mode = new ModeSetting("Mode", this, "MatrixElytra", "MatrixElytra", "Vanilla");
     public final BooleanSetting stayOffGround = new BooleanSetting("Stay Off Ground", this, false, () -> !mode.is("MatrixElytra"));
 
-    public final NumberSetting XZspeed = new NumberSetting("Horizontal Speed", this, 0.1, 0.1, 2, 0.1, () -> !mode.is("MatrixElytra"));
-    public final NumberSetting Yspeed = new NumberSetting("Vertical Speed", this, 0.1, 0.1, 2, 0.1, () -> !mode.is("MatrixElytra"));
+    public final NumberSetting XZspeed = new NumberSetting("Horizontal Speed", this, 0.1, 0.1, 2, 0.1);
+    public final NumberSetting Yspeed = new NumberSetting("Vertical Speed", this, 0.1, 0.1, 2, 0.1);
 
     public static int lastStartFalling;
     private float acceleration;
@@ -69,6 +69,16 @@ public class Flight extends Module {
                         ChatHandler.display("1");
                     }
                 }
+            } else if (mode.is("Vanilla")) {
+                if (mc.player == null) return;
+                if (MobilityHandler.isMoving()) {
+                    final double[] dir = MobilityHandler.forward(XZspeed.getValue().doubleValue());
+                    mc.player.setVelocity(dir[0], -0.1, dir[1]);
+                } else mc.player.setVelocity(0, -0.1, 0);
+
+                if (mc.options.jumpKey.isPressed()) mc.player.setVelocity(mc.player.getVelocity().add(0, Yspeed.getValue().doubleValue(), 0));
+                if (mc.options.sneakKey.isPressed()) mc.player.setVelocity(mc.player.getVelocity().add(0, -Yspeed.getValue().doubleValue(), 0));
+
             }
         }
         if (event instanceof EventMove eventMove) {

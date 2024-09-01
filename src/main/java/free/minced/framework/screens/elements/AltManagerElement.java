@@ -11,6 +11,7 @@ import free.minced.framework.render.DrawHandler;
 import free.minced.framework.render.ScissorHandler;
 import free.minced.primary.math.MathHandler;
 import free.minced.primary.math.ScrollHandler;
+import free.minced.systems.Generator;
 import lombok.Getter;
 import free.minced.framework.screens.elements.util.AltManagerConfig;
 import net.minecraft.client.gui.DrawContext;
@@ -183,7 +184,7 @@ public class AltManagerElement extends CustomElement {
     }
 
     public void generateRandomAccount() {
-        String randomName = RandomStringUtils.randomAlphanumeric((int) MathHandler.randomize(5, 9));
+        String randomName = /*RandomStringUtils.randomAlphanumeric((int) MathHandler.randomize(5, 9))*/ Generator.generateName();
 
         AccountElement element = new AccountElement(randomName);
         ACCOUNTS.add(element);

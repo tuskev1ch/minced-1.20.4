@@ -4,9 +4,11 @@ import free.minced.Minced;
 import free.minced.events.EventCollects;
 import free.minced.events.impl.mobility.ElytraFixEvent;
 import free.minced.modules.impl.combat.AttackAura;
+import free.minced.modules.impl.combat.BackTrack;
 import free.minced.modules.impl.render.SwingAnimations;
 import free.minced.primary.game.MobilityHandler;
 import free.minced.systems.helpers.IEntityLiving;
+import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
@@ -18,6 +20,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Mixin(LivingEntity.class)
 public class MixinEntityLiving implements IEntityLiving {
@@ -32,11 +37,17 @@ public class MixinEntityLiving implements IEntityLiving {
     @Unique
     double prevServerX, prevServerY, prevServerZ;
 
+    @Unique
+    private final ArrayList<BackTrack.Position> backtrack = new ArrayList<>();
+
     @Inject(method = {"updateTrackedPositionAndAngles"}, at = {@At("HEAD")})
     private void updateTrackedPositionAndAnglesHook(double x, double y, double z, float yaw, float pitch, int interpolationSteps, CallbackInfo ci) {
         prevServerX = serverX;
         prevServerY = serverY;
         prevServerZ = serverZ;
+        if (Minced.getInstance().getModuleHandler().get(BackTrack.class).isEnabled()) {
+            backtrack.add(new BackTrack.Position(new Vec3d(serverX, serverY, serverZ), System.currentTimeMillis()));
+        }
     }
 
     @Inject(method = "getHandSwingDuration", at = {@At("HEAD")}, cancellable = true)
@@ -87,5 +98,10 @@ public class MixinEntityLiving implements IEntityLiving {
     @Override
     public double getPrevServerZ() {
         return prevServerZ;
+    }
+
+    @Override
+    public List<BackTrack.Position> getBackTrack() {
+        return backtrack;
     }
 }

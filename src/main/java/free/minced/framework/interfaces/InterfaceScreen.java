@@ -1,6 +1,7 @@
 package free.minced.framework.interfaces;
 
 
+import free.minced.framework.render.shaders.ShaderHandler;
 import free.minced.modules.api.ModuleManager;
 import net.minecraft.client.gui.DrawContext;
 import lombok.Getter;
@@ -105,7 +106,9 @@ public class InterfaceScreen extends Screen implements IHolder {
         pDrawContext.getMatrices().push();
         // бг
         DrawHandler.drawBlurredShadow(pDrawContext.getMatrices(),x - 0.5f, y - 0.5f, width + 1, height + 1, 8, ClientColors.getSecondaryBackgroundColor().withAlpha(180 * alpha.getValue()));
-        DrawHandler.drawRound(pDrawContext.getMatrices(), x, y, width, height,3,  ClientColors.getBackgroundColor().withAlpha(180 * alpha.getValue()));
+
+        ShaderHandler.drawRoundedBlur(pDrawContext.getMatrices(), x, y, width, height,3, ClientColors.getBackgroundColor().withAlpha(180 * alpha.getValue()), 20, 0.55f);
+
         sidebar.render(pDrawContext, pMouseX, pMouseY, pPartialTick);
 
         aboutWindow.render(pDrawContext, pMouseX, pMouseY);

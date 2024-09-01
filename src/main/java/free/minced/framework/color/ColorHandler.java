@@ -46,7 +46,7 @@ public class ColorHandler {
                 MathHandler.interpolate(color1.getBlue(), color2.getBlue(), amount),
                 MathHandler.interpolate(color1.getAlpha(), color2.getAlpha(), amount));
     }
-    public CustomColor gradient(int speed, int index, CustomColor... colors) {
+    public static CustomColor gradient(int speed, int index, CustomColor... colors) {
         int angle = (int) ((System.currentTimeMillis() / speed + index) % 360);
         angle = (angle > 180 ? 360 - angle : angle) + 180;
         int colorIndex = (int) (angle / 360f * colors.length);
@@ -60,7 +60,7 @@ public class ColorHandler {
 
 
 
-    public CustomColor interpolateColor(CustomColor color1, CustomColor color2, float amount) {
+    public static CustomColor interpolateColor(CustomColor color1, CustomColor color2, float amount) {
         amount = Math.min(1, Math.max(0, amount));
         return new CustomColor((int) MathHandler.interpolate(color1.getRed(), color2.getRed(), amount),
                 (int) MathHandler.interpolate(color1.getGreen(), color2.getGreen(), amount),

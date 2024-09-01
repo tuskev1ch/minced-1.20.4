@@ -1,12 +1,19 @@
 package free.minced.primary.game;
 
 
+import free.minced.Minced;
+import free.minced.modules.impl.combat.BackTrack;
+import free.minced.systems.helpers.IEntityLiving;
 import io.netty.buffer.Unpooled;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileUtil;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -41,6 +48,75 @@ public class PlayerHandler implements IHolder {
         INTERACT, ATTACK, INTERACT_AT
     }
 
+    public static double getEntityArmor(PlayerEntity entityPlayer2) {
+        double d2 = 0.0;
+        for (int i2 = 0; i2 < 4; ++i2) {
+            ItemStack is = entityPlayer2.getInventory().armor.get(i2);
+            if (!(is.getItem() instanceof ArmorItem)) continue;
+            d2 += getProtectionLvl(is);
+        }
+        return d2;
+    }
+
+    private static double getProtectionLvl(ItemStack stack) {
+        if (stack.getItem() instanceof ArmorItem i) {
+            double damageReduceAmount = i.getProtection();
+            if (stack.hasEnchantments()) {
+                damageReduceAmount += (double) EnchantmentHelper.getLevel(Enchantments.PROTECTION, stack) * 0.25;
+            }
+            return damageReduceAmount;
+        }
+        return 0;
+    }
+
+    public static double getEntityHealth(LivingEntity ent) {
+        if (ent instanceof PlayerEntity player) {
+            return (double) (player.getHealth() + player.getAbsorptionAmount()) * (getEntityArmor(player) / 20.0);
+        }
+        return ent.getHealth() + ent.getAbsorptionAmount();
+    }
+
+    public static Vec3d getPoint(Entity target, IEntityLiving target1) {
+        double hitboxSize = target.getBoundingBox().maxY - target.getBoundingBox().minY;
+        double additional = hitboxSize/2;
+        Vec3d pos = getBestPoint(mc.player.getEyePos(), target);
+        pos = new Vec3d(pos.x, target.getPos().add(0, additional + ((int) mc.player.getY() > (int) pos.y ? 0.5f : 0), 0).y, pos.z);
+
+        if (Minced.getInstance().getModuleHandler().get(AttackAura.class).isEnabled() && Minced.getInstance().getModuleHandler().get(AttackAura.class).rotateBackTrack.isEnabled() && Minced.getInstance().getModuleHandler().get(BackTrack.class).isEnabled() && !target1.getBackTrack().isEmpty()) {
+            for (BackTrack.Position track : target1.getBackTrack()) {
+                Vec3d trackPos = getBestPoint(mc.player.getEyePos(), target).subtract(target.getPos()).add(track.getPos());
+                trackPos = new Vec3d(trackPos.x, target.getPos().add(0, additional, 0).y, trackPos.z);
+
+                if (distanceTo(trackPos) < distanceTo(pos)) {
+                    pos = trackPos;
+                }
+            }
+        }
+
+        return pos;
+    }
+    public static double distanceTo(Vec3d point) {
+        return mc.player.getPos().add(0,mc.player.getStandingEyeHeight(),0).distanceTo(point);
+    }
+    public static Vec3d getBestPoint(Vec3d pos, Entity entity) {
+        if (entity == null) return new Vec3d(0.0D, 0.0D, 0.0D);
+
+        double safePoint = 0;
+
+        return new Vec3d(
+                MathHelper.clamp(pos.x,
+                        entity.getBoundingBox().minX + safePoint,
+                        entity.getBoundingBox().maxX - safePoint),
+
+                MathHelper.clamp(pos.y,
+                        entity.getBoundingBox().minY + safePoint,
+                        entity.getBoundingBox().maxY - safePoint),
+
+                MathHelper.clamp(pos.z,
+                        entity.getBoundingBox().minZ + safePoint,
+                        entity.getBoundingBox().maxZ - safePoint)
+        );
+    }
     public static boolean isPlayerInWeb() {
         Box playerBox = mc.player.getBoundingBox();
         BlockPos playerPosition = BlockPos.ofFloored(mc.player.getPos());

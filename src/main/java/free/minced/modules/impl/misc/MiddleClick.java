@@ -48,20 +48,27 @@ public class MiddleClick extends Module {
             if (timer.every(500)) {
                 int epSlot1 = InventoryHandler.findItemInHotBar(Items.ENDER_PEARL).slot();
                 if (!Minced.getInstance().getModuleHandler().get(MiddleClick.class).getInventory().isEnabled() || (Minced.getInstance().getModuleHandler().get(MiddleClick.class).getInventory().isEnabled() && epSlot1 != -1)) {
-                    int originalSlot = mc.player.getInventory().selectedSlot;
                     if (epSlot1 != -1) {
-                        mc.player.getInventory().selectedSlot = epSlot1;
                         mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(epSlot1));
                         IHolder.sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, id));
-                        mc.player.getInventory().selectedSlot = originalSlot;
-                        mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(originalSlot));
+                        mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot));
                     }
                 } else {
+                    int bestEmptySlotH = InventoryHandler.findBestEmpySlot(true);
                     int epSlot = InventoryHandler.findItemInInventory(Items.ENDER_PEARL).slot();
                     if (epSlot != -1) {
-                        mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, epSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+                        mc.interactionManager.clickSlot(0, epSlot, 0, SlotActionType.PICKUP, mc.player);
+                        mc.interactionManager.clickSlot(0, bestEmptySlotH + 36, 0, SlotActionType.PICKUP, mc.player);
+
+                        mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(bestEmptySlotH));
+
                         IHolder.sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(Hand.MAIN_HAND, id));
-                        mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, epSlot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+
+                        mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(epSlot1));
+
+                        mc.interactionManager.clickSlot(0, bestEmptySlotH + 36, 0, SlotActionType.PICKUP, mc.player);
+                        mc.interactionManager.clickSlot(0, epSlot, 0, SlotActionType.PICKUP, mc.player);
+
                     }
                 }
             }

@@ -1,15 +1,13 @@
 package free.minced.primary.game;
 
 
+import lombok.experimental.UtilityClass;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.EnderChestBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 import free.minced.mixin.accesors.IInteractionManager;
@@ -19,8 +17,58 @@ import free.minced.systems.SharedClass;
 import java.util.Arrays;
 import java.util.List;
 
-
+@UtilityClass
 public class InventoryHandler implements IHolder {
+    private static int cachedSlot = -1;
+
+    public static void saveSlot() {
+        cachedSlot = mc.player.getInventory().selectedSlot;
+    }
+
+    public static void returnSlot() {
+        if (cachedSlot != -1)
+            switchTo(cachedSlot);
+        cachedSlot = -1;
+    }
+
+
+    public static int findItem(Item item, boolean hotBar) {
+        int startSlot = hotBar ? 0 : 9;
+        int endSlot = hotBar ? 9 : 36;
+        for (int i = startSlot; i < endSlot; ++i) {
+            ItemStack itemStack = mc.player.getInventory().getStack(i);
+            if (item != itemStack.getItem()) continue;
+            return i;
+        }
+        return -1;
+    }
+
+    public int findBestEmpySlot(boolean hotBar) {
+        int emptySlot = findEmptySlot(hotBar);
+        if (emptySlot != -1) {
+            return emptySlot;
+        }
+        return findNonSwordSlot(hotBar);
+    }
+    private int findEmptySlot(boolean hotBar) {
+        int startSlot = hotBar ? 0 : 9;
+        int endSlot = hotBar ? 9 : 36;
+        for (int i = startSlot; i < endSlot; ++i) {
+            if (!mc.player.getInventory().getStack(i).isEmpty() || mc.player.getInventory().selectedSlot == i) continue;
+            return i;
+        }
+        return -1;
+    }
+
+    private int findNonSwordSlot(boolean hotBar) {
+        int startSlot = hotBar ? 0 : 9;
+        int endSlot = hotBar ? 9 : 36;
+        for (int i = startSlot; i < endSlot; ++i) {
+            if (mc.player.getInventory().getStack(i).getItem() instanceof SwordItem || mc.player.getInventory().getStack(i).getItem() instanceof ElytraItem || mc.player.getInventory().selectedSlot == i) continue;
+            return i;
+        }
+        return -1;
+    }
 
     public static int getTool(final BlockPos pos) {
         int index = -1;
@@ -83,7 +131,7 @@ public class InventoryHandler implements IHolder {
         if (mc.player.getInventory().selectedSlot == slot && SharedClass.serverSideSlot == slot)
             return;
         mc.player.getInventory().selectedSlot = slot;
-        ((IInteractionManager)mc.interactionManager).syncSlot();
+        //((IInteractionManager)mc.interactionManager).syncSlot();
     }
 
     public static SearchInvResult findInHotBar(Searcher searcher) {

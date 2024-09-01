@@ -95,7 +95,7 @@ public class PotionHUD extends AbstractHUDElement {
         }
         getWidthAnimation().run(maxWidth);
 
-        DrawHandler.drawBlurredShadow(poseStack, x, y, width, getHeaderHeight(),  5, ClientColors.getBrighterBackgroundColor().withAlpha(180));
+        DrawHandler.drawBlurredShadow(poseStack, x, y, width, getHeaderHeight(),  5, ClientColors.getBackgroundColor().withAlpha(180));
 
         // бэкграунд хеадера
         if (mc.player.getActiveStatusEffects().isEmpty()) {

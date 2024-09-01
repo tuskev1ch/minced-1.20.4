@@ -1,6 +1,7 @@
 package free.minced.framework.render.shaders;
 
 
+import free.minced.framework.render.shaders.impl.BlurShader;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -19,10 +20,12 @@ import static free.minced.primary.IAccess.TESSELLATOR;
 
 public class ShaderHandler {
     public static RoundedShader ROUNDED_SHADER;
+    public static BlurShader BLUR_SHADER;
 
     public static void initShaders() {
         System.out.println("initializating shaders");
         ROUNDED_SHADER = new RoundedShader();
+        BLUR_SHADER = new BlurShader();
     }
     public static void preShaderDraw(MatrixStack matrices, float x, float y, float width, float height) {
         setupRender();
@@ -43,6 +46,15 @@ public class ShaderHandler {
         TESSELLATOR.draw();
         endRender();
     }
+
+    public static void drawRoundedBlur(MatrixStack matrices, float x, float y, float width, float height, float radius, Color c1, float blurStrenth, float blurOpacity) {
+        preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
+        BLUR_SHADER.setParameters(x, y, width, height, radius, c1, blurStrenth, blurOpacity);
+        BLUR_SHADER.use();
+        TESSELLATOR.draw();
+        endRender();
+    }
+
     public static void drawRoundGradient(MatrixStack matrices, float x, float y, float width, float height, float radius, Color c1, Color c2, Color c3, Color c4) {
         preShaderDraw(matrices, x - 10, y - 10, width + 20, height + 20);
         ROUNDED_SHADER.setParameters(x, y, width, height, radius, c1, c2, c3, c4);

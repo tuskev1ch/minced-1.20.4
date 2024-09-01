@@ -1,7 +1,9 @@
 package free.minced.mixin;
 
 import free.minced.events.impl.input.EventClickSlot;
+import free.minced.modules.impl.combat.AttackAura;
 import free.minced.modules.impl.combat.Reach;
+import free.minced.primary.chat.ChatHandler;
 import free.minced.systems.rotations.Rotations;
 import net.minecraft.block.*;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -23,6 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -71,6 +74,7 @@ public class MixinClientPlayerInteractionManager {
             cir.setReturnValue(ActionResult.PASS);
         }
     }
+
     @Inject(method = "breakBlock", at = @At("HEAD"), cancellable = true)
     public void breakBlockHook(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         EventBreakBlock event = new EventBreakBlock(pos);
@@ -83,10 +87,21 @@ public class MixinClientPlayerInteractionManager {
     private void onInteractItem(Args args) {
         Rotations.RotationRequest request = Rotations.rotationQueue.peek();
         if (request != null) {
-            args.set(3, request.getYaw());
-            args.set(4, request.getPitch());
+            args.set(3, (float) request.getYaw());
+            args.set(4, (float) request.getPitch());
         }
     }
+
+    @Inject(method = "interactItem", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
+    private void onInteractItem(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+        if (mc.player == null || mc.world == null) return;
+        AttackAura attackAura = Minced.getInstance().getModuleHandler().get(AttackAura.class);
+        if (AttackAura.target != null && attackAura.isEnabled() && attackAura.elytraOverride.isEnabled() && mc.player.isFallFlying()) {
+            cir.setReturnValue(ActionResult.PASS);
+        }
+    }
+
+
 
     @Inject(method = "clickSlot", at = @At("HEAD"), cancellable = true)
     public void clickSlotHook(int syncId, int slotId, int button, SlotActionType actionType, PlayerEntity player, CallbackInfo ci) {
